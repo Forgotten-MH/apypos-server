@@ -1,0 +1,48 @@
+# Use root/example as user/password credentials
+version: '3.1'
+
+services:
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - explore
+    ports:
+      - 27017:27017
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8083:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
+    networks:
+      - explore
+  server:
+    build:
+      context: ./
+    environment:
+      DB_IP: mongo
+      IP: "192.168.1.1"
+      WEB_URL: "192.168.1.1/web"
+      PORT: 80
+    ports:
+     - 80:80
+     - 3000:3000
+     - 443:443
+    restart: always
+    volumes:
+      - ./src/public:/app/dist/public/
+    depends_on:
+      - mongo
+    networks:
+      - explore
+networks:
+  explore:
+    driver: bridge6

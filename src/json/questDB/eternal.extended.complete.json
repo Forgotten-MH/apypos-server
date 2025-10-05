@@ -1,0 +1,1293 @@
+{
+  "rQuestSheet": {
+    "mQuestDataList": [
+      {
+        "mQuestID": "2574015882",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度２】疾風幻雷の証\n悠久のはじまり",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "1"
+          },
+          {
+            "mAreaNo": "1"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "332025677",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "2",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75001"
+      },
+      {
+        "mQuestID": "6622256",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度３】疾風幻雷の証\n侵入者を狙う赤眼",
+        "mDamageMultiplier": "1.5625",
+        "mBossList": [
+          {
+            "mEnemyID": "59"
+          },
+          {
+            "mAreaNo": "1"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "705162951",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "3",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75002"
+      },
+      {
+        "mQuestID": "2002926758",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度５】疾風幻雷の証\n晴天の雷撃",
+        "mDamageMultiplier": "1.61290002",
+        "mBossList": [
+          {
+            "mEnemyID": "41"
+          },
+          {
+            "mAreaNo": "1"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2628311066",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "5",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75003"
+      },
+      {
+        "mQuestID": "3909527813",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度６】疾風幻雷の証\n全てを蝕む黒",
+        "mDamageMultiplier": "2",
+        "mBossList": [
+          {
+            "mEnemyID": "328"
+          },
+          {
+            "mAreaNo": "1"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "4055025305",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "6",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75004"
+      },
+      {
+        "mQuestID": "2650904979",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度６】疾風幻雷の証\n悠久の怪奇",
+        "mDamageMultiplier": "2",
+        "mBossList": [
+          {
+            "mEnemyID": "4"
+          },
+          {
+            "mAreaNo": "1"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "352423334",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "6",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75005"
+      },
+      {
+        "mQuestID": "118016041",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度７】疾風幻雷の証\n悠久の冥晶封印",
+        "mDamageMultiplier": "2.5",
+        "mBossList": [
+          {
+            "mEnemyID": "120",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "5",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "348383121",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "2237776961",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "7",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75006"
+      },
+      {
+        "mQuestID": "1880094911",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度８】疾風幻雷の証\n止まぬ爆発",
+        "mDamageMultiplier": "3",
+        "mBossList": [
+          {
+            "mEnemyID": "74",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "9",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "51",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "605339519",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "500768501",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "2295772447",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "8",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75007"
+      },
+      {
+        "mQuestID": "3769689390",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度８】疾風幻雷の証\n月霞を射る者",
+        "mDamageMultiplier": "4",
+        "mBossList": [
+          {
+            "mEnemyID": "61",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "5",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "66",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "348383121",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "916525201",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "871237140",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "8",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75008"
+      },
+      {
+        "mQuestID": "2545407416",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1800",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度８】疾風幻雷の証\n雷鎚の練者",
+        "mDamageMultiplier": "5",
+        "mBossList": [
+          {
+            "mEnemyID": "7",
+            "mAreaNo": "4",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "63",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "56",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "64",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "891667711",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "812307066",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "559655418",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "390542335",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "8",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75009"
+      },
+      {
+        "mQuestID": "4151336029",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1800",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度８】疾風幻雷の証\n証を守りし幻獣",
+        "mDamageMultiplier": "5",
+        "mBossList": [
+          {
+            "mEnemyID": "86",
+            "mAreaNo": "5",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "329",
+            "mAreaNo": "4",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "58",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "52",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "8",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "642908454",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "734364912",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "471561410",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "3543232807",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "4033916078",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "8",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75010"
+      },
+      {
+        "mQuestID": "2155310283",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度5】一触即爆の証\n海竜の休暇",
+        "mDamageMultiplier": "1.61290002",
+        "mBossList": [
+          {
+            "mEnemyID": "15"
+          },
+          {
+            "mAreaNo": "1"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2894037236",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "5",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75011"
+      },
+      {
+        "mQuestID": "427703665",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度6】一触即爆の証\n激走！轟竜",
+        "mDamageMultiplier": "2",
+        "mBossList": [
+          {
+            "mEnemyID": "311"
+          },
+          {
+            "mAreaNo": "1"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3973468920",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "6",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75012"
+      },
+      {
+        "mQuestID": "1853427175",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度7】一触即爆の証\n全てを蝕む白",
+        "mDamageMultiplier": "2.5",
+        "mBossList": [
+          {
+            "mEnemyID": "329"
+          },
+          {
+            "mAreaNo": "1"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "4033916078",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "7",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75013"
+      },
+      {
+        "mQuestID": "4028471364",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度8】一触即爆の証\n君臨する暴君",
+        "mDamageMultiplier": "3",
+        "mBossList": [
+          {
+            "mEnemyID": "7",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "4",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "352423334",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "390542335",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "8",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75014"
+      },
+      {
+        "mQuestID": "2266671314",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度9】一触即爆の証\n集まる蝕龍蟲",
+        "mDamageMultiplier": "4",
+        "mBossList": [
+          {
+            "mEnemyID": "72",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "57",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "58",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "734364912",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "546948045",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "2354825645",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "9",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75015"
+      },
+      {
+        "mQuestID": "504625512",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度10】一触即爆の証\n解放されし力",
+        "mDamageMultiplier": "4",
+        "mBossList": [
+          {
+            "mEnemyID": "58",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "68",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "46",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "734364912",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "963652382",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "2582105759",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "10",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75016"
+      },
+      {
+        "mQuestID": "1762970110",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1800",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度10】一触即爆の証\n翠色の水の主",
+        "mDamageMultiplier": "5",
+        "mBossList": [
+          {
+            "mEnemyID": "67",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "59",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "56",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "705162951",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "559655418",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "841772067",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "10",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75017"
+      },
+      {
+        "mQuestID": "4188787823",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1800",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度10】一触即爆の証\n二つの炎を操る者",
+        "mDamageMultiplier": "5",
+        "mBossList": [
+          {
+            "mEnemyID": "93",
+            "mAreaNo": "4",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "583",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "60",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "53",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "663776017",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "929266342",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1833358505",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "488258748",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "10",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75018"
+      },
+      {
+        "mQuestID": "2393695481",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1800",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度10】一触即爆の証\n逆襲の一太刀",
+        "mDamageMultiplier": "6",
+        "mBossList": [
+          {
+            "mEnemyID": "51",
+            "mAreaNo": "5",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "125",
+            "mAreaNo": "4",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "14",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "45",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "12",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "605339519",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "10",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75019"
+      },
+      {
+        "mQuestID": "3697086366",
+        "mQuestType": "7",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1800",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【危険度11】一触即爆の証\n証を守りし砕竜",
+        "mDamageMultiplier": "7",
+        "mBossList": [
+          {
+            "mEnemyID": "74",
+            "mAreaNo": "5",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "580",
+            "mAreaNo": "4",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "59",
+            "mAreaNo": "3",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "55",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "42",
+            "mAreaNo": "1",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1926212767",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "97033225",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "705162951",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "589109155",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "2295772447",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "526156517",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "11",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "ETERNAL75020"
+      }
+    ]
+  }
+}

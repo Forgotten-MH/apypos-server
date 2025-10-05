@@ -1,0 +1,8 @@
+{
+    "watch": ["src/**/*.ts"],
+    "ext": "ts",
+    "ignore": ["src/**/*.spec.ts"],
+    "exec": "node --openssl-legacy-provider -r ts-node/register"
+    
+  }
+  

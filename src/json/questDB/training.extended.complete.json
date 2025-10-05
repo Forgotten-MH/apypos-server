@@ -1,0 +1,609 @@
+{
+  "rQuestSheet": {
+    "mQuestDataList": [
+      {
+        "mQuestID": "4129600914",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】片手剣訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00001"
+      },
+      {
+        "mQuestID": "1865278504",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】双剣訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00002"
+      },
+      {
+        "mQuestID": "405460158",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】太刀訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00003"
+      },
+      {
+        "mQuestID": "2253275421",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】大剣訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00004"
+      },
+      {
+        "mQuestID": "4048122251",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】狩猟笛訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00005"
+      },
+      {
+        "mQuestID": "1749033009",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】ハンマー訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00006"
+      },
+      {
+        "mQuestID": "524751015",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】ランス訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00007"
+      },
+      {
+        "mQuestID": "2415398198",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】ガンランス訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00008"
+      },
+      {
+        "mQuestID": "4177477024",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】スラッシュアックス訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00009"
+      },
+      {
+        "mQuestID": "2553852997",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】チャージアックス訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00010"
+      },
+      {
+        "mQuestID": "4013917395",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】ライトボウガン訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00011"
+      },
+      {
+        "mQuestID": "1983305065",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】ヘビィボウガン訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00012"
+      },
+      {
+        "mQuestID": "20047359",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】弓訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00013"
+      },
+      {
+        "mQuestID": "2673176668",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】操虫棍訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00014"
+      },
+      {
+        "mQuestID": "3897704650",
+        "mQuestType": "6",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "2",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "【訓練所】アクセルアックス訓練",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "2"
+          },
+          {
+            "mAreaNo": "2"
+          },
+          {
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": {
+          "mAutoDelete": "false"
+        },
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "true",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "false",
+        "mbRandomBlock": "false",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [
+          3821716939,
+          2059637873
+        ],
+        "mDefineId": "TRAINING00015"
+      }
+    ],
+    "mRewardDataList": {
+      "mAutoDelete": "false"
+    }
+  }
+}

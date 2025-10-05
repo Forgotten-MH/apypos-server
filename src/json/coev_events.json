@@ -1,0 +1,42 @@
+[
+    {
+          "big_node_banner_id": 90001,
+          "middle_node_banner_id": 90001,
+          "mst_score_node_id": 3418909367,
+          "schedule_category": "coev",
+          "recommended_flag": 1,
+          "state": 0
+    },
+    {
+          "big_node_banner_id": 90001,
+          "middle_node_banner_id": 90001,
+          "mst_score_node_id": 3648898393,
+          "schedule_category": "coev",
+          "recommended_flag": 1,
+          "state": 0
+    },
+    {
+          "big_node_banner_id": 90001,
+          "middle_node_banner_id": 90001,
+          "mst_score_node_id": 405849507,
+          "schedule_category": "coev",
+          "recommended_flag": 1,
+          "state": 0
+    },
+    {
+          "big_node_banner_id": 90001,
+          "middle_node_banner_id": 90001,
+          "mst_score_node_id": 1640079932,
+          "schedule_category": "coev",
+          "recommended_flag": 1,
+          "state": 0
+    },
+    {
+          "big_node_banner_id": 90001,
+          "middle_node_banner_id": 90001,
+          "mst_score_node_id": 1958482232,
+          "schedule_category": "coev",
+          "recommended_flag": 1,
+          "state": 0
+    }
+]

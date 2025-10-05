@@ -1,0 +1,2102 @@
+{
+  "rQuestSheet": {
+    "mQuestDataList": [
+      {
+        "mQuestID": "245853917",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "600",
+        "mTargetTime": "0",
+        "mHideInfo": "1",
+        "mSpWepFlag": "0",
+        "mQuestName": "討伐スコア型テスト\n必要無くなったら削除する",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "44",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "3",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1642667129",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "273586979",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "2590186225",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE0000"
+      },
+      {
+        "mQuestID": "725846484",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【初級】\n断裂群島攻防戦！",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "117",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "116",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "42",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "3470457922",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3118320852",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930201"
+      },
+      {
+        "mQuestID": "2991249518",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【中級】\n断裂群島攻防戦！",
+        "mDamageMultiplier": "1.10000002",
+        "mBossList": [
+          {
+            "mEnemyID": "111",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "117",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "116",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "42",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3470457922",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3118320852",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "550804846",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930202"
+      },
+      {
+        "mQuestID": "3310217464",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【上級】\n断裂群島攻防戦！",
+        "mDamageMultiplier": "1.20000005",
+        "mBossList": [
+          {
+            "mEnemyID": "111",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "117",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "116",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "42",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3470457922",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3118320852",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "550804846",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1473490424",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930203"
+      },
+      {
+        "mQuestID": "1529445723",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【特級】\n断裂群島攻防戦！",
+        "mDamageMultiplier": "3.20000005",
+        "mBossList": [
+          {
+            "mEnemyID": "111",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "117",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "550804846",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1473490424",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930204"
+      },
+      {
+        "mQuestID": "713155555",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【初級】\nお菓子の魔女結界",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "3",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "12",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "273586979",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930301"
+      },
+      {
+        "mQuestID": "3012080217",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【中級】\nお菓子の魔女結界",
+        "mDamageMultiplier": "1.10000002",
+        "mBossList": [
+          {
+            "mEnemyID": "113",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "3",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "12",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "273586979",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930302"
+      },
+      {
+        "mQuestID": "3297739471",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【上級】\nお菓子の魔女結界",
+        "mDamageMultiplier": "1.20000005",
+        "mBossList": [
+          {
+            "mEnemyID": "113",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "3",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "12",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "273586979",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930303"
+      },
+      {
+        "mQuestID": "1525356396",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【特級】\nお菓子の魔女結界",
+        "mDamageMultiplier": "3.20000005",
+        "mBossList": [
+          {
+            "mEnemyID": "113",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "3",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "273586979",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930304"
+      },
+      {
+        "mQuestID": "770451450",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【極級】\nお菓子の魔女結界",
+        "mDamageMultiplier": "3.5999999",
+        "mBossList": [
+          {
+            "mEnemyID": "113",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930305"
+      },
+      {
+        "mQuestID": "1214805666",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【初級】\n狩猟カーニバルテスト",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "3",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "12",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "273586979",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE000001"
+      },
+      {
+        "mQuestID": "3512805144",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【中級】\n狩猟カーニバルテスト",
+        "mDamageMultiplier": "1.10000002",
+        "mBossList": [
+          {
+            "mEnemyID": "113",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "3",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "12",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "273586979",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE000002"
+      },
+      {
+        "mQuestID": "2791708558",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【上級】\n狩猟カーニバルテスト",
+        "mDamageMultiplier": "1.20000005",
+        "mBossList": [
+          {
+            "mEnemyID": "113",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "3",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "12",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "273586979",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE000003"
+      },
+      {
+        "mQuestID": "939688493",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【特級】\n狩猟カーニバルテスト",
+        "mDamageMultiplier": "3.20000005",
+        "mBossList": [
+          {
+            "mEnemyID": "113",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "3",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "273586979",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE000004"
+      },
+      {
+        "mQuestID": "1325773499",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【極級】\n狩猟カーニバルテスト",
+        "mDamageMultiplier": "3.5999999",
+        "mBossList": [
+          {
+            "mEnemyID": "113",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "112",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3858214785",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2465242903",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "200920749",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2097086011",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE000005"
+      },
+      {
+        "mQuestID": "655779381",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【初級】\nデビルハンター",
+        "mDamageMultiplier": "1",
+        "mBossList": [
+          {
+            "mEnemyID": "59",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "4",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "14",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3299489937",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3014461447",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2451783929",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1671020218",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "4203802368",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "595826414",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1417979512",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "352423334",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "705162951",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930901"
+      },
+      {
+        "mQuestID": "3189716879",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【中級】\nデビルハンター",
+        "mDamageMultiplier": "1.10000002",
+        "mBossList": [
+          {
+            "mEnemyID": "328",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "59",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "4",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "14",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3014461447",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3299489937",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1570990379",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2451783929",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1671020218",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "4203802368",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "595826414",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1417979512",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "352423334",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "705162951",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "4055025305",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930902"
+      },
+      {
+        "mQuestID": "3373795097",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【上級】\nデビルハンター",
+        "mDamageMultiplier": "1.20000005",
+        "mBossList": [
+          {
+            "mEnemyID": "328",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "59",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "4",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "14",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3014461447",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3299489937",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1570990379",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "715413949",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2451783929",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1671020218",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "4203802368",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "595826414",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1417979512",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "352423334",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "705162951",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "4055025305",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1714092880",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "1911177763",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930903"
+      },
+      {
+        "mQuestID": "1467781818",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【特級】\nデビルハンター",
+        "mDamageMultiplier": "3.20000005",
+        "mBossList": [
+          {
+            "mEnemyID": "328",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "59",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "4",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "2",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3014461447",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3299489937",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1570990379",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "715413949",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2451783929",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1671020218",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "4203802368",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "595826414",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1417979512",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "352423334",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "705162951",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "4055025305",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930904"
+      },
+      {
+        "mQuestID": "544973356",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "1",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【極級】\nデビルハンター",
+        "mDamageMultiplier": "3.5999999",
+        "mBossList": [
+          {
+            "mEnemyID": "328",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          },
+          {
+            "mEnemyID": "59",
+            "mAreaNo": "2",
+            "mFieldSkillPackId": "0"
+          }
+        ],
+        "mRewardItemList": [
+          {
+            "mItemHash": "288213958",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "116224693",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "2451783929",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1671020218",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "595826414",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1417979512",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3014461447",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "3299489937",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "1570990379",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "715413949",
+            "mProbScale": "1",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "4203802368",
+            "mProbScale": "0",
+            "mRewardType": "0"
+          },
+          {
+            "mItemHash": "705162951",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          },
+          {
+            "mItemHash": "4055025305",
+            "mProbScale": "2",
+            "mRewardType": "2"
+          }
+        ],
+        "mSrankRequireId": "0",
+        "mDangerLevel": "0",
+        "mIsUnavailablePowerUp": "false",
+        "mbUnableAuto": "false",
+        "mbUnableRewardIncrease": "false",
+        "mbDangerLvWarning": "true",
+        "mbRandomBlock": "true",
+        "mbUseNewDamageCalc": "false",
+        "mBlocks": [],
+        "mDefineId": "SCORE930905"
+      },
+      {
+        "mQuestID": "337051396",
+        "mQuestType": "4",
+        "mMapID": "0",
+        "mDayNight": "0",
+        "mSortieType": "3",
+        "mTimeLimit": "1200",
+        "mTargetTime": "0",
+        "mHideInfo": "2",
+        "mSpWepFlag": "0",
+        "mQuestName": "【HEAVEN OR HELL】\n猪突猛進の悪夢",
+        "mDamageMultiplier": "2500",
+        "mBossList": {
+          "mAutoDelete": "false",
+          "classref_": {
+            "mpArray": [
+              {
+                "mEnemyID": "76"
+              },
+              {
+                "mAreaNo": "1"
+              },
+              {
+                "mFieldSkillPackId": "0"
+              }
+            ],
+            "mRewardItemList": [
+              {
+                "mItemHash": "2507637144",
+                "mProbScale": "2",
+                "mRewardType": "0"
+              },
+              {
+                "mItemHash": "2682528527",
+                "mProbScale": "2",
+                "mRewardType": "0"
+              },
+              {
+                "mItemHash": "3799036174",
+                "mProbScale": "1",
+                "mRewardType": "0"
+              },
+              {
+                "mItemHash": "2071584948",
+                "mProbScale": "0",
+                "mRewardType": "0"
+              }
+            ],
+            "mSrankRequireId": "0",
+            "mDangerLevel": "0",
+            "mIsUnavailablePowerUp": "true",
+            "mbUnableAuto": "false",
+            "mbUnableRewardIncrease": "false",
+            "mbDangerLvWarning": "true",
+            "mbRandomBlock": "true",
+            "mbUseNewDamageCalc": "false",
+            "mBlocks": [],
+            "mDefineId": "SCORE932902"
+          }
+        }
+      }
+    ]
+  }
+}

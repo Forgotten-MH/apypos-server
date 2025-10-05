@@ -1,0 +1,411 @@
+[
+    "2680245204",
+    "1213716181",
+    "1668973846",
+    "891298448",
+    "742069201",
+    "118898706",
+    "504197459",
+    "2576706972",
+    "2156813533",
+    "1242654860",
+    "1631337295",
+    "4230540038",
+    "929471689",
+    "779988360",
+    "474730250",
+    "916780798",
+    "76715132",
+    "495559997",
+    "1468474751",
+    "1318851646",
+    "871096443",
+    "1149811752",
+    "2661074240",
+    "2273833985",
+    "39409303",
+    "812594197",
+    "533666660"
+]
+[
+    {
+        "mEventNodeHash": "2680245204",
+        "mEventBannerID": "59012",
+        "mEventNodeName": "歴代のクエスト",
+        "mComment": "",
+        "mEventQuestList": [
+            "1255936508",
+            "1260288971",
+            "1078082806",
+            "1098929857",
+            "790867126",
+            "3902543922",
+            "656887745",
+            "627175832",
+            "614701999",
+            "805297298",
+            "775796389",
+            "3158029715",
+            "3187269540",
+            "3098986785",
+            "3136321400",
+            "3140623695",
+            "3195866058",
+            "3216990717",
+            "3686762010",
+            "1737399757",
+            "1707615124",
+            "1631936294",
+            "1661198719",
+            "3665685549",
+            "3744660136",
+            "3740307615",
+            "3281257726",
+            "1771949173",
+            "4162788141",
+            "4237453215",
+            "4279677937",
+            "4119371515",
+            "3085473595",
+            "3048089954",
+            "2997322174",
+            "3009801097",
+            "169600731",
+            "2322872871",
+            "326986653",
+            "3600438979",
+            "1335035769",
+            "3571247258",
+            "1276629783",
+            "472069511",
+            "2180255038",
+            "961047131",
+            "1939789283",
+            "3408048774",
+            "4052387804",
+            "1535332183",
+            "3812567090",
+            "3270915464",
+            "1034874323",
+            "3627766388",
+            "3715384561",
+            "3260444361",
+            "3368567747",
+            "3372886516",
+            "3410794413",
+            "3398368666",
+            "3456336168",
+            "571154508",
+            "3137499638",
+            "1678395811",
+            "1656851272",
+            "1751098946",
+            "4221292355",
+            "4200179060",
+            "4192039194",
+            "4249882024",
+            "4275362246",
+            "1126672422",
+            "3912130733",
+            "2436508691",
+            "1368524744",
+            "2974642427",
+            "1122353681",
+            "3907783322",
+            "2847399448",
+            "1347448319",
+            "2962168524"
+        ],
+        "mBannerPath": "kako_00105"
+    },
+    {
+        "mEventNodeHash": "1213716181",
+        "mEventBannerID": "59003",
+        "mEventNodeName": "強襲！ラージャン",
+        "mComment": "",
+        "mEventQuestList": [
+            "285981053",
+            "2281892039"
+        ],
+        "mBannerPath": "kako_00002"
+    },
+    {
+        "mEventNodeHash": "1668973846",
+        "mEventBannerID": "59009",
+        "mEventNodeName": "強襲！ジンオウガ亜種＆ギギネブラ亜種",
+        "mComment": "",
+        "mEventQuestList": [
+            "62789267",
+            "2595702569"
+        ],
+        "mBannerPath": "kako_00102"
+    },
+    {
+        "mEventNodeHash": "891298448",
+        "mEventBannerID": "59004",
+        "mEventNodeName": "強襲！オオナズチ",
+        "mComment": "",
+        "mEventQuestList": [
+            "651512143",
+            "3218872565"
+        ],
+        "mBannerPath": "kako_00003"
+    },
+    {
+        "mEventNodeHash": "742069201",
+        "mEventBannerID": "59010",
+        "mEventNodeName": "強襲！イビルジョー＆ロアルドロス亜種",
+        "mComment": "",
+        "mEventQuestList": [
+            "2657693226",
+            "123764624"
+        ],
+        "mBannerPath": "kako_00103"
+    },
+    {
+        "mEventNodeHash": "118898706",
+        "mEventBannerID": "59005",
+        "mEventNodeName": "強襲！テオ・テスカトル",
+        "mComment": "",
+        "mEventQuestList": [
+            "2363261380",
+            "366334078"
+        ],
+        "mBannerPath": "kako_00004"
+    },
+    {
+        "mEventNodeHash": "504197459",
+        "mEventBannerID": "59011",
+        "mEventNodeName": "強襲！ブラキディオス＆リオレイア亜種",
+        "mComment": "",
+        "mEventQuestList": [
+            "878765729",
+            "2909386523"
+        ],
+        "mBannerPath": "kako_00104"
+    },
+    {
+        "mEventNodeHash": "2576706972",
+        "mEventBannerID": "59001",
+        "mEventNodeName": "強襲！モルドムント",
+        "mComment": "",
+        "mEventQuestList": [
+            "1812199159",
+            "4111116109"
+        ],
+        "mBannerPath": "kako_00000"
+    },
+    {
+        "mEventNodeHash": "2156813533",
+        "mEventBannerID": "59007",
+        "mEventNodeName": "強襲！ナルガクルガ希少種＆ボルボロス亜種",
+        "mComment": "",
+        "mEventQuestList": [
+            "3569324434",
+            "1303822376"
+        ],
+        "mBannerPath": "kako_00100"
+    },
+    {
+        "mEventNodeHash": "1242654860",
+        "mEventBannerID": "59002",
+        "mEventNodeName": "強襲！アカムトルム",
+        "mComment": "",
+        "mEventQuestList": [
+            "1454097325",
+            "3483537943"
+        ],
+        "mBannerPath": "kako_00001"
+    },
+    {
+        "mEventNodeHash": "1631337295",
+        "mEventBannerID": "59008",
+        "mEventNodeName": "強襲！ドボルベルク峰爆種＆ドスアピポス",
+        "mComment": "",
+        "mEventQuestList": [
+            "1142844483",
+            "3709287929"
+        ],
+        "mBannerPath": "kako_00101"
+    },
+    {
+        "mEventNodeHash": "4230540038",
+        "mEventBannerID": "59006",
+        "mEventNodeName": "素材ツアー",
+        "mComment": "今日は素材ツアーよ ！\n装備強化のため素材GETよ ！",
+        "mEventQuestList": [
+            "2532454649",
+            "2494860960",
+            "2507596951",
+            "2419716626",
+            "268132675",
+            "230547226",
+            "209696045",
+            "154182568",
+            "2029801941",
+            "2059071372",
+            "2071496123",
+            "2117571390"
+        ],
+        "mBannerPath": "kako_00005"
+    },
+    {
+        "mEventNodeHash": "929471689",
+        "mEventBannerID": "59015",
+        "mEventNodeName": "強襲！タマミツネ雷泡種",
+        "mComment": "",
+        "mEventQuestList": [
+            "1635070879",
+            "4168901157"
+        ],
+        "mBannerPath": "kako_00202"
+    },
+    {
+        "mEventNodeHash": "779988360",
+        "mEventBannerID": "59020",
+        "mEventNodeName": "強襲！キリン＆ラギアクルス亜種",
+        "mComment": "",
+        "mEventQuestList": [
+            "3653850362",
+            "1086326080"
+        ],
+        "mBannerPath": "kako_00302"
+    },
+    {
+        "mEventNodeHash": "474730250",
+        "mEventBannerID": "59016",
+        "mEventNodeName": "強襲！怒り喰らうイビルジョー",
+        "mComment": "",
+        "mEventQuestList": [
+            "1942002801",
+            "3939093963"
+        ],
+        "mBannerPath": "kako_00203"
+    },
+    {
+        "mEventNodeHash": "916780798",
+        "mEventBannerID": "59021",
+        "mEventNodeName": "ソロ強襲！轟竜の修練",
+        "mComment": "",
+        "mEventQuestList": [
+            "3306965909"
+        ],
+        "mBannerPath": "kako_00303"
+    },
+    {
+        "mEventNodeHash": "76715132",
+        "mEventBannerID": "59017",
+        "mEventNodeName": "強襲！エオ・ガルディア",
+        "mComment": "",
+        "mEventQuestList": [
+            "4129084068",
+            "1863680798"
+        ],
+        "mBannerPath": "kako_00204"
+    },
+    {
+        "mEventNodeHash": "495559997",
+        "mEventBannerID": "59022",
+        "mEventNodeName": "ソロ強襲！斬竜の修練",
+        "mComment": "",
+        "mEventQuestList": [
+            "3618235515"
+        ],
+        "mBannerPath": "kako_00304"
+    },
+    {
+        "mEventNodeHash": "1468474751",
+        "mEventBannerID": "59013",
+        "mEventNodeName": "強襲！ウラガンキン輝岩種",
+        "mComment": "",
+        "mEventQuestList": [
+            "1633112424",
+            "4166910162"
+        ],
+        "mBannerPath": "kako_00200"
+    },
+    {
+        "mEventNodeHash": "1318851646",
+        "mEventBannerID": "59018",
+        "mEventNodeName": "ソロ強襲！鋼龍の修練",
+        "mComment": "",
+        "mEventQuestList": [
+            "1088579511"
+        ],
+        "mBannerPath": "kako_00300"
+    },
+    {
+        "mEventNodeHash": "871096443",
+        "mEventBannerID": "59014",
+        "mEventNodeName": "強襲！ラギアクルス陸征種",
+        "mComment": "",
+        "mEventQuestList": [
+            "3996501567",
+            "2000459653"
+        ],
+        "mBannerPath": "kako_00201"
+    },
+    {
+        "mEventNodeHash": "1149811752",
+        "mEventBannerID": "59019",
+        "mEventNodeName": "ソロ強襲！風牙竜の修練",
+        "mComment": "",
+        "mEventQuestList": [
+            "3481333984"
+        ],
+        "mBannerPath": "kako_00301"
+    },
+    {
+        "mEventNodeHash": "2661074240",
+        "mEventBannerID": "59026",
+        "mEventNodeName": "強襲！激昂したラージャン",
+        "mComment": "",
+        "mEventQuestList": [
+            "2575519799",
+            "9044365"
+        ],
+        "mBannerPath": "kako_00502"
+    },
+    {
+        "mEventNodeHash": "2273833985",
+        "mEventBannerID": "59023",
+        "mEventNodeName": "ソロ強襲！電竜の修練",
+        "mComment": "",
+        "mEventQuestList": [
+            "3090573032"
+        ],
+        "mBannerPath": "kako_00402"
+    },
+    {
+        "mEventNodeHash": "39409303",
+        "mEventBannerID": "59024",
+        "mEventNodeName": "ソロ強襲！烈迅竜の修練",
+        "mComment": "",
+        "mEventQuestList": [
+            "2817854574"
+        ],
+        "mBannerPath": "kako_00403"
+    },
+    {
+        "mEventNodeHash": "812594197",
+        "mEventBannerID": "59027",
+        "mEventNodeName": "強襲！ガノトトス激流種",
+        "mComment": "",
+        "mEventQuestList": [
+            "3040912256",
+            "743043642"
+        ],
+        "mBannerPath": "kako_00503"
+    },
+    {
+        "mEventNodeHash": "533666660",
+        "mEventBannerID": "59025",
+        "mEventNodeName": "強襲！アグナコトル煉獄種",
+        "mComment": "",
+        "mEventQuestList": [
+            "3221125634",
+            "3803495928"
+        ],
+        "mBannerPath": "kako_00404"
+    }
+]
