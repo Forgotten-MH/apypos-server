@@ -6,6 +6,10 @@ import Present from "../../../model/presents";
 export const get = async(req: Request, res: Response) => {
    const { session_id } = req.body;
     const userDoc = await User.findOne({ current_session: session_id })
+    if (!userDoc) {
+      return encryptAndSend({}, res, req, 2004); //Not authenticated
+    }
+  
     const presentCount = await Present.countDocuments({
       uu_id: userDoc.uu_id,
       received: { $ne: 1 }
