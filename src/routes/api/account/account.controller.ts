@@ -66,7 +66,7 @@ export const registerAccount = async (req: Request, res: Response) => {
     uu_id: uu_id,
     secret_id: secret_id,
     login_id: generateToken(8),
-    user_id: generateToken(27),
+    user_id: generateToken(24),
     game_id: generateToken(8),
     current_session: req.body.session_id,
     tutorial_step: 110,
