@@ -17,6 +17,9 @@ import { Box, BoxService } from "../../../services/boxService";
 export const getTutorialFlag = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   let doc = await User.findOne(filter);
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
   const data = {
     flags: doc.tutorial_flags,
   };
@@ -115,6 +118,9 @@ export const nyankenGo = async (req: Request, res: Response) => {
   const doc = await User.findOneAndUpdate(filter, update, {
     new: true,
   });
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
   const data = {
     currency_ammount: 0,
     discount_currency_ammount: 0,
@@ -134,6 +140,9 @@ export const nyankenResult = async (req: Request, res: Response) => {
   const doc = await User.findOneAndUpdate(filter, update, {
     new: true,
   });
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
   const rewardEquip = {
     auto_potential_composite: 0,
     awaked: 0,
@@ -182,6 +191,10 @@ export const nyankenResult = async (req: Request, res: Response) => {
 export const TutorialFlagSet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   let doc = await User.findOne(filter);
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
+
   let newFlags = doc.tutorial_flags;
   req.body.flags.forEach((flag) => {
     newFlags.push(flag);
@@ -191,6 +204,9 @@ export const TutorialFlagSet = async (req: Request, res: Response) => {
   doc = await User.findOneAndUpdate(filter, update, {
     new: true,
   });
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
   const data = {
     flags: doc.tutorial_flags,
   };
@@ -361,6 +377,11 @@ export const TutorialQuestStart = async (req: Request, res: Response) => {
 export const stepUP = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   let doc = await User.findOne(filter);
+
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
+
   let update = { tutorial_step: doc.tutorial_step };
   switch (doc.tutorial_step) {
     case 110:
@@ -398,6 +419,9 @@ export const stepUP = async (req: Request, res: Response) => {
   doc = await User.findOneAndUpdate(filter, update, {
     new: true,
   });
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
 
   const data = {
     tutorial_step: update.tutorial_step,
@@ -423,6 +447,9 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
       new: true,
     }
   );
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
   //TODO make random
   const rewards = [
     { reward_type: "normal", type: "material", amount: 1, id: 1714092880 },
@@ -480,5 +507,8 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
   });
   doc = await User.findOneAndUpdate(filter, { box: doc.box });
 
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
   encryptAndSend(data, res, req);
 };

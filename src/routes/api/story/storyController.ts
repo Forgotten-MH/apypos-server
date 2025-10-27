@@ -146,6 +146,11 @@ export const end = async (req: Request, res: Response) => {
       mst_story_id: 0,
       state: 1,
     };
+
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); //Not authenticated
+    }
+    
     updateNodeList(doc.ocean_list, mst_ocean_id, mst_part_id, newNode);
     updateNodeState(
       doc.ocean_list,
@@ -198,6 +203,10 @@ export const end = async (req: Request, res: Response) => {
     data.mst_part_id = mst_part_id;
     const filter = { current_session: req.body.session_id };
     let doc = await User.findOne(filter);
+
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); //Not authenticated
+    }
 
     updateMonument(doc.box.monument, augiteObj,hr, atk, def, hp, sp);
 

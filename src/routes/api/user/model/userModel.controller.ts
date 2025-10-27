@@ -14,6 +14,10 @@ export const modelCreate = async (req: Request, res: Response) => {
     new: true
   });
 
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
+
   const responseData = {
     model_info: doc.model_info,
     tutorial_step: doc.tutorial_step, // 210 activate video
@@ -33,6 +37,11 @@ export const modelSet = async(req: Request, res: Response) => {
   const doc = await User.findOneAndUpdate(filter, update, {
     new: true
   });
+
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
+
   const data = {
     model_info: doc.model_info,
   };

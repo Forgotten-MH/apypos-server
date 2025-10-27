@@ -10,6 +10,10 @@ export const rename = async (req: Request, res: Response) => {
     new: true,
   });
 
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
+
   // Set name in db
   // Send request back
   const data = {
