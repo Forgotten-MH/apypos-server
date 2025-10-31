@@ -3,9 +3,7 @@ import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
 import * as guildService from "../../../services/guildService";
 import User from "../../../model/user";
 
-/**
- * 辅助函数：从 session_id 获取用户信息
- */
+
 const getUserFromSession = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   const user = await User.findOne(filter);
@@ -19,7 +17,7 @@ const getUserFromSession = async (req: Request, res: Response) => {
 };
 
 /**
- * 获取用户的公会信息
+ * Get user guild information
  * POST /guild/user/get
  */
 export const userGet = async (req: Request, res: Response) => {
@@ -29,11 +27,9 @@ export const userGet = async (req: Request, res: Response) => {
     
     const uid = user.uu_id;
 
-    // 获取用户公会信息
     const userGuild = await guildService.getUserGuildInfo(uid);
     
     if (!userGuild) {
-      // 用户还没有公会数据，创建一个空的
       const data = {
         user_guild: {
           __v: 0,
@@ -56,7 +52,6 @@ export const userGet = async (req: Request, res: Response) => {
       return encryptAndSend(data, res, req);
     }
 
-    // 返回用户公会信息
     const data = {
       user_guild: {
         __v: 5,
@@ -80,12 +75,12 @@ export const userGet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in userGet:", error);
-    encryptAndSend({ user_guild: null }, res, req, 1, 2, "获取用户公会信息失败");
+    encryptAndSend({ user_guild: null }, res, req, 1, 2, "Get user guild information failed");
   }
 };
 
 /**
- * 初始化用户公会设置
+ * Initialize user guild settings
  * POST /guild/user/setup
  */
 export const userSetup = async (req: Request, res: Response) => {
@@ -95,7 +90,6 @@ export const userSetup = async (req: Request, res: Response) => {
     
     const uid = user.uu_id;
 
-    // 返回空的公会设置
     const data = {
       user_guild: {
         __v: 0,
@@ -119,12 +113,12 @@ export const userSetup = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in userSetup:", error);
-    encryptAndSend({ user_guild: null }, res, req, 1, 2, "初始化用户公会设置失败");
+    encryptAndSend({ user_guild: null }, res, req, 1, 2, "Initialize user guild settings failed");
   }
 };
 
 /**
- * 搜索公会结果
+ * Search guild result
  * POST /guild/search/result
  */
 export const searchResult = async (req: Request, res: Response) => {
@@ -134,7 +128,6 @@ export const searchResult = async (req: Request, res: Response) => {
     
     const uid = user.uu_id;
 
-    // 获取用户公会信息
     const userGuild = await guildService.getUserGuildInfo(uid);
     
     const data = {
@@ -160,12 +153,12 @@ export const searchResult = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in searchResult:", error);
-    encryptAndSend({ user_guild: null }, res, req, 1, 2, "搜索公会失败");
+    encryptAndSend({ user_guild: null }, res, req, 1, 2, "Search guild failed");
   }
 };
 
 /**
- * 创建公会
+ * Create guild
  * POST /guild/create
  */
 export const create = async (req: Request, res: Response) => {
@@ -177,16 +170,14 @@ export const create = async (req: Request, res: Response) => {
     const name = req.body.name;
     
     if (!name || name.trim() === "") {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, "公会名称不能为空");
+      return encryptAndSend({ guild: null }, res, req, 1, 2, "Guild name cannot be empty");
     }
 
-    // 检查用户是否已在公会中
     const existingUserGuild = await guildService.getUserGuildInfo(uid);
     if (existingUserGuild && existingUserGuild.gid && existingUserGuild.joined === 1) {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, "您已经在一个公会中");
+      return encryptAndSend({ guild: null }, res, req, 1, 2, "You are already in a guild");
     }
 
-    // 创建公会
     const guild = await guildService.createGuild(uid, name, {
       auto_recruit: req.body.auto_recruit || 0,
       chat_freq: req.body.chat_freq || 0,
@@ -199,7 +190,6 @@ export const create = async (req: Request, res: Response) => {
       yarikomi: req.body.yarikomi || 0,
     });
 
-    // 返回创建的公会信息
     const data = {
       guild: {
         __v: 0,
@@ -235,12 +225,12 @@ export const create = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in create:", error);
-    encryptAndSend({ guild: null }, res, req, 1, 2, "创建公会失败");
+    encryptAndSend({ guild: null }, res, req, 1, 2, "Create guild failed");
   }
 };
 
 /**
- * 获取用户所在的公会信息
+ * Get user guild information
  * POST /guild/get/user/guild
  */
 export const getUserGuild = async (req: Request, res: Response) => {
@@ -250,21 +240,18 @@ export const getUserGuild = async (req: Request, res: Response) => {
     
     const uid = user.uu_id;
 
-    // 获取用户公会信息
     const userGuild = await guildService.getUserGuildInfo(uid);
     
     if (!userGuild || !userGuild.gid || userGuild.joined === 0) {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, "您还未加入公会");
+      return encryptAndSend({ guild: null }, res, req, 1, 2, "You are not in a guild");
     }
 
-    // 获取公会详细信息
     const guild = await guildService.getGuildById(userGuild.gid);
     
     if (!guild) {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, "公会不存在");
+      return encryptAndSend({ guild: null }, res, req, 1, 2, "Guild not found");
     }
 
-    // 返回公会信息
     const data = {
       guild: {
         __v: 5,
@@ -300,12 +287,12 @@ export const getUserGuild = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in getUserGuild:", error);
-    encryptAndSend({ guild: null }, res, req, 1, 2, "获取公会信息失败");
+    encryptAndSend({ guild: null }, res, req, 1, 2, "Get guild information failed");
   }
 };
 
 /**
- * 获取Bingo活动信息
+ * Get Bingo activity information
  * POST /guild/bingo/get
  */
 export const bingoGet = async (req: Request, res: Response) => {
@@ -315,7 +302,6 @@ export const bingoGet = async (req: Request, res: Response) => {
     
     const uid = user.uu_id;
 
-    // 获取用户公会信息
     const userGuild = await guildService.getUserGuildInfo(uid);
     
     let holdInfo = {
@@ -348,12 +334,12 @@ export const bingoGet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in bingoGet:", error);
-    encryptAndSend({ bingoDetail: null, holdInfo: null }, res, req, 1, 2, "获取Bingo信息失败");
+    encryptAndSend({ bingoDetail: null, holdInfo: null }, res, req, 1, 2, "Get Bingo information failed");
   }
 };
 
 /**
- * 通过搜索ID查找公会，或获取活跃公会列表
+ * Search guild by search ID, or get active guild list
  * POST /guild/search/ID
  */
 export const searchId = async (req: Request, res: Response) => {
@@ -365,20 +351,17 @@ export const searchId = async (req: Request, res: Response) => {
 
     console.log("Request Body:", req.body);
 
-    // 通过搜索ID查找公会
     const guild = await guildService.getGuildBySearchId(searchId);
     
     if (!guild) {
-      // 找不到公会时返回空列表
       const data = {
         guilds: [],
         total: 0,
         is_recommendation: 0,
       };
-      return encryptAndSend(data, res, req, 100, 2, "未找到公会");
+      return encryptAndSend(data, res, req, 100, 2, "Guild not found");
     }
 
-    // 返回公会信息（单个公会以列表形式返回，保持一致性）
     const data = {
       __v: 5,
       _id: guild.gid?.toString() || "",
@@ -409,12 +392,12 @@ export const searchId = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in searchId:", error);
-    encryptAndSend({ guild: null }, res, req, 1, 2, "搜索公会失败");
+    encryptAndSend({ guild: null }, res, req, 1, 2, "Search guild failed");
   }
 };
 
 /**
- * 申请加入公会
+ * Apply to join guild
  * POST /guild/apply
  */
 export const apply = async (req: Request, res: Response) => {
@@ -426,28 +409,27 @@ export const apply = async (req: Request, res: Response) => {
     const gid = req.body.gid;
     
     if (!gid) {
-      return encryptAndSend({}, res, req, 1, 2, "缺少公会ID");
+      return encryptAndSend({}, res, req, 1, 2, "Missing guild ID");
     }
 
-    // 申请加入公会（如果自动招募开启且人数未满则直接加入）
     const result = await guildService.applyToGuild(uid, gid);
     
     const data = {
       result: result.success ? 1 : 0,
       request_id: result.requestId,
-      auto_joined: result.autoJoined ? 1 : 0, // 是否自动加入
+      auto_joined: result.autoJoined ? 1 : 0,
     };
     
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in apply:", error);
-    const errorMessage = error instanceof Error ? error.message : "申请加入公会失败";
+    const errorMessage = error instanceof Error ? error.message : "Apply to join guild failed";
     encryptAndSend({}, res, req, 1, 2, errorMessage);
   }
 };
 
 /**
- * 搜索公会
+ * Search guild
  * POST /guild/search
  */
 export const search = async (req: Request, res: Response) => {
@@ -455,7 +437,6 @@ export const search = async (req: Request, res: Response) => {
     const user = await getUserFromSession(req, res);
     if (!user) return;
     
-    // 从请求中获取搜索条件
     const filters = {
       name: req.body.name,
       mood: req.body.mood,
@@ -466,10 +447,8 @@ export const search = async (req: Request, res: Response) => {
       recruit: req.body.recruit,
     };
 
-    // 搜索公会
     const guilds = await guildService.searchGuilds(filters);
     
-    // 转换公会列表
     const guildList = guilds.map(guild => ({
       __v: 5,
       _id: guild.gid?.toString() || "",
@@ -500,12 +479,12 @@ export const search = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in search:", error);
-    encryptAndSend({ guilds: [], total: 0 }, res, req, 1, 2, "搜索公会失败");
+    encryptAndSend({ guilds: [], total: 0 }, res, req, 1, 2, "Search guild failed");
   }
 };
 
 /**
- * 发送公会聊天消息
+ * Send guild chat message
  * POST /guild/chat/send
  */
 export const chatSend = async (req: Request, res: Response) => {
@@ -514,20 +493,18 @@ export const chatSend = async (req: Request, res: Response) => {
     if (!user) return;
     
     const uid = user.uu_id;
-    const gid = req.body.gid; // 公会ID
-    const message = req.body.message || req.body.text; // 消息内容（兼容 message 和 text 字段）
-    const characterName = user.character_name || "未命名玩家";
+    const gid = req.body.gid;
+    const message = req.body.message || req.body.text;
+    const characterName = user.character_name || "Unnamed player";
 
-    // 验证输入
     if (!gid) {
-      return encryptAndSend({}, res, req, 1, 2, "缺少公会ID");
+      return encryptAndSend({}, res, req, 1, 2, "Missing guild ID");
     }
 
     if (!message || message.trim() === "") {
-      return encryptAndSend({}, res, req, 1, 2, "消息内容不能为空");
+      return encryptAndSend({}, res, req, 1, 2, "Message content cannot be empty");
     }
 
-    // 发送消息
     const chatMessage = await guildService.sendChatMessage(
       uid,
       gid,
@@ -535,7 +512,6 @@ export const chatSend = async (req: Request, res: Response) => {
       characterName
     );
 
-    // 简化返回格式
     const data = {
       text: chatMessage.message,
       user_id: chatMessage.uid,
@@ -547,13 +523,13 @@ export const chatSend = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in chatSend:", error);
-    const errorMessage = error instanceof Error ? error.message : "发送聊天消息失败";
+    const errorMessage = error instanceof Error ? error.message : "Send chat message failed";
     encryptAndSend({}, res, req, 1, 2, errorMessage);
   }
 };
 
 /**
- * 获取公会聊天记录
+ * Get guild chat record
  * POST /guild/chat/get
  */
 export const chatGet = async (req: Request, res: Response) => {
@@ -563,24 +539,18 @@ export const chatGet = async (req: Request, res: Response) => {
     
     const uid = user.uu_id;
 
-    // 获取聊天记录
     const getMessages = await guildService.getChatMessages(uid);
 
-    // 构建 chat_logs 数组 - 根据反编译截图，这是一个简单的聊天日志数组
     const chat_logs = getMessages.map((msg: any) => ({
-      chatlog: msg.message || "", // 注意字段名是 chatlog 不是 message
+      chatlog: msg.message || "",
     }));
 
-    // 构建 recent_logs 数组 - 与 chat_logs 结构相同，但只取最近20条
     const recent_logs = chat_logs.slice(0, 20);
 
-    // 获取所有发送过消息的用户ID
     const uniqueUserIds = [...new Set(getMessages.map((msg: any) => msg.uid))];
     
-    // 批量获取用户信息以构建 chatuser_infos
     const users = await User.find({ uu_id: { $in: uniqueUserIds } });
     
-    // 构建 chatuser_infos 数组 - 根据反编译截图包含完整的用户外观信息
     const chatuser_infos = uniqueUserIds.map((userId: string) => {
       const userData = users.find((u: any) => u.uu_id === userId);
       return {
@@ -592,11 +562,10 @@ export const chatGet = async (req: Request, res: Response) => {
       };
     });
 
-    // 根据反编译截图中的 aGuildChatGet 结构构建响应
     const data = {
       chat_logs: chat_logs,
       chatuser_infos: chatuser_infos,
-      message_id: "1", // 根据截图，这个字段可能不需要或为空
+      message_id: "1",
       recent_logs: recent_logs,
     };
     
@@ -604,7 +573,7 @@ export const chatGet = async (req: Request, res: Response) => {
 
   } catch (error) {
     console.error("Error in chatGet:", error);
-    const errorMessage = error instanceof Error ? error.message : "获取聊天记录失败";
+    const errorMessage = error instanceof Error ? error.message : "Get chat record failed";
     encryptAndSend({ 
       chat_logs: [], 
       chatuser_infos: [],
@@ -615,7 +584,7 @@ export const chatGet = async (req: Request, res: Response) => {
 };
 
 /**
- * 获取公会邮件列表
+ * Get guild mail list
  * POST /guild/user/mail/list
  */
 export const mailList = async (req: Request, res: Response) => {
@@ -625,15 +594,12 @@ export const mailList = async (req: Request, res: Response) => {
     
     const uid = user.uu_id;
 
-    // 获取用户公会信息
     const userGuild = await guildService.getUserGuildInfo(uid);
     
     if (!userGuild || !userGuild.gid || userGuild.joined === 0) {
-      return encryptAndSend({ mails: [] }, res, req, 1, 2, "您还未加入公会");
+      return encryptAndSend({ mails: [] }, res, req, 1, 2, "You are not in a guild");
     }
 
-    // TODO: 实现邮件功能
-    // 目前返回空列表
     const data = {
       mails: [],
     };
@@ -641,7 +607,7 @@ export const mailList = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     console.error("Error in mailList:", error);
-    encryptAndSend({ mails: [] }, res, req, 1, 2, "获取邮件列表失败");
+    encryptAndSend({ mails: [] }, res, req, 1, 2, "Get mail list failed");
   }
 };
 
@@ -664,6 +630,6 @@ export const memberList = async (req: Request, res: Response) => {
   }
   catch (error) {
     console.error("Error in memberList:", error);
-    encryptAndSend({ memberList: [] }, res, req, 1, 2, "获取成员列表失败");
+    encryptAndSend({ memberList: [] }, res, req, 1, 2, "Get member list failed");
   }
 }
