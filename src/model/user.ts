@@ -725,6 +725,43 @@ const userSchema = new Schema({
     type: [ClearedQuests],
     default: [],
   },
+nyanken_cooldown: {
+  mst_nyanken_id: { type: Number, default: 0 },
+  last_draw_time: { type: Number, default: 0 },
+},
+equipment_id_counter: { type: Number, default: 0 },
+guild_info: {
+  gid: { type: String, default: "" },
+  is_guild: { type: Number, default: 0 },
+  is_same: { type: Number, default: 0 },
+  member_type: { type: Number, default: 0 },
+  name: { type: String, default: "" },
+  rank: { type: Number, default: 0 },
+  login_freq: { type: Number, default: 0 },
+  chat_freq: { type: Number, default: 0 },
+  yarikomi: { type: Number, default: 0 },
+  mood: { type: Number, default: 0 },
+  timezone: { type: Number, default: 0 },
+  waited: { type: Number, default: 0 },
+  receive: { 
+    type: [{
+      _id: { type: String, required: true },
+      created: { type: Number, default: 0 },
+      gid: { type: String, required: true },
+      uid: { type: String, required: true },
+    }],
+    default: [] 
+  },
+  send: { 
+    type: [{
+      _id: { type: String, required: true },
+      created: { type: Number, default: 0 },
+      gid: { type: String, required: true },
+      uid: { type: String, required: true },
+    }],
+    default: [] 
+  },
+},
 });
 
 const User = model("User", userSchema);
