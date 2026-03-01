@@ -39,6 +39,7 @@ import ScoreEvents from './model/events/score';
 
 import http from 'http';
 import https from 'https';
+import { restoreSessions } from './services/crypto/encryptionHelpers';
 
 const useHttps = PORT === 443;
 const credentials: https.ServerOptions = useHttps
@@ -53,8 +54,9 @@ mongoose
   .connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_IP}:${DB_PORT}`, {
     dbName: DB_NAME,
   })
-  .then(() => {
+  .then(async () => {
     log.info('Connected to MongoDB...');
+    await restoreSessions();
 
     const downloadCategories = [
       'openingDL',

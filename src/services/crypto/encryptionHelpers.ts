@@ -3,6 +3,7 @@ import { EncryptionService } from './encryptionService';
 import { TimeService } from '../timeService';
 import * as crypto from 'crypto';
 import { createLogger } from '../../middleware/logger';
+import Session from '../../model/session';
 
 const log = createLogger('session');
 
@@ -26,6 +27,37 @@ const MAX_SESSIONS_BEFORE_CLEANUP = 1000;
 
 const timeService = new TimeService();
 let lastCleanupTime = Date.now();
+
+function persistSession(key: string, session: SessionInfo) {
+  Session.updateOne(
+    { key },
+    { key, ...session },
+    { upsert: true }
+  ).catch(err => log.error('Failed to persist session:', err));
+}
+
+function removePersistedSession(key: string) {
+  Session.deleteOne({ key }).catch(err => log.error('Failed to remove persisted session:', err));
+}
+
+export async function restoreSessions(): Promise<number> {
+  const now = Date.now();
+  const docs = await Session.find({ last_accessed: { $gte: now - SESSION_TIMEOUT } });
+  for (const doc of docs) {
+    sessionStore.set(doc.key, {
+      session_token: doc.session_token,
+      created_at: doc.created_at,
+      last_accessed: doc.last_accessed,
+      user_agent: doc.user_agent,
+      account_id: doc.account_id,
+      game_id: doc.game_id,
+      ip_address: doc.ip_address,
+      device_fingerprint: doc.device_fingerprint,
+    });
+  }
+  log.info(`Restored ${docs.length} sessions from database`);
+  return docs.length;
+}
 
 function startBackgroundCleanup() {
   setInterval(() => {
@@ -70,6 +102,7 @@ function smartCleanupExpiredSessions() {
   
   expiredKeys.forEach(key => {
     sessionStore.delete(key);
+    removePersistedSession(key);
     cleanedCount++;
   });
   
@@ -189,7 +222,8 @@ export function encryptAndSend(
     };
     sessionStore.set(sessionKey, sessionInfo);
   }
-  
+  persistSession(sessionKey, sessionInfo);
+
   const session_token = sessionInfo.session_token;
 
   const responseData = {
@@ -233,6 +267,7 @@ export function getSessionInfo(sessionKey: string): SessionInfo | undefined {
 }
 
 export function invalidateSession(sessionKey: string): boolean {
+  removePersistedSession(sessionKey);
   return sessionStore.delete(sessionKey);
 }
 
@@ -246,6 +281,7 @@ export function getSessionCount(): number {
 
 export function clearAllSessions(): void {
   sessionStore.clear();
+  Session.deleteMany({}).catch(err => log.error('Failed to clear persisted sessions:', err));
   log.info('All sessions cleared');
 }
 
