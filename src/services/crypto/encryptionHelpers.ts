@@ -2,6 +2,7 @@ import { Response, Request } from "express";
 import { EncryptionService } from "./encryptionService";
 import { TimeService } from "../timeService";
 import * as crypto from "crypto";
+import { DEBUG } from "../../config";
 
 const encryptionService = new EncryptionService();
 
@@ -35,9 +36,8 @@ function startBackgroundCleanup() {
 
 startBackgroundCleanup();
 
-function generateStableSessionToken(userId: string): string {
-  const hash = crypto.createHash('md5').update(userId).digest('hex');
-  return `${hash.substring(0, 8)}-${hash.substring(8, 12)}-${hash.substring(12, 16)}-${hash.substring(16, 20)}-${hash.substring(20, 32)}`;
+function generateSessionToken(): string {
+  return crypto.randomUUID();
 }
 
 function generateUserBasedSessionKey(userId: string): string {
@@ -119,24 +119,25 @@ export function encryptAndSend(
   const userId = req.body?.user_id || req.query?.user_id;
   const clientSessionToken = req.body?.session_id;
   
-  console.log(`[Session Debug] User ID: ${userId}, Client Session: ${clientSessionToken}, IP: ${req.ip}`);
-  
+  if (DEBUG) {
+    console.log(`[Session Debug] User ID: ${userId}, Client Session: ${clientSessionToken}, IP: ${req.ip}`);
+  }
+
   let sessionInfo: SessionInfo;
   let sessionKey: string;
-  
+
   if (userId) {
     sessionKey = generateUserBasedSessionKey(userId);
-    const session_token = generateStableSessionToken(userId);
-    
+
     const existingSession = sessionStore.get(sessionKey);
-    
+
     if (existingSession && (now - existingSession.last_accessed <= SESSION_TIMEOUT)) {
       sessionInfo = existingSession;
       sessionInfo.last_accessed = now;
       sessionInfo.ip_address = req.ip || req.connection.remoteAddress || 'unknown';
       sessionStore.set(sessionKey, sessionInfo);
-      console.log(`Reusing existing session for user ${userId}:`, sessionInfo.session_token);
     } else {
+      const session_token = generateSessionToken();
       sessionInfo = {
         session_token,
         created_at: now,
@@ -148,18 +149,16 @@ export function encryptAndSend(
         device_fingerprint: req.get('User-Agent') ? Buffer.from(req.get('User-Agent')!).toString('base64').slice(0, 8) : undefined
       };
       sessionStore.set(sessionKey, sessionInfo);
-      console.log(`Generated stable session token for user ${userId}:`, session_token);
     }
   } else if (clientSessionToken) {
     const existingSession = findSessionByToken(clientSessionToken);
-    
+
     if (existingSession && (now - existingSession.session.last_accessed <= SESSION_TIMEOUT)) {
       sessionKey = existingSession.key;
       sessionInfo = existingSession.session;
       sessionInfo.last_accessed = now;
       sessionInfo.ip_address = req.ip || req.connection.remoteAddress || 'unknown';
       sessionStore.set(sessionKey, sessionInfo);
-      console.log(`Reusing existing session by token:`, sessionInfo.session_token);
     } else {
       sessionKey = `client_${clientSessionToken}`;
       const session_token = clientSessionToken;
@@ -174,11 +173,10 @@ export function encryptAndSend(
         device_fingerprint: req.get('User-Agent') ? Buffer.from(req.get('User-Agent')!).toString('base64').slice(0, 8) : undefined
       };
       sessionStore.set(sessionKey, sessionInfo);
-      console.log(`Using client session token:`, session_token);
     }
   } else {
     sessionKey = generateSessionKey(req);
-    const session_token = crypto.randomUUID().toString();
+    const session_token = generateSessionToken();
     sessionInfo = {
       session_token,
       created_at: now,
@@ -190,7 +188,6 @@ export function encryptAndSend(
       device_fingerprint: req.get('User-Agent') ? Buffer.from(req.get('User-Agent')!).toString('base64').slice(0, 8) : undefined
     };
     sessionStore.set(sessionKey, sessionInfo);
-    console.log(`Generated new session token for ${sessionKey}:`, session_token);
   }
   
   const session_token = sessionInfo.session_token;
@@ -217,7 +214,9 @@ export function encryptAndSend(
   const encryptedData = encryptionService.encrypt(JSON.stringify(responseData));
   // console.log("now_time:",responseData.now_time)
   // console.log("relogin_time:",responseData.relogin_time)
-  console.log("Response Body:\n", JSON.stringify(responseData, null, "\t"));
+  if (DEBUG) {
+    console.log("Response Body:\n", JSON.stringify(responseData, null, "\t"));
+  }
 
   res
     .status(status)
@@ -312,12 +311,9 @@ export function getPerformanceStats(): {
 }
 
 export function verifySessionToken(userId: string, sessionToken: string): boolean {
-  const expectedToken = generateStableSessionToken(userId);
-  return expectedToken === sessionToken;
-}
-
-export function getExpectedSessionToken(userId: string): string {
-  return generateStableSessionToken(userId);
+  const sessionKey = generateUserBasedSessionKey(userId);
+  const session = sessionStore.get(sessionKey);
+  return session?.session_token === sessionToken;
 }
 
 export function generateUniqueId(): string {

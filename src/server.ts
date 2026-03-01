@@ -9,6 +9,7 @@ import {
   DB_PASSWORD,
   DB_IP,
   DB_PORT,
+  DEBUG,
 } from "./config";
 const normalTutorialQuestSheets = require("./json/questDB/normal.extended.complete.json");
 const trainingQuestSheets = require("./json/questDB/training.extended.complete.json");
@@ -81,14 +82,15 @@ mongoose
         error
       );
     }
-    app.use((req, res, next) => {
-      console.log(`Request method: ${req.method}`);
-      console.log(`Request URL: ${req.url}`);
-      console.log("Request Headers:", req.headers);
-      console.log("Request Body:", req.body);
-
-      next(); // Pass the request to the next middleware or route handler
-    });
+    if (DEBUG) {
+      app.use((req, res, next) => {
+        console.log(`Request method: ${req.method}`);
+        console.log(`Request URL: ${req.url}`);
+        console.log("Request Headers:", req.headers);
+        console.log("Request Body:", req.body);
+        next();
+      });
+    }
 
     const server = createServer(PORT === 443 ? credentials : {}, app);
 

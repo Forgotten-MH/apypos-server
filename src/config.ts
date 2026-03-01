@@ -14,3 +14,4 @@ export const DB_PASSWORD = process.env.DB_PASSWORD || "example";
 export const API_NOT_AVAILABLE_MAINTENANCE = process.env.API_NOT_AVAILABLE_MAINTENANCE === "true";
 export const IS_MAINTENANCE = process.env.IS_MAINTENANCE === "true" ? 1 : 0;
 export const RES_URL = process.env.RES_URL || "http://127.0.0.1/";
+export const DEBUG = process.env.DEBUG === "true";
