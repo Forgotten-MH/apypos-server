@@ -6,7 +6,7 @@ export const RegistSchema = z
     secret_id: z.string(),
     session_id: z.string().optional(),
   })
-  .passthrough();
+  .loose();
 
 export type RegistInput = z.infer<typeof RegistSchema>;
 
@@ -16,7 +16,7 @@ export const LoginSchema = z
     secret_id: z.string(),
     session_id: z.string().optional(),
   })
-  .passthrough();
+  .loose();
 
 export type LoginInput = z.infer<typeof LoginSchema>;
 
@@ -28,7 +28,7 @@ export const MigrationReadySchema = z
     himitsu_answer: z.string(),
     migration_pass: z.string(),
   })
-  .passthrough();
+  .loose();
 
 export type MigrationReadyInput = z.infer<typeof MigrationReadySchema>;
 
@@ -39,6 +39,6 @@ export const MigrationAuthSchema = z
     secret_id: z.string(),
     uu_id: z.string(),
   })
-  .passthrough();
+  .loose();
 
 export type MigrationAuthInput = z.infer<typeof MigrationAuthSchema>;

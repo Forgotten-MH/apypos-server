@@ -228,7 +228,7 @@ export const equipLevelup = async (req: Request, res: Response) => {
     }
 
     const equipmentId: string = eqp_obj_id;
-    const steps: number = Math.max(1, Number(num || 1));
+    const steps: number = Math.max(1, num || 1);
 
     // Find equipment in user's box
     const equipmentIndex = doc.box.equipments!.findIndex((eq) => eq.equipment_id === equipmentId);

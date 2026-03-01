@@ -5,7 +5,7 @@ export const TrainingListSchema = z
   .object({
     session_id: sessionIdSchema,
   })
-  .passthrough();
+  .loose();
 
 export type TrainingListInput = z.infer<typeof TrainingListSchema>;
 
@@ -13,7 +13,7 @@ export const TrainingStartSchema = z
   .object({
     mst_quest_id: questIdSchema,
   })
-  .passthrough();
+  .loose();
 
 export type TrainingStartInput = z.infer<typeof TrainingStartSchema>;
 
@@ -23,6 +23,6 @@ export const TrainingEndSchema = z
     clear_time: z.number().int(),
     session_id: sessionIdSchema,
   })
-  .passthrough();
+  .loose();
 
 export type TrainingEndInput = z.infer<typeof TrainingEndSchema>;

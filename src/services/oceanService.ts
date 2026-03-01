@@ -214,7 +214,7 @@ function parseDramaCSV(
   const questSubtargetSetHeaders = questSubtargetSetLines.shift()!.split(',');
 
   // Preprocess nodeQuestData into a Map (mNodeHash -> [mQuestHash])
-  const nodeQuestMap = new Map();
+  const nodeQuestMap = new Map<number, { questHash: number; isCollectionQuest: string; isKeyQuest: string }[]>();
   for (const line of noteQuestLines) {
     const values = line.split(',');
     const row = Object.fromEntries(
@@ -223,13 +223,13 @@ function parseDramaCSV(
 
     const nodeHash = Number(row.mNodeHash);
     const questHash = Number(row.mQuestHash);
-    const isCollectionQuest = row.isCollectionQuest;
-    const isKeyQuest = row.isKeyQuest;
+    const isCollectionQuest = row.isCollectionQuest ?? '';
+    const isKeyQuest = row.isKeyQuest ?? '';
 
     if (!nodeQuestMap.has(nodeHash)) {
       nodeQuestMap.set(nodeHash, []);
     }
-    nodeQuestMap.get(nodeHash).push({
+    nodeQuestMap.get(nodeHash)!.push({
       questHash: questHash,
       isCollectionQuest: isCollectionQuest,
       isKeyQuest: isKeyQuest,
@@ -237,7 +237,7 @@ function parseDramaCSV(
   }
 
   // Preprocess questData into a Map (mQuestID -> mDayNight)
-  const questMap = new Map();
+  const questMap = new Map<number, { time: number; name: string }>();
   for (const line of questLines) {
     const values = line.split(',');
     const row = Object.fromEntries(
@@ -246,12 +246,12 @@ function parseDramaCSV(
 
     const questID = Number(row.mQuestID);
     const questTimeType = Number(row.mDayNight);
-    const mQuestName = row.mQuestName;
+    const mQuestName = row.mQuestName ?? '';
     questMap.set(questID, { time: questTimeType, name: mQuestName });
   }
 
   // Preprocess questData into a Map (mQuestID -> mDayNight)
-  const questSubtargetSetMap = new Map();
+  const questSubtargetSetMap = new Map<number, number>();
   for (const line of questSubtargetSetLines) {
     const values = line.split(',');
     const row = Object.fromEntries(

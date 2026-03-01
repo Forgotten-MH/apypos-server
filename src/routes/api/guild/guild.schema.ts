@@ -17,7 +17,7 @@ export const CreateSchema = z
     timezone: z.number().int().optional(),
     yarikomi: z.number().int().optional(),
   })
-  .passthrough();
+  .loose();
 
 export type CreateInput = z.infer<typeof CreateSchema>;
 
@@ -26,7 +26,7 @@ export const SearchIdSchema = z
     session_id: sessionIdSchema,
     id: z.string(),
   })
-  .passthrough();
+  .loose();
 
 export type SearchIdInput = z.infer<typeof SearchIdSchema>;
 
@@ -35,7 +35,7 @@ export const ApplySchema = z
     session_id: sessionIdSchema,
     gid: z.string(),
   })
-  .passthrough();
+  .loose();
 
 export type ApplyInput = z.infer<typeof ApplySchema>;
 
@@ -50,7 +50,7 @@ export const SearchSchema = z
     timezone: z.number().int().optional(),
     recruit: z.number().int().optional(),
   })
-  .passthrough();
+  .loose();
 
 export type SearchInput = z.infer<typeof SearchSchema>;
 
@@ -61,7 +61,7 @@ export const ChatSendSchema = z
     message: z.string().optional(),
     text: z.string().optional(),
   })
-  .passthrough();
+  .loose();
 
 export type ChatSendInput = z.infer<typeof ChatSendSchema>;
 
@@ -70,6 +70,6 @@ export const MemberListSchema = z
     session_id: sessionIdSchema,
     gid: z.string().optional(),
   })
-  .passthrough();
+  .loose();
 
 export type MemberListInput = z.infer<typeof MemberListSchema>;

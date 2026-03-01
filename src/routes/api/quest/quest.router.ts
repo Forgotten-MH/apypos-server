@@ -4,7 +4,6 @@ import * as questForestController from './questForest.controller.js';
 import * as questTrainingController from './questTraining.controller.js';
 import { validate } from '../../../middleware/validation.js';
 import {
-  QuestIdOnlySchema,
   IslandStartSchema,
   IslandEndSchema,
   IslandMapAllSchema,

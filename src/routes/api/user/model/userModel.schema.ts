@@ -6,7 +6,7 @@ export const ModelCreateSchema = z
     session_id: sessionIdSchema,
     model_info: modelInfoSchema,
   })
-  .passthrough();
+  .loose();
 
 export type ModelCreateInput = z.infer<typeof ModelCreateSchema>;
 
@@ -15,6 +15,6 @@ export const ModelSetSchema = z
     session_id: sessionIdSchema,
     model_info: modelInfoSchema,
   })
-  .passthrough();
+  .loose();
 
 export type ModelSetInput = z.infer<typeof ModelSetSchema>;

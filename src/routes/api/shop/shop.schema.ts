@@ -6,6 +6,6 @@ export const ShopBuySchema = z
     mst_shop_id: z.number().int(),
     mst_shop_item_id: z.number().int(),
   })
-  .passthrough();
+  .loose();
 
 export type ShopBuyInput = z.infer<typeof ShopBuySchema>;

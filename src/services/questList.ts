@@ -8,9 +8,15 @@ const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.
 import { createLogger } from '../middleware/logger.js';
 const log = createLogger('questList');
 
+interface QuestSheetFile {
+  rQuestSheet: {
+    mQuestDataList: Array<Record<string, unknown> & { mQuestID: string; mBlocks?: number[]; mDefineId?: string }>;
+  };
+}
+
 const questType = process.argv[2] || 'event';
 const questPath = path.join(__dirname, '..', 'json', 'questDB', `${questType}.json`);
-const questSheets = JSON.parse(readFileSync(questPath, 'utf-8'));
+const questSheets = JSON.parse(readFileSync(questPath, 'utf-8')) as QuestSheetFile;
 const originalLen = questSheets.rQuestSheet.mQuestDataList.length;
 
 function condenseAutoDeleteArrays(obj: unknown) {
@@ -48,7 +54,7 @@ function condenseAutoDeleteArrays(obj: unknown) {
 condenseAutoDeleteArrays(questSheets);
 
 async function enrichAndPersist() {
-  const errors: Record<string, number | string | number[]>[] = [];
+  const errors: Record<string, unknown>[] = [];
   const allBlocks: number[] = [];
   for (const obj of questSheets.rQuestSheet.mQuestDataList) {
     try {
@@ -63,14 +69,14 @@ async function enrichAndPersist() {
     }
 
     try {
-      obj.mDefineId = await getQuestNameFromQuestHash(obj.mQuestID);
+      obj.mDefineId = (await getQuestNameFromQuestHash(obj.mQuestID)) as string;
       log.info(obj.mDefineId);
     } catch (err) {
       log.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
       obj.mDefineId = '';
     }
   }
-  questSheets.rQuestSheet.mQuestDataList.map((obj: Record<string, number | string | number[]>) => {
+  questSheets.rQuestSheet.mQuestDataList.map((obj) => {
     if (!obj.mBlocks || (Array.isArray(obj.mBlocks) && obj.mBlocks.length === 0)) {
       errors.push(obj);
     }
@@ -78,7 +84,7 @@ async function enrichAndPersist() {
       errors.push(obj);
     }
   });
-  log.info(originalLen, questSheets.rQuestSheet.mQuestDataList.length);
+  log.info(`${originalLen}`, questSheets.rQuestSheet.mQuestDataList.length);
   try {
     const extendedPath = questPath.replace(/\.json$/, '.extended.json');
 

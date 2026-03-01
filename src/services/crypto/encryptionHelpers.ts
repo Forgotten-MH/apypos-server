@@ -152,9 +152,9 @@ export function encryptAndSend(
 
   const now = Date.now();
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  const userId = req.body?.user_id || req.query?.user_id;
+  const userId: string | undefined = req.body?.user_id || req.query?.user_id;
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-  const clientSessionToken = req.body?.session_id;
+  const clientSessionToken: string | undefined = req.body?.session_id;
 
   log.debug(
     `Session Debug - User ID: ${userId}, Client Session: ${clientSessionToken}, IP: ${req.ip}`,
@@ -221,15 +221,17 @@ export function encryptAndSend(
   } else {
     sessionKey = generateSessionKey(req);
     const session_token = generateSessionToken();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const accountId: string | undefined = req.body?.user_id || req.query?.user_id;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const gameId: string | undefined = req.body?.game_id;
     sessionInfo = {
       session_token,
       created_at: now,
       last_accessed: now,
       user_agent: req.get('User-Agent'),
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      account_id: req.body?.user_id || req.query?.user_id,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      game_id: req.body?.game_id,
+      account_id: accountId,
+      game_id: gameId,
       ip_address: req.ip || req.socket.remoteAddress || 'unknown',
       device_fingerprint: req.get('User-Agent')
         ? Buffer.from(req.get('User-Agent')!).toString('base64').slice(0, 8)
@@ -263,11 +265,11 @@ export function encryptAndSend(
   res.status(status).header('Content-Type', 'application/octet-stream').send(encryptedData);
 }
 
-export function decryptAndParse(data: Buffer) {
+export function decryptAndParse(data: Buffer): unknown {
   const decryptedData = encryptionService.decrypt(data);
   // Strip Blowfish ECB padding (null bytes and other non-printable chars after JSON)
   const cleanedData = decryptedData.replace(/\0+$/, '').trim();
-  const parsedData = JSON.parse(cleanedData);
+  const parsedData: unknown = JSON.parse(cleanedData);
   return parsedData;
 }
 

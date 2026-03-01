@@ -8,7 +8,7 @@ export const FlagSetSchema = z
     session_id: sessionIdSchema,
     flags: z.array(z.number().int()),
   })
-  .passthrough();
+  .loose();
 
 export type FlagSetInput = z.infer<typeof FlagSetSchema>;
 
@@ -16,6 +16,6 @@ export const QuestStartSchema = z
   .object({
     mst_quest_id: questIdSchema.optional(),
   })
-  .passthrough();
+  .loose();
 
 export type QuestStartInput = z.infer<typeof QuestStartSchema>;

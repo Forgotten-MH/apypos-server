@@ -19,7 +19,7 @@ export function onConnect(socket: Socket) {
       socket.emit('heartbeat', Date.now());
     });
   });
-  socket.on('create', (data) => {
+  socket.on('create', (data: Buffer) => {
     const { header, payload } = parseHeader(data);
     // Extract ASCII string (24 bytes)
     const user_id = payload.subarray(0, 24).toString('ascii');
@@ -42,7 +42,7 @@ export function onConnect(socket: Socket) {
 
     //socket.emit("create_ng", data);
   });
-  socket.on('join', (data) => {
+  socket.on('join', (data: Buffer) => {
     const { header: _header, payload: _payload } = parseHeader(data);
     // socket.emit(
     //   "join_ok",
@@ -64,12 +64,12 @@ export function onConnect(socket: Socket) {
     socket.emit('join', data);
   });
 
-  socket.on('leave', (data) => {
+  socket.on('leave', (data: Buffer) => {
     log.info(`sending leave_ok Buffer at ${new Date().toISOString()}:\n` + data.toString('hex'));
     socket.emit('leave_ok', data);
     //socket.emit("create_ng", data);
   });
-  socket.on('data', (data) => {
+  socket.on('data', (data: Buffer) => {
     const { header, payload } = parseHeader(data);
 
     switch (header.flag1) {

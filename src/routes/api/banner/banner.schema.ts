@@ -4,6 +4,6 @@ export const BannerDlListSchema = z
   .object({
     device_id: z.number().int(),
   })
-  .passthrough();
+  .loose();
 
 export type BannerDlListInput = z.infer<typeof BannerDlListSchema>;

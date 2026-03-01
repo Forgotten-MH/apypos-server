@@ -8,7 +8,7 @@ export const OtomoTeamSetSchema = z
     session_id: sessionIdSchema,
     otomo_teams: z.array(z.unknown()),
   })
-  .passthrough();
+  .loose();
 
 export type OtomoTeamSetInput = z.infer<typeof OtomoTeamSetSchema>;
 
@@ -17,6 +17,6 @@ export const OtomoTeamSelectSchema = z
     session_id: sessionIdSchema,
     index: z.number().int(),
   })
-  .passthrough();
+  .loose();
 
 export type OtomoTeamSelectInput = z.infer<typeof OtomoTeamSelectSchema>;

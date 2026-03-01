@@ -8,6 +8,6 @@ export const PresentReceiveSchema = z
     _ids: z.array(z.string()),
     session_id: sessionIdSchema,
   })
-  .passthrough();
+  .loose();
 
 export type PresentReceiveInput = z.infer<typeof PresentReceiveSchema>;

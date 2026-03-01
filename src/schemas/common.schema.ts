@@ -12,13 +12,13 @@ export const modelInfoSchema = z
     inner: z.number().int(),
     skin: z.number().int(),
   })
-  .passthrough();
+  .loose();
 
 /** Schema for routes that only require session_id */
 export const SessionOnlySchema = z
   .object({
     session_id: sessionIdSchema,
   })
-  .passthrough();
+  .loose();
 
 export type SessionOnlyInput = z.infer<typeof SessionOnlySchema>;

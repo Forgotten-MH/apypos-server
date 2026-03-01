@@ -33,7 +33,7 @@ app.use((req, res, next) => {
   if (req.is('application/octet-stream')) {
     const data: Buffer[] = [];
 
-    req.on('data', (chunk) => {
+    req.on('data', (chunk: Buffer) => {
       data.push(chunk);
     });
 
@@ -79,6 +79,7 @@ app.use(
 
     dynamicMeta: (req, _res) => {
       return {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         body: req.body,
       };
     },

@@ -30,6 +30,21 @@ import normEvents from './json/norm_events.json' with { type: 'json' };
 import hardEvents from './json/hard_events.json' with { type: 'json' };
 import forbEvents from './json/forb_events.json' with { type: 'json' };
 
+// Type definition for quest sheet JSON imports
+interface QuestSheetJson {
+  rQuestSheet: {
+    mQuestDataList: Record<string, unknown>[];
+  };
+}
+
+// Cast JSON imports to resolve deep nested type access
+const typedNormal = normalTutorialQuestSheets as unknown as QuestSheetJson;
+const typedTraining = trainingQuestSheets as unknown as QuestSheetJson;
+const typedScore = scoreQuestSheets as unknown as QuestSheetJson;
+const typedEternal = eternalQuestSheets as unknown as QuestSheetJson;
+const typedTicket = ticketQuestSheets as unknown as QuestSheetJson;
+const typedEvent = eventQuestSheets as unknown as QuestSheetJson;
+
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Server } from 'socket.io';
@@ -223,12 +238,12 @@ mongoose
         .then((count) => {
           log.info(`Number of Quests: ${count}`);
           if (count === 0) {
-            void QuestSheet.insertMany(normalTutorialQuestSheets.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(trainingQuestSheets.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(scoreQuestSheets.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(eternalQuestSheets.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(ticketQuestSheets.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(eventQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedNormal.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedTraining.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedScore.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedEternal.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedTicket.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedEvent.rQuestSheet.mQuestDataList);
 
             log.info('✅ Quest Data imported successfully.');
           } else {

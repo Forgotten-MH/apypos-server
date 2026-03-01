@@ -5,7 +5,7 @@ export const QuestIdOnlySchema = z
   .object({
     mst_quest_id: questIdSchema,
   })
-  .passthrough();
+  .loose();
 
 export type QuestIdOnlyInput = z.infer<typeof QuestIdOnlySchema>;
 
@@ -14,7 +14,7 @@ export const IslandStartSchema = z
     mst_quest_id: questIdSchema,
     session_id: sessionIdSchema,
   })
-  .passthrough();
+  .loose();
 
 export type IslandStartInput = z.infer<typeof IslandStartSchema>;
 
@@ -24,7 +24,7 @@ export const IslandEndSchema = z
     clear_time: z.number().int(),
     session_id: sessionIdSchema,
   })
-  .passthrough();
+  .loose();
 
 export type IslandEndInput = z.infer<typeof IslandEndSchema>;
 
@@ -32,7 +32,7 @@ export const IslandMapAllSchema = z
   .object({
     session_id: sessionIdSchema,
   })
-  .passthrough();
+  .loose();
 
 export type IslandMapAllInput = z.infer<typeof IslandMapAllSchema>;
 
@@ -57,7 +57,7 @@ export const EventStartSchema = z
     power_up: z.number().int().optional(),
     select_fix_equipment_idx: z.number().int().optional(),
   })
-  .passthrough();
+  .loose();
 
 export type EventStartInput = z.infer<typeof EventStartSchema>;
 
@@ -74,6 +74,6 @@ export const EternalStartSchema = z
     partner_id: z.string().optional(),
     power_up: z.number().int().optional(),
   })
-  .passthrough();
+  .loose();
 
 export type EternalStartInput = z.infer<typeof EternalStartSchema>;

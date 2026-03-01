@@ -10,6 +10,6 @@ export const StoryEndSchema = z
     mst_part_id: z.number().int(),
     mst_story_id: z.number().int(),
   })
-  .passthrough();
+  .loose();
 
 export type StoryEndInput = z.infer<typeof StoryEndSchema>;
