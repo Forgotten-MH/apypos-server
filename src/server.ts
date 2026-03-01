@@ -5,19 +5,19 @@ import { IP, PORT, DB_USER, DB_NAME, DB_PASSWORD, DB_IP, DB_PORT } from './confi
 import { createLogger } from './middleware/logger.js';
 
 const log = createLogger('server');
-import normalTutorialQuestSheets from './json/questDB/normal.extended.complete.json';
-import trainingQuestSheets from './json/questDB/training.extended.complete.json';
-import scoreQuestSheets from './json/questDB/score.extended.complete.json';
-import eternalQuestSheets from './json/questDB/eternal.extended.complete.json';
-import ticketQuestSheets from './json/questDB/ticket.extended.complete.json';
-import eventQuestSheets from './json/questDB/event.extended.blank.json';
-import ticketEvents from './json/ticket_events.json';
-import coevEvents from './json/coev_events.json';
+import normalTutorialQuestSheets from './json/questDB/normal.extended.complete.json' with { type: 'json' };
+import trainingQuestSheets from './json/questDB/training.extended.complete.json' with { type: 'json' };
+import scoreQuestSheets from './json/questDB/score.extended.complete.json' with { type: 'json' };
+import eternalQuestSheets from './json/questDB/eternal.extended.complete.json' with { type: 'json' };
+import ticketQuestSheets from './json/questDB/ticket.extended.complete.json' with { type: 'json' };
+import eventQuestSheets from './json/questDB/event.extended.blank.json' with { type: 'json' };
+import ticketEvents from './json/ticket_events.json' with { type: 'json' };
+import coevEvents from './json/coev_events.json' with { type: 'json' };
 
-import easyEvents from './json/easy_events.json';
-import normEvents from './json/norm_events.json';
-import hardEvents from './json/hard_events.json';
-import forbEvents from './json/forb_events.json';
+import easyEvents from './json/easy_events.json' with { type: 'json' };
+import normEvents from './json/norm_events.json' with { type: 'json' };
+import hardEvents from './json/hard_events.json' with { type: 'json' };
+import forbEvents from './json/forb_events.json' with { type: 'json' };
 
 import { readFileSync } from 'fs';
 import { Server } from 'socket.io';

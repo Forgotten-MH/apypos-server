@@ -16,7 +16,7 @@ import Event from '../../../model/events.js';
 import AssualtEvents from '../../../model/events/assualts.js';
 const log = createLogger('quest');
 
-import full_island from '../../../json/full_enabled_state.json';
+import full_island from '../../../json/full_enabled_state.json' with { type: 'json' };
 
 import { readFile } from 'fs/promises';
 

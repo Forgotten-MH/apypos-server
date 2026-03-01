@@ -1,4 +1,4 @@
-import event_nodes from '../../json/event_nodes.json';
+import event_nodes from '../../json/event_nodes.json' with { type: 'json' };
 import { createLogger } from '../../middleware/logger.js';
 import type { QuestSubtarget } from '../../types/game.js';
 const log = createLogger('eventUtils');
