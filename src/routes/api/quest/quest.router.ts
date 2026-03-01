@@ -54,12 +54,10 @@ questRouter.post('/forest/progress', questForestController.questForestProgress);
 questRouter.post('/forest/restart', questForestController.questForestRestart);
 questRouter.post('/forest/end', questForestController.questForestEnd);
 
-
 //Training
 questRouter.post('/training/list', questTrainingController.trainingList);
 questRouter.post('/training/start', questTrainingController.trainingStart);
 questRouter.post('/training/end', questTrainingController.trainingEnd);
-
 
 //questRouter.post("/reward/exchange", );
 //questRouter.post("/reward/final", );
@@ -67,8 +65,9 @@ questRouter.post('/training/end', questTrainingController.trainingEnd);
 
 //questRouter.post("/reward/m16/point", );
 
-questRouter.post('/katamari/content/get', notImplemented.blankResponseEncrypted);
-
-
+questRouter.post(
+  '/katamari/content/get',
+  notImplemented.blankResponseEncrypted,
+);
 
 export default questRouter;

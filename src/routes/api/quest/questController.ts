@@ -429,29 +429,29 @@ export const eventListAll = async (req: Request, res: Response) => {
     event_list: {
       assault: enrichEvent(
         (await AssualtEvents.find().exec()).map((d) =>
-          d.toObject({ getters: true })
-        )
+          d.toObject({ getters: true }),
+        ),
       ),
       m16: enrichEvent(
         (await M16Events.find().exec()).map((d) =>
-          d.toObject({ getters: true })
-        )
+          d.toObject({ getters: true }),
+        ),
       ),
       score: enrichEvent(
         (await ScoreEvents.find().exec()).map((d) =>
-          d.toObject({ getters: true })
-        )
+          d.toObject({ getters: true }),
+        ),
       ), //Collabration Events Type Takes SCORE prefixed events and quests
       standing: enrichEvent(
         (await StandingEvents.find().exec()).map((d) =>
-          d.toObject({ getters: true })
-        )
+          d.toObject({ getters: true }),
+        ),
       ),
       ticket: await TicketEvents.find({}).exec(), //Ticket prefixed quests
       tour: enrichEvent(
         (await TourEvents.find().exec()).map((d) =>
-          d.toObject({ getters: true })
-        )
+          d.toObject({ getters: true }),
+        ),
       ),
     },
     next_day_start: event.next_day_start,
@@ -682,7 +682,7 @@ export const islandStart = async (req: Request, res: Response) => {
   const cleared_quests = doc.cleared_quests;
 
   const questExists = cleared_quests.some(
-    (q) => q.mst_quest_id === startedQuest
+    (q) => q.mst_quest_id === startedQuest,
   );
 
   if (!questExists) {
@@ -771,7 +771,7 @@ export const islandEnd = async (req: Request, res: Response) => {
   const cleared_quests = doc.cleared_quests;
 
   const questIndex = cleared_quests.findIndex(
-    (q) => q.mst_quest_id === cleared_quest
+    (q) => q.mst_quest_id === cleared_quest,
   );
 
   if (questIndex === -1) {
@@ -1193,10 +1193,17 @@ type Part = {
   node_list?: Node[]
   mst_part_id?: number
   campaign?: { mst_campaign_id: number; remain_time: number }[]
-  exploration_note?: { note_contents: { mst_note_content_id: number; state: number }[]; progress: number }
+  exploration_note?: {
+    note_contents: { mst_note_content_id: number; state: number }[]
+    progress: number
+  }
   gingira_node_id?: number
   object_list?: { mst_object_id: number; state: number }[]
-  raid_info?: { end_remain: number; mst_node_id: number; start_remain: number }[]
+  raid_info?: {
+    end_remain: number
+    mst_node_id: number
+    start_remain: number
+  }[]
   silver_bonus?: number
   state?: number
 };
@@ -1219,21 +1226,21 @@ function parseCsv<T = Record<string, string>>(csv: string): T[] {
 // --- Main Function ---
 export async function enrichOceanData(
   oceanData: Ocean[],
-  cleared_quests: { mst_quest_id: number; clear_time?: number }[]
+  cleared_quests: { mst_quest_id: number; clear_time?: number }[],
 ): Promise<Ocean[]> {
   // Load CSVs in parallel
   const [nodeQuestCsv, questDataCsv, questSubtargetCsv] = await Promise.all([
     readFile(
       path.resolve(
         __dirname,
-        '../../../csv/oceans/parts/nodes/2-node-quests.csv'
+        '../../../csv/oceans/parts/nodes/2-node-quests.csv',
       ),
-      'utf8'
+      'utf8',
     ),
     readFile(path.resolve(__dirname, '../../../csv/questData.csv'), 'utf8'),
     readFile(
       path.resolve(__dirname, '../../../csv/questSubtargetSet.csv'),
-      'utf8'
+      'utf8',
     ),
   ]);
 
@@ -1287,7 +1294,7 @@ export async function enrichOceanData(
           if (!quest) continue;
 
           const clearedQuest = cleared_quests.find(
-            (q) => q.mst_quest_id === questID
+            (q) => q.mst_quest_id === questID,
           );
 
           let state = 1; // default = NEW
@@ -1357,8 +1364,8 @@ export const islandMapAll = async (req: Request, res: Response) => {
   // };
 
   const final_ocean = await enrichOceanData(
-    doc.tutorial_step == 0xffff ? full_island : doc.ocean_list.toObject(),
-    doc.cleared_quests.toObject() as { mst_quest_id: number; clear_time?: number }[]
+    doc.tutorial_step == 0xffff ? full_island : [...doc.ocean_list],
+    [...doc.cleared_quests],
   );
   log.debug('FINAL ocean data: %o', final_ocean);
   const data = {

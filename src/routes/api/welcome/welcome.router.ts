@@ -4,6 +4,6 @@ import * as welcomeController from './welcomeController';
 const welcomeRouter = Router();
 
 welcomeRouter.post('/safety/flag/get', welcomeController.getSafetyFlag);
-// welcomeRouter.post("/safety/check", );
+welcomeRouter.post('/safety/check', welcomeController.getSafetyCheck);
 
 export default welcomeRouter;

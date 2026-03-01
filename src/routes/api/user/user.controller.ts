@@ -39,7 +39,7 @@ export const get = async (req: Request, res: Response) => {
     }
 
     const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
-      (team) => team.index === doc.otomoteam?.selected_index
+      (team) => team.index === doc.otomoteam?.selected_index,
     );
     const data = {
       payment_model_info: {
@@ -57,11 +57,11 @@ export const get = async (req: Request, res: Response) => {
         model_info: doc.model_info,
         name: doc.character_name,
         otomo_team: {
-          main: doc.box?.otomos.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0]
+          main: doc.box?.otomos?.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0],
           ),
-          sub: doc.box?.otomos.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]
+          sub: doc.box?.otomos?.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1],
           ),
         },
         parameter: {
@@ -138,9 +138,23 @@ export const commentSet = async (req: Request, res: Response) => {
 };
 
 export const navigationNews = async (req: Request, res: Response) => {
-  const data: { navigations: { close_at: number; end_at: number; explain: string; is_clear: number; is_reward: number; item_list: Record<string, never>; limited_flag: number; mst_navigation_id: number; name: string; progress: number; progress_max: number; start_at: number }[] } = {
-    navigations: [
-    ],
+  const data: {
+    navigations: {
+      close_at: number
+      end_at: number
+      explain: string
+      is_clear: number
+      is_reward: number
+      item_list: Record<string, never>
+      limited_flag: number
+      mst_navigation_id: number
+      name: string
+      progress: number
+      progress_max: number
+      start_at: number
+    }[]
+  } = {
+    navigations: [],
   };
   if (false) {
     data.navigations.push({
@@ -337,7 +351,7 @@ export const titleSet = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, 2004); //Not authenticated
     }
     const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
-      (team) => team.index === doc.otomoteam?.selected_index
+      (team) => team.index === doc.otomoteam?.selected_index,
     );
     const data = {
       user_info: {
@@ -349,11 +363,11 @@ export const titleSet = async (req: Request, res: Response) => {
         model_info: doc.model_info,
         name: doc.character_name,
         otomo_team: {
-          main: doc.box?.otomos.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0]
+          main: doc.box?.otomos?.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0],
           ),
-          sub: doc.box?.otomos.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]
+          sub: doc.box?.otomos?.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1],
           ),
         },
         parameter: {

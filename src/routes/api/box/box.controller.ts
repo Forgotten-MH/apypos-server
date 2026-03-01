@@ -74,7 +74,6 @@ export const storageGet = (req: Request, res: Response) => {
         start_remain: 15,
         storage_idx: 1,
       },
-     
     ],
   };
   encryptAndSend(data, res, req);
@@ -227,7 +226,7 @@ export const equipLevelup = async (req: Request, res: Response) => {
     const steps: number = Math.max(1, Number(req.body.num || 1));
 
     // Find equipment in user's box
-    const equipmentIndex = doc.box.equipments.findIndex(
+    const equipmentIndex = doc.box.equipments!.findIndex(
       (eq) => eq.equipment_id === equipmentId,
     );
 
@@ -237,7 +236,7 @@ export const equipLevelup = async (req: Request, res: Response) => {
     }
 
     // Apply level up
-    const equipment = doc.box.equipments[equipmentIndex];
+    const equipment = doc.box.equipments![equipmentIndex];
     const currentLevel = Number(equipment.elv || 0);
     const newLevel = currentLevel + steps;
     equipment.elv = newLevel;
@@ -275,7 +274,7 @@ export const awake = async (req: Request, res: Response) => {
     }
 
     const { base_equipment_id } = req.body;
-    const equipment = doc.box.equipments.find(
+    const equipment = doc.box.equipments!.find(
       (eq) => eq.equipment_id === base_equipment_id,
     );
 
@@ -416,11 +415,12 @@ export const leveupAuto = async (req: Request, res: Response) => {
         doc.box.monument.hr = doc.box.monument.hr + 1;
         // Find the index of the augite item
         targetIndex = doc.box.monument.augite.findIndex(
-          (item) => item.mst_augite_id === 2047024966
+          (item) => item.mst_augite_id === 2047024966,
         );
 
         // Replace the item in the array
-        const augiteItem = targetIndex !== -1 ? doc.box.monument.augite[targetIndex] : undefined;
+        const augiteItem =
+          targetIndex !== -1 ? doc.box.monument.augite[targetIndex] : undefined;
         if (augiteItem) {
           augiteItem.amount = Math.max((augiteItem.amount ?? 0) - 10, 0);
         }
@@ -441,7 +441,6 @@ export const leveupAuto = async (req: Request, res: Response) => {
         // Increase HR
         doc.box.monument.hr = doc.box.monument.hr + 1;
         break;
-
     }
     const update = { box: doc.box };
 

@@ -3,7 +3,6 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import Present from '../../../model/presents';
-import type { Box } from '../../../types/game';
 import { BoxService } from '../../../services/boxService';
 const log = createLogger('present');
 
@@ -20,7 +19,7 @@ export const presentSync = async (req: Request, res: Response) => {
         presentDetail: await Present.find({ uu_id: userDoc.uu_id }),
       },
       res,
-      req
+      req,
     );
   } catch (error) {
     log.error('Error in presentSync:', error);
@@ -42,23 +41,20 @@ export const presentReceive = async (req: Request, res: Response) => {
       _id: { $in: requestedIdsToBePutInBox },
     });
 
-    type BoxKey = keyof Box;
-    presents.map(async(present) => {
+    type BoxKey = keyof import('../../../types/game').Box;
+    presents.map(async (present) => {
       for (const [key, value] of Object.entries(present.toObject().content)) {
-        log.debug('CONTENT KEY',key)
+        log.debug('CONTENT KEY', key);
         if (Array.isArray(value)) {
           value.forEach((item) => {
-            log.debug('ADDED ITEM TO BOX',key,item)
-            BoxService.addItem(userDoc.box as unknown as Box, key as BoxKey, item);
+            log.debug('ADDED ITEM TO BOX', key, item);
+            BoxService.addItem(userDoc.box!, key as BoxKey, item);
           });
         }
       }
-      await Present.updateOne({_id:present._id},{received:1})
+      await Present.updateOne({ _id: present._id }, { received: 1 });
     });
-    await User.updateOne(
-      { uu_id: userDoc.uu_id },
-      { box: userDoc.box },
-    );
+    await User.updateOne({ uu_id: userDoc.uu_id }, { box: userDoc.box });
 
     const data = {
       presentDetail: await Present.find({ uu_id: userDoc.uu_id }), //this should only be

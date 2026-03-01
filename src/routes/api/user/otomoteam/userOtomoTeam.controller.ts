@@ -28,10 +28,10 @@ export const otomoteamSet = async (req: Request, res: Response) => {
   }
 
   if (req.body.otomo_teams.length > 0) {
-  const newTeam = req.body.otomo_teams[0];
+    const newTeam = req.body.otomo_teams[0];
 
     const arrayIndex = doc.otomoteam.otomo_team.findIndex(
-      (team) => team.index === newTeam.index
+      (team) => team.index === newTeam.index,
     );
     log.debug('Found index:', arrayIndex);
 

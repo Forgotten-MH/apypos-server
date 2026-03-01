@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import OceanSchema from './ocean';
 import equipmentSchema from './items/equipment';
 import growthItemSchema from './items/growth_item';
@@ -12,7 +12,55 @@ import augiteSchema from './items/augite';
 import otomoSchema from './sidekicks/otomo';
 import partnerSchema from './sidekicks/partner';
 import otomoTeamSchema from './sidekicks/otomoTeam';
+import type {
+  Box,
+  Ocean,
+  ClearedQuest,
+  EquipSet,
+  SocialEquipset,
+  OtomoTeam,
+  ModelInfo,
+  GuildInfo,
+  NyankenCooldown,
+  SelectedPartner,
+} from '../types/game';
 const { Schema, model } = mongoose;
+
+export interface IUser extends Document {
+  uu_id?: string
+  secret_id?: string
+  login_id?: string
+  mst_himitsu_question_id?: string
+  himitsu_answer?: string
+  migration_pass?: string
+  migration_id?: string
+  user_id?: string
+  game_id?: string
+  tutorial_step?: number
+  character_name?: string
+  current_session?: string
+  comment?: string
+  tutorial_flags: number[]
+  model_info?: ModelInfo
+  box?: Box
+  equipset?: {
+    capacity_eqp_set: number
+    equip_sets: EquipSet[]
+    selected_equip_set_index: number
+  }
+  social_equip_sets?: SocialEquipset[]
+  otomoteam?: {
+    capacity: number
+    otomo_team: OtomoTeam[]
+    selected_index: number
+  }
+  selected_partner?: SelectedPartner
+  ocean_list: Ocean[]
+  cleared_quests: ClearedQuest[]
+  nyanken_cooldown?: NyankenCooldown
+  equipment_id_counter?: number
+  guild_info?: GuildInfo
+}
 const equipPieceSchema = new Schema({
   created: Number,
   equipment_id: { type: String, default: 'NO_EQUIP' },
@@ -60,30 +108,36 @@ const equipsetSchema = new Schema({
   weapon: equipSetPieceSchema,
 });
 
-const SocialEquipPartSchema = new Schema({
-  equipment_id: { type: String, required: true },
-  mst_equipment_id: { type: Number, required: true }
-}, { _id: false });
+const SocialEquipPartSchema = new Schema(
+  {
+    equipment_id: { type: String, required: true },
+    mst_equipment_id: { type: Number, required: true },
+  },
+  { _id: false },
+);
 
 // Define the full SocialEquipset schema
-const SocialEquipsetSchema = new Schema({
-  gunner: {
-    social_arm: { type: SocialEquipPartSchema, required: true },
-    social_body: { type: SocialEquipPartSchema, required: true },
-    social_head: { type: SocialEquipPartSchema, required: true },
-    social_leg: { type: SocialEquipPartSchema, required: true },
-    social_waist: { type: SocialEquipPartSchema, required: true },
+const SocialEquipsetSchema = new Schema(
+  {
+    gunner: {
+      social_arm: { type: SocialEquipPartSchema, required: true },
+      social_body: { type: SocialEquipPartSchema, required: true },
+      social_head: { type: SocialEquipPartSchema, required: true },
+      social_leg: { type: SocialEquipPartSchema, required: true },
+      social_waist: { type: SocialEquipPartSchema, required: true },
+    },
+    knight: {
+      social_arm: { type: SocialEquipPartSchema, required: true },
+      social_body: { type: SocialEquipPartSchema, required: true },
+      social_head: { type: SocialEquipPartSchema, required: true },
+      social_leg: { type: SocialEquipPartSchema, required: true },
+      social_waist: { type: SocialEquipPartSchema, required: true },
+    },
+    is_used: { type: Number, required: true },
+    mst_partner_id: { type: Number, required: true },
   },
-  knight: {
-    social_arm: { type: SocialEquipPartSchema, required: true },
-    social_body: { type: SocialEquipPartSchema, required: true },
-    social_head: { type: SocialEquipPartSchema, required: true },
-    social_leg: { type: SocialEquipPartSchema, required: true },
-    social_waist: { type: SocialEquipPartSchema, required: true },
-  },
-  is_used: { type: Number, required: true },
-  mst_partner_id: { type: Number, required: true }
-}, { _id: false });
+  { _id: false },
+);
 
 const userSchema = new Schema({
   uu_id: String,
@@ -245,7 +299,6 @@ const userSchema = new Schema({
           start_remain: 0,
         },
         {
-          
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -262,8 +315,8 @@ const userSchema = new Schema({
           potential: 0,
           slv: 0,
           start_remain: 0,
-        },{
-          
+        },
+        {
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -282,7 +335,6 @@ const userSchema = new Schema({
           start_remain: 0,
         },
         {
-          
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -299,8 +351,8 @@ const userSchema = new Schema({
           potential: 0,
           slv: 0,
           start_remain: 0,
-        },{
-          
+        },
+        {
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -317,8 +369,8 @@ const userSchema = new Schema({
           potential: 0,
           slv: 0,
           start_remain: 0,
-        },{
-          
+        },
+        {
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -335,8 +387,8 @@ const userSchema = new Schema({
           potential: 0,
           slv: 0,
           start_remain: 0,
-        },{
-          
+        },
+        {
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -355,7 +407,6 @@ const userSchema = new Schema({
           start_remain: 0,
         },
         {
-          
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -374,7 +425,6 @@ const userSchema = new Schema({
           start_remain: 0,
         },
         {
-          
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -391,8 +441,8 @@ const userSchema = new Schema({
           potential: 0,
           slv: 0,
           start_remain: 0,
-        }, {
-          
+        },
+        {
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -409,8 +459,8 @@ const userSchema = new Schema({
           potential: 0,
           slv: 0,
           start_remain: 0,
-        },{
-          
+        },
+        {
           auto_potential_composite: 0,
           awaked: 0,
           created: 0,
@@ -725,44 +775,48 @@ const userSchema = new Schema({
     type: [ClearedQuests],
     default: [],
   },
-nyanken_cooldown: {
-  mst_nyanken_id: { type: Number, default: 0 },
-  last_draw_time: { type: Number, default: 0 },
-},
-equipment_id_counter: { type: Number, default: 0 },
-guild_info: {
-  gid: { type: String, default: '' },
-  is_guild: { type: Number, default: 0 },
-  is_same: { type: Number, default: 0 },
-  member_type: { type: Number, default: 0 },
-  name: { type: String, default: '' },
-  rank: { type: Number, default: 0 },
-  login_freq: { type: Number, default: 0 },
-  chat_freq: { type: Number, default: 0 },
-  yarikomi: { type: Number, default: 0 },
-  mood: { type: Number, default: 0 },
-  timezone: { type: Number, default: 0 },
-  waited: { type: Number, default: 0 },
-  receive: { 
-    type: [{
-      _id: { type: String, required: true },
-      created: { type: Number, default: 0 },
-      gid: { type: String, required: true },
-      uid: { type: String, required: true },
-    }],
-    default: [] 
+  nyanken_cooldown: {
+    mst_nyanken_id: { type: Number, default: 0 },
+    last_draw_time: { type: Number, default: 0 },
   },
-  send: { 
-    type: [{
-      _id: { type: String, required: true },
-      created: { type: Number, default: 0 },
-      gid: { type: String, required: true },
-      uid: { type: String, required: true },
-    }],
-    default: [] 
+  equipment_id_counter: { type: Number, default: 0 },
+  guild_info: {
+    gid: { type: String, default: '' },
+    is_guild: { type: Number, default: 0 },
+    is_same: { type: Number, default: 0 },
+    member_type: { type: Number, default: 0 },
+    name: { type: String, default: '' },
+    rank: { type: Number, default: 0 },
+    login_freq: { type: Number, default: 0 },
+    chat_freq: { type: Number, default: 0 },
+    yarikomi: { type: Number, default: 0 },
+    mood: { type: Number, default: 0 },
+    timezone: { type: Number, default: 0 },
+    waited: { type: Number, default: 0 },
+    receive: {
+      type: [
+        {
+          _id: { type: String, required: true },
+          created: { type: Number, default: 0 },
+          gid: { type: String, required: true },
+          uid: { type: String, required: true },
+        },
+      ],
+      default: [],
+    },
+    send: {
+      type: [
+        {
+          _id: { type: String, required: true },
+          created: { type: Number, default: 0 },
+          gid: { type: String, required: true },
+          uid: { type: String, required: true },
+        },
+      ],
+      default: [],
+    },
   },
-},
 });
 
-const User = model('User', userSchema);
+const User = model<IUser>('User', userSchema);
 export default User;

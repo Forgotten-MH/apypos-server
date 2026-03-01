@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { presentSync,presentReceive } from './present.controller';
+import { presentSync, presentReceive } from './present.controller';
 
 const presentRouter = Router();
 

@@ -24,14 +24,19 @@ userRouter.post('/otomoteam/select', userOtomoTeamController.otomoteamSelect);
 //EquipSet
 userRouter.post('/equipset/get', userEquipSetController.equipSetGet);
 userRouter.post('/equipset/set', userEquipSetController.equipSetSet);
-userRouter.post('/equipset/social/get', userEquipSetController.equipSetSocialGet);
-userRouter.post('/equipset/social/set', userEquipSetController.equipSetSocialSet);
+userRouter.post(
+  '/equipset/social/get',
+  userEquipSetController.equipSetSocialGet,
+);
+userRouter.post(
+  '/equipset/social/set',
+  userEquipSetController.equipSetSocialSet,
+);
 
 //Nav
 userRouter.post('/navigation/all', userController.navigationAll);
 userRouter.post('/navigation/news', userController.navigationNews);
 // userRouter.post("/navigation/reward/receive", );
-
 
 //Title
 userRouter.post('/title/all', userController.titleAll);
@@ -46,9 +51,7 @@ userRouter.post('/achievement/all', userController.achievementAll);
 // userRouter.post("/gender/change", );
 // userRouter.post("/info", );
 
-
 userRouter.post('/partner/set', userController.partnerGet);
-
 
 userRouter.post('/offer/check', userController.OfferCheck);
 // userRouter.post("/offer/start", );

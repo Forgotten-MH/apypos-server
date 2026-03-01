@@ -3,7 +3,7 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import { updatePartNoteState } from '../story/storyController';
-import type { Box, Ocean } from '../../../types/game';
+import type { Box } from '../../../types/game';
 import { BoxService } from '../../../services/boxService';
 const log = createLogger('tutorial');
 // tutorialFlags
@@ -164,7 +164,7 @@ export const nyankenResult = async (req: Request, res: Response) => {
     slv: 0,
     start_remain: 0,
   };
-  BoxService.addItem(doc.box as unknown as Box, 'equipments', rewardEquip);
+  BoxService.addItem(doc.box!, 'equipments', rewardEquip);
   const data = {
     effect_id: 42,
     is_island: 0, //triggers /api/nyanken/islandInfoGet
@@ -430,7 +430,7 @@ export const stepUP = async (req: Request, res: Response) => {
     tutorial_step: update.tutorial_step,
   };
   log.debug(
-    ` TutorialStepUp: Old: ${doc.tutorial_step} New: ${data.tutorial_step}`
+    ` TutorialStepUp: Old: ${doc.tutorial_step} New: ${data.tutorial_step}`,
   );
 
   encryptAndSend(data, res, req);
@@ -442,13 +442,13 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
   if (!doc) {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
   }
-  updatePartNoteState(doc.ocean_list as unknown as Ocean[], 3525753088, 3815380063, 3758796689, 2);
+  updatePartNoteState(doc.ocean_list, 3525753088, 3815380063, 3758796689, 2);
   doc = await User.findOneAndUpdate(
     filter,
     { tutorial_step: 5010, ocean_list: doc.ocean_list },
     {
       new: true,
-    }
+    },
   );
   if (!doc) {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
@@ -474,8 +474,14 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
       },
     ],
     tutorial_rewards: {
-      tutorial_normal_add: [] as { idx: number; value: number; item_list: Record<string, Record<string, number>[]> }[],
-      tutorial_normal_reward: { item_list: {} as Record<string, Record<string, number>[]> },
+      tutorial_normal_add: [] as {
+        idx: number
+        value: number
+        item_list: Record<string, Record<string, number>[]>
+      }[],
+      tutorial_normal_reward: {
+        item_list: {} as Record<string, Record<string, number>[]>,
+      },
       tutorial_zeny: 100,
     },
     tutorial_step: doc.tutorial_step,
@@ -503,7 +509,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
     }
     //Add to box
     type BoxKey = keyof Box;
-    BoxService.addItem(doc!.box as unknown as Box, key as BoxKey, {
+    BoxService.addItem(doc!.box!, key as BoxKey, {
       amount: obj.amount,
       [idField]: obj.id,
     });

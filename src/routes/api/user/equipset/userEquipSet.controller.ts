@@ -55,7 +55,7 @@ export const equipSetSocialSet = async (req: Request, res: Response) => {
 
     await User.findByIdAndUpdate(doc.id, update);
   }
-  const data = doc.social_equip_sets;
+  const data = doc.social_equip_sets ?? [];
   // const data = {
   //   social_equip_sets: [
   //     {
