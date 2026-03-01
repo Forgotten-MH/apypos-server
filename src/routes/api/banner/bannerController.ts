@@ -5,7 +5,7 @@ import path from 'path';
 import crcjam from 'crc/crcjam';
 const log = createLogger('banner');
 
-const readFilesFromDir = async (dir, data) => {
+const readFilesFromDir = async (dir: string, data: { download_list: { hash: number; path: string; size: number }[] }) => {
   try {
     const files = await fs.readdir(dir);
     
@@ -29,7 +29,7 @@ const readFilesFromDir = async (dir, data) => {
   }
 };
 
-export const getDlList = async (req, res) => {
+export const getDlList = async (req: any, res: any) => {
   const data = {
     download_list: [],
   };

@@ -91,7 +91,7 @@ export const eventNormalStart = async (req: Request, res: Response) => {
 
   const data = {
     instance_data: {
-      block_list: [],
+      block_list: [] as any[],
       bomb_lot_no: [
         {
           bomb_lottery: [{ bomb_id: 0, weight: 0 }],
@@ -139,13 +139,7 @@ export const eventNormalStart = async (req: Request, res: Response) => {
     data.instance_data.block_list.push({
       block_idx: index + 1,
       block_instance_list: [{ instance_id: 0, serial_no: 1 }],
-      drop_list: [
-        //   {
-        //    item_list: {
-        //   },
-        //   serial_no: 0
-        // }
-      ],
+      drop_list: [],
       instance_id: 0,
       is_insert: 0,
       is_raid: 0,
@@ -180,7 +174,7 @@ export const eventTicketStart = async (req: Request, res: Response) => {
   const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
   const data = {
     instance_data: {
-      block_list: [],
+      block_list: [] as any[],
       bomb_lot_no: [
         {
           bomb_lottery: [{ bomb_id: 0, weight: 0 }],
@@ -227,13 +221,7 @@ export const eventTicketStart = async (req: Request, res: Response) => {
     data.instance_data.block_list.push({
       block_idx: index + 1,
       block_instance_list: [{ instance_id: 0, serial_no: 1 }],
-      drop_list: [
-        //   {
-        //    item_list: {
-        //   },
-        //   serial_no: 0
-        // }
-      ],
+      drop_list: [],
       instance_id: 0,
       is_insert: 0,
       is_raid: 0,
@@ -274,7 +262,7 @@ export const eventScoreStart = async (req: Request, res: Response) => {
   const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
   const data = {
     instance_data: {
-      block_list: [],
+      block_list: [] as any[],
       bomb_lot_no: [
         {
           bomb_lottery: [{ bomb_id: 0, weight: 0 }],
@@ -321,13 +309,7 @@ export const eventScoreStart = async (req: Request, res: Response) => {
     data.instance_data.block_list.push({
       block_idx: index + 1,
       block_instance_list: [{ instance_id: 0, serial_no: 1 }],
-      drop_list: [
-        //   {
-        //    item_list: {
-        //   },
-        //   serial_no: 0
-        // }
-      ],
+      drop_list: [],
       instance_id: 0,
       is_insert: 0,
       is_raid: 0,
@@ -364,7 +346,7 @@ export const eternalStart = async (req: Request, res: Response) => {
   const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
   const data = {
     instance_data: {
-      block_list: [],
+      block_list: [] as any[],
       bomb_lot_num: [],
       bomb_lottery: [],
 
@@ -430,7 +412,7 @@ export const eventListAll = async (req: Request, res: Response) => {
   // Unk	90037
   //middle nodes
 
-  const event = (await Event.findOne({}).exec()).toObject();
+  const event = (await Event.findOne({}).exec())!.toObject();
   const data = {
     big_node_order_array: event.big_node_order_array,
     event_list: {
@@ -703,7 +685,7 @@ export const islandStart = async (req: Request, res: Response) => {
   await User.findOneAndUpdate(filter, update, { new: true });
   const data = {
     instance_data: {
-      block_list: [],
+      block_list: [] as any[],
       bomb_lot_no: [
         {
           bomb_lottery: [{ bomb_id: 0, weight: 0 }],
@@ -1218,7 +1200,7 @@ function parseCsv<T = Record<string, string>>(csv: string): T[] {
 // --- Main Function ---
 export async function enrichOceanData(
   oceanData: Ocean[],
-  cleared_quests
+  cleared_quests: { mst_quest_id: number; clear_time?: number }[]
 ): Promise<Ocean[]> {
   // Load CSVs in parallel
   const [nodeQuestCsv, questDataCsv, questSubtargetCsv] = await Promise.all([
@@ -1357,7 +1339,7 @@ export const islandMapAll = async (req: Request, res: Response) => {
 
   const final_ocean = await enrichOceanData(
     doc.tutorial_step == 0xffff ? full_island : doc.ocean_list.toObject(),
-    doc.cleared_quests
+    doc.cleared_quests as any
   );
   log.debug('FINAL ocean data: %o', final_ocean);
   const data = {

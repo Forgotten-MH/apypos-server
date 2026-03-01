@@ -48,7 +48,7 @@ export const presentReceive = async (req: Request, res: Response) => {
         if (Array.isArray(value)) {
           value.forEach((item) => {
             log.debug('ADDED ITEM TO BOX',key,item)
-            BoxService.addItem(userDoc.box, key as BoxKey, item);
+            BoxService.addItem(userDoc.box as any as Box, key as BoxKey, item);
           });
         }
       }

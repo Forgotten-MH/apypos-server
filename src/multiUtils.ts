@@ -10,6 +10,15 @@ export function createHeader({
   flag1,
   flag2,
   pktlen,
+}: {
+  roomNumber: number
+  playerId: number
+  seq: number
+  unk2: number
+  emitTypeHex: number
+  flag1: number
+  flag2: number
+  pktlen: number
 }) {
  /*
 uint32 roomid;
@@ -53,7 +62,7 @@ ubyte array[pktlength];
   return header;
 }
 
-function createMaintenance({ durationSecondsTill }) {
+function createMaintenance({ durationSecondsTill }: { durationSecondsTill: number }) {
   const pktId = 0x0a;
   const data = Buffer.alloc(4);
     log.debug('Maintenance Message Sent: ',durationSecondsTill)
@@ -62,7 +71,7 @@ function createMaintenance({ durationSecondsTill }) {
   return { data, pktId };
 }
 
-export function createMaintenancePacket({ durationSecondsTill }) {
+export function createMaintenancePacket({ durationSecondsTill }: { durationSecondsTill: number }) {
   //10 onRecieveNotice
   const { data, pktId } = createMaintenance({ durationSecondsTill });
   const header = createHeader({
@@ -80,7 +89,7 @@ export function createMaintenancePacket({ durationSecondsTill }) {
 
 ///////////////
 
-function createChat(message) {
+function createChat(message: string) {
   const data = Buffer.alloc(100);
   const messageStartIndex = 0x36;
   const name = 'Command User';
@@ -93,7 +102,7 @@ function createChat(message) {
   return { data };
 }
 
-export function createChatPacket(roomNo,messsage) {
+export function createChatPacket(roomNo: number, messsage: string) {
   //9 onRecieveChat
   const playerId = Math.floor(Math.random() * 10);
 
@@ -113,7 +122,7 @@ export function createChatPacket(roomNo,messsage) {
 
 ///////////////
 
-function createInfo(msgType) {
+function createInfo(msgType: number) {
   const pktId = 0x07;
 
   // Allocate a buffer: 54 bytes padding + "hello\0" = 60 bytes total
@@ -266,7 +275,7 @@ function _createRandomBuffer(minLength = 50, maxLength = 300) {
   return buffer;
 }
 
-export function parseHeader(buffer) {
+export function parseHeader(buffer: Buffer) {
   if (buffer.length < 16) {
     throw new Error('Buffer too short to contain valid header');
   }

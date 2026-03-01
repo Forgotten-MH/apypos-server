@@ -115,7 +115,7 @@ export const trainingEnd = async (req: Request, res: Response) => {
   // Await the update so you know it completed
   await User.findOneAndUpdate(filter, update, { new: true });
   const trainingPresent = new Present();
-  trainingPresent.uu_id = doc.uu_id;
+  trainingPresent.uu_id = doc.uu_id!;
   trainingPresent.set('content', {
     equipments: [
       {
@@ -230,8 +230,8 @@ export const trainingStart = (req: Request, res: Response) => {
   };
   encryptAndSend(data, res, req);
 };
-const isTrainingCleared = (cleared_quests, questID) => {
-  return cleared_quests.find((q) => q.mst_quest_id === questID) ? 1 : 0;
+const isTrainingCleared = (cleared_quests: any[], questID: number | null) => {
+  return cleared_quests.find((q: any) => q.mst_quest_id === questID) ? 1 : 0;
 };
 
 export const trainingList = async (req: Request, res: Response) => {

@@ -7,15 +7,18 @@ export const equipSetGet = async (req: Request, res: Response) => {
 
   const doc = await User.findOne(filter);
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, 2004);
   }
-  const data = doc.equipset;
+  const data = { ...doc.equipset } as object;
   encryptAndSend(data, res, req);
 };
 
 export const equipSetSet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   const doc = await User.findOne(filter);
+  if (!doc?.equipset) {
+    return encryptAndSend({}, res, req, 2004);
+  }
   if (req.body.equip_sets.length > 0) {
     doc.equipset.equip_sets = req.body.equip_sets;
     doc.equipset.selected_equip_set_index = req.body.selected_equip_set_index;
@@ -24,13 +27,16 @@ export const equipSetSet = async (req: Request, res: Response) => {
 
     await User.findByIdAndUpdate(doc.id, update);
   }
-  const data = doc.equipset;
+  const data = { ...doc.equipset } as object;
   encryptAndSend(data, res, req);
 };
 
 export const equipSetSocialGet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   const doc = await User.findOne(filter);
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004);
+  }
   const data = {
     social_equip_sets: doc.social_equip_sets,
   };
@@ -39,6 +45,9 @@ export const equipSetSocialGet = async (req: Request, res: Response) => {
 export const equipSetSocialSet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   const doc = await User.findOne(filter);
+  if (!doc) {
+    return encryptAndSend({}, res, req, 2004);
+  }
   if (req.body.social_equip_sets.length > 0) {
     doc.social_equip_sets = req.body.social_equip_sets;
 

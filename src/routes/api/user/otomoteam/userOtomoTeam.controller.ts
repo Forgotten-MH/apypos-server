@@ -8,6 +8,9 @@ export const otomoteamGet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
 
   const doc = await User.findOne(filter);
+  if (!doc?.otomoteam) {
+    return encryptAndSend({}, res, req, 2004);
+  }
   const data = {
     capacity: doc.otomoteam.capacity,
     otomo_teams: doc.otomoteam.otomo_team,
@@ -20,6 +23,9 @@ export const otomoteamSet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
 
   const doc = await User.findOne(filter);
+  if (!doc?.otomoteam) {
+    return encryptAndSend({}, res, req, 2004);
+  }
 
   if (req.body.otomo_teams.length > 0) {
   const newTeam = req.body.otomo_teams[0];
@@ -37,7 +43,6 @@ export const otomoteamSet = async (req: Request, res: Response) => {
       doc.otomoteam.otomo_team.push(newTeam);
     }
 
-    // Save the modified document
     await doc.save();
   }
 
@@ -53,6 +58,9 @@ export const otomoteamSelect = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
 
   let doc = await User.findOne(filter);
+  if (!doc?.otomoteam) {
+    return encryptAndSend({}, res, req, 2004);
+  }
   doc.otomoteam.selected_index = req.body.index;
 
   const update = { otomoteam: doc.otomoteam };
@@ -61,7 +69,7 @@ export const otomoteamSelect = async (req: Request, res: Response) => {
   });
 
   const data = {
-    selected_index: doc.otomoteam.selected_index,
+    selected_index: doc!.otomoteam!.selected_index,
   };
   encryptAndSend(data, res, req);
 };

@@ -1,7 +1,7 @@
 import event_nodes from '../../json/event_nodes.json';
 import { createLogger } from '../../middleware/logger';
 const log = createLogger('eventUtils');
-export const getDurationFromValue = (value) => {
+export const getDurationFromValue = (value: { getTime(): number } | null | undefined) => {
   if (!value) return null; // Handle cases where the date is not set
   const now = Date.now(); // Current timestamp in milliseconds
   return Math.max(0, Math.floor((value.getTime() - now) / 1000)); // Convert duration to seconds

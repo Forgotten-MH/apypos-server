@@ -88,6 +88,9 @@ export const otomoGet = async (req: Request, res: Response) => {
     if (!doc) {
       return encryptAndSend({}, res, req, 2004); //Not authenticated
     }
+    if (!doc.box) {
+      return encryptAndSend({}, res, req, 1, 2, 'Box not found');
+    }
     const data = {
       otomos: doc.box.otomos,
     };
@@ -216,6 +219,9 @@ export const equipLevelup = async (req: Request, res: Response) => {
     if (!doc) {
       return encryptAndSend({}, res, req, 2004); // Not authenticated
     }
+    if (!doc.box) {
+      return encryptAndSend({}, res, req, 1, 2, 'Box not found');
+    }
 
     const equipmentId: string = req.body.eqp_obj_id;
     const steps: number = Math.max(1, Number(req.body.num || 1));
@@ -263,6 +269,9 @@ export const awake = async (req: Request, res: Response) => {
     const doc = await User.findOne(filter);
     if (!doc) {
       return encryptAndSend({}, res, req, 2004); // Not authenticated
+    }
+    if (!doc.box) {
+      return encryptAndSend({}, res, req, 1, 2, 'Box not found');
     }
 
     const { base_equipment_id } = req.body;
@@ -395,6 +404,9 @@ export const leveupAuto = async (req: Request, res: Response) => {
     if (!doc) {
       return encryptAndSend({}, res, req, 2004); // Not authenticated
     }
+    if (!doc.box?.monument?.mlv) {
+      return encryptAndSend({}, res, req, 1, 2, 'Monument data not found');
+    }
     let targetIndex;
     switch (req.body.type) {
       case 'hp':
@@ -408,11 +420,9 @@ export const leveupAuto = async (req: Request, res: Response) => {
         );
 
         // Replace the item in the array
-        if (targetIndex !== -1) {
-          doc.box.monument.augite[targetIndex].amount = Math.max(
-            doc.box.monument.augite[targetIndex].amount - 10,
-            0
-          );
+        const augiteItem = targetIndex !== -1 ? doc.box.monument.augite[targetIndex] : undefined;
+        if (augiteItem) {
+          augiteItem.amount = Math.max((augiteItem.amount ?? 0) - 10, 0);
         }
 
         break;

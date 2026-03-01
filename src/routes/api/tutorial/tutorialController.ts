@@ -163,7 +163,7 @@ export const nyankenResult = async (req: Request, res: Response) => {
     slv: 0,
     start_remain: 0,
   };
-  BoxService.addItem(doc.box, 'equipments', rewardEquip);
+  BoxService.addItem(doc.box as any as Box, 'equipments', rewardEquip);
   const data = {
     effect_id: 42,
     is_island: 0, //triggers /api/nyanken/islandInfoGet
@@ -198,7 +198,7 @@ export const TutorialFlagSet = async (req: Request, res: Response) => {
   }
 
   const newFlags = doc.tutorial_flags;
-  req.body.flags.forEach((flag) => {
+  req.body.flags.forEach((flag: any) => {
     newFlags.push(flag);
   });
 
@@ -441,7 +441,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
   if (!doc) {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
   }
-  updatePartNoteState(doc.ocean_list, 3525753088, 3815380063, 3758796689, 2);
+  updatePartNoteState(doc.ocean_list as any, 3525753088, 3815380063, 3758796689, 2);
   doc = await User.findOneAndUpdate(
     filter,
     { tutorial_step: 5010, ocean_list: doc.ocean_list },
@@ -473,8 +473,8 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
       },
     ],
     tutorial_rewards: {
-      tutorial_normal_add: [],
-      tutorial_normal_reward: { item_list: {} },
+      tutorial_normal_add: [] as any[],
+      tutorial_normal_reward: { item_list: {} as Record<string, any[]> },
       tutorial_zeny: 100,
     },
     tutorial_step: doc.tutorial_step,
@@ -502,7 +502,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
     }
     //Add to box
     type BoxKey = keyof Box;
-    BoxService.addItem(doc.box, key as BoxKey, {
+    BoxService.addItem(doc!.box as any as Box, key as BoxKey, {
       amount: obj.amount,
       [idField]: obj.id,
     });

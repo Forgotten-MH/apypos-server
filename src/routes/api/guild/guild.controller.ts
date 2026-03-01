@@ -57,13 +57,13 @@ interface GuildMemberData {
 const getUserFromSession = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   const user = await User.findOne(filter);
-  
-  if (!user) {
+
+  if (!user || !user.uu_id) {
     encryptAndSend({}, res, req, 2004); // Not authenticated
     return null;
   }
-  
-  return user;
+
+  return user as typeof user & { uu_id: string };
 };
 
 /**
@@ -805,7 +805,7 @@ export const memberList = async (req: Request, res: Response) => {
 
     const now = Math.floor(Date.now() / 1000);
 
-    const buildEquipInfo = (equipData: { hash?: number; level?: number; potential?: number; skill_level?: number }) => ({
+    const buildEquipInfo = (equipData?: { hash?: number; level?: number; potential?: number; skill_level?: number }) => ({
       equip_info: {
         hash: equipData?.hash || 0,
         level: equipData?.level || 0,

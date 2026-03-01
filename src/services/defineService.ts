@@ -43,13 +43,13 @@ const constants = {
 };
 
 // Function to calculate WD_WSWORD-style hash
-function calculateHash(data, constant) {
+function calculateHash(data: string, constant: number) {
   const checksum = crc.crc32(data);
   return (checksum ^ constant) >>> 0;
 }
 
 
-export function calcMstId(input) {
+export function calcMstId(input: string) {
   // Iterate through the constants object to check if the input matches any regex
   for (const [pattern, constant] of Object.entries(constants)) {
     const regex = new RegExp(pattern); // Create a RegExp object from the pattern string

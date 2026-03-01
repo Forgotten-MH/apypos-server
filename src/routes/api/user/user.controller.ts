@@ -38,8 +38,8 @@ export const get = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, 2004); //Not authenticated
     }
 
-    const selectedOtomoTeam = doc.otomoteam.otomo_team.find(
-      (team) => team.index === doc.otomoteam.selected_index
+    const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
+      (team) => team.index === doc.otomoteam?.selected_index
     );
     const data = {
       payment_model_info: {
@@ -49,33 +49,32 @@ export const get = async (req: Request, res: Response) => {
         },
       },
       user_info: {
-        capacity_eqp_set: doc.equipset.capacity_eqp_set,
+        capacity_eqp_set: doc.equipset?.capacity_eqp_set,
         caplink_id: 'caplnk',
         comment: doc.comment,
-        equip_sets: doc.equipset.equip_sets,
+        equip_sets: doc.equipset?.equip_sets,
         game_id: doc.game_id,
         model_info: doc.model_info,
         name: doc.character_name,
         otomo_team: {
-          main: doc.box.otomos.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[0]
+          main: doc.box?.otomos.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0]
           ),
-          sub: doc.box.otomos.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[1]
+          sub: doc.box?.otomos.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]
           ),
         },
         parameter: {
-          //POSSIBLY NEED TO SEPERATE THESE OUT IN THE DB DUE TO BOX AND THIS BEING SEPERATE THINGS!?
-          attack: doc.box.monument.mlv.atk,
-          defence: doc.box.monument.mlv.def,
-          hp: doc.box.monument.mlv.hp,
-          rank: doc.box.monument.hr,
-          sp: doc.box.monument.mlv.sp,
+          attack: doc.box?.monument?.mlv?.atk,
+          defence: doc.box?.monument?.mlv?.def,
+          hp: doc.box?.monument?.mlv?.hp,
+          rank: doc.box?.monument?.hr,
+          sp: doc.box?.monument?.mlv?.sp,
         },
-        selected_equip_set_index: doc.equipset.selected_equip_set_index,
+        selected_equip_set_index: doc.equipset?.selected_equip_set_index,
         selected_partner: {
-          main_partner_id: doc.selected_partner.main_partner_id,
-          quest_partner_id: doc.selected_partner.quest_partner_id,
+          main_partner_id: doc.selected_partner?.main_partner_id,
+          quest_partner_id: doc.selected_partner?.quest_partner_id,
         },
         social_equip: {
           social_arm: {
@@ -139,9 +138,8 @@ export const commentSet = async (req: Request, res: Response) => {
 };
 
 export const navigationNews = async (req: Request, res: Response) => {
-  const data = {
+  const data: { navigations: Array<Record<string, unknown>> } = {
     navigations: [
-      //uncomment for achievement
     ],
   };
   if (false) {
@@ -338,24 +336,24 @@ export const titleSet = async (req: Request, res: Response) => {
     if (!doc) {
       return encryptAndSend({}, res, req, 2004); //Not authenticated
     }
-    const selectedOtomoTeam = doc.otomoteam.otomo_team.find(
-      (team) => team.index === doc.otomoteam.selected_index
+    const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
+      (team) => team.index === doc.otomoteam?.selected_index
     );
     const data = {
       user_info: {
-        capacity_eqp_set: doc.equipset.capacity_eqp_set,
+        capacity_eqp_set: doc.equipset?.capacity_eqp_set,
         caplink_id: 'caplnk',
         comment: doc.comment,
-        equip_sets: doc.equipset.equip_sets,
+        equip_sets: doc.equipset?.equip_sets,
         game_id: doc.game_id,
         model_info: doc.model_info,
         name: doc.character_name,
         otomo_team: {
-          main: doc.box.otomos.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[0]
+          main: doc.box?.otomos.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0]
           ),
-          sub: doc.box.otomos.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[1]
+          sub: doc.box?.otomos.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]
           ),
         },
         parameter: {
@@ -367,8 +365,8 @@ export const titleSet = async (req: Request, res: Response) => {
         },
         selected_equip_set_index: 1,
         selected_partner: {
-          main_partner_id: doc.selected_partner.main_partner_id,
-          quest_partner_id: doc.selected_partner.quest_partner_id,
+          main_partner_id: doc.selected_partner?.main_partner_id,
+          quest_partner_id: doc.selected_partner?.quest_partner_id,
         },
         social_equip: {
           social_arm: {
@@ -414,8 +412,8 @@ export const partnerGet = async (req: Request, res: Response) => {
     if (!doc) {
       return encryptAndSend({}, res, req, 2004); // Not authenticated
     }
-    doc.selected_partner.main_partner_id = req.body.main_partner_id;
-    doc.selected_partner.quest_partner_id = req.body.quest_partner_id;
+    doc.selected_partner!.main_partner_id = req.body.main_partner_id;
+    doc.selected_partner!.quest_partner_id = req.body.quest_partner_id;
 
     const update = { selected_partner: doc.selected_partner };
     doc = await User.findOneAndUpdate(filter, update, {
@@ -424,8 +422,8 @@ export const partnerGet = async (req: Request, res: Response) => {
 
     const data = {
       selected_partner: {
-        main_partner_id: doc.selected_partner.main_partner_id,
-        quest_partner_id: doc.selected_partner.quest_partner_id,
+        main_partner_id: doc?.selected_partner?.main_partner_id,
+        quest_partner_id: doc?.selected_partner?.quest_partner_id,
       },
     };
 

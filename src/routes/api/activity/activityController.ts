@@ -15,12 +15,10 @@ export const activityGet = (req: Request, res: Response) => {
       user_id: '83SP6Q95',
     },
   ];
-  const data = {
-    activities: [],
-  };
+  const activities: typeof ExamplesFoundFromVideos = [];
 
   ExamplesFoundFromVideos.forEach((activity) => {
-    data.activities.push({
+    activities.push({
       created: activity.created,
       mst_activity_id: activity.mst_activity_id, //3 Chat, 5 Find Hunting Party
       mst_activity_type_id: activity.mst_activity_type_id, //1 White, 2 Yellow 3 Blue 4 Red
@@ -29,5 +27,5 @@ export const activityGet = (req: Request, res: Response) => {
     });
   });
 
-  encryptAndSend(data, res, req);
+  encryptAndSend({ activities }, res, req);
 };

@@ -23,14 +23,14 @@ interface OceanNode {
   state: number
 }
 
-function parseCSV(csvContent) {
+function parseCSV(csvContent: string) {
   const lines = csvContent.trim().split('\n');
-  const headers = lines.shift().split(',');
-  const data = {};
+  const headers = lines.shift()!.split(',');
+  const data: Record<string, any> = {};
 
   for (const line of lines) {
     const values = line.split(',');
-    const row = Object.fromEntries(headers.map((h, i) => [h, values[i]]));
+    const row: Record<string, string> = Object.fromEntries(headers.map((h: string, i: number) => [h, values[i]]));
 
     const oceanHash = row.mOceanHash;
     const partHash = row.mPartHash;
@@ -71,14 +71,14 @@ function parseCSV(csvContent) {
   return Object.values(data);
 }
 
-function parsePartCSV(csvContent, oceanData) {
+function parsePartCSV(csvContent: string, oceanData: any[]) {
   const lines = csvContent.trim().split('\n');
-  const headers = lines.shift().split(',');
-  const partNodeMap = {};
+  const headers = lines.shift()!.split(',');
+  const partNodeMap: Record<number, Record<number, number>> = {};
 
   for (const line of lines) {
     const values = line.split(',');
-    const row = Object.fromEntries(headers.map((h, i) => [h, values[i]]));
+    const row: Record<string, string> = Object.fromEntries(headers.map((h: string, i: number) => [h, values[i]]));
 
     const partHash = Number(row.mPartHash);
     const nodeHash = Number(row.mNodeHash);
@@ -92,7 +92,7 @@ function parsePartCSV(csvContent, oceanData) {
     partNodeMap[partHash][nodeOrder] = nodeHash;
 
     for (const ocean of oceanData) {
-      const part = ocean.part_list.find((p) => p.mst_part_id === partHash);
+      const part = ocean.part_list.find((p: any) => p.mst_part_id === partHash);
       if (part) {
         part.node_list.push({
           name: mNodeName,
@@ -111,24 +111,24 @@ function parsePartCSV(csvContent, oceanData) {
 }
 
 function parseDramaCSV(
-  dramaCsv,
-  storyData,
-  noteData,
-  nodeQuestData,
-  questData,
-  questSubtargetSet,
-  partNodeMap,
-  oceanData
+  dramaCsv: string,
+  storyData: string,
+  noteData: string,
+  nodeQuestData: string,
+  questData: string,
+  questSubtargetSet: string,
+  partNodeMap: Record<number, Record<number, number>>,
+  oceanData: any[]
 ) {
   const dramaLines = dramaCsv.trim().split('\n');
-  const dramaHeaders = dramaLines.shift().split(',');
+  const dramaHeaders = dramaLines.shift()!.split(',');
 
   const storyLines = storyData.trim().split('\n');
-  const storyHeaders = storyLines.shift().split(',');
+  const storyHeaders = storyLines.shift()!.split(',');
 
   for (const line of dramaLines) {
     const values = line.split(',');
-    const row = Object.fromEntries(dramaHeaders.map((h, i) => [h, values[i]]));
+    const row: Record<string, string> = Object.fromEntries(dramaHeaders.map((h: string, i: number) => [h, values[i]]));
 
     const partHash = Number(row.mPartHash);
     const dramaHash = Number(row.mDramaHash);
@@ -136,14 +136,14 @@ function parseDramaCSV(
     const nodeHash = partNodeMap[partHash]?.[dramaOrder];
     if (nodeHash !== undefined) {
       for (const ocean of oceanData) {
-        const part = ocean.part_list.find((p) => p.mst_part_id === partHash);
+        const part = ocean.part_list.find((p: any) => p.mst_part_id === partHash);
         if (part) {
-          const node = part.node_list.find((n) => n.mst_node_id === nodeHash);
+          const node = part.node_list.find((n: any) => n.mst_node_id === nodeHash);
           if (node) {
             for (const line of storyLines) {
               const values = line.split(',');
               const row = Object.fromEntries(
-                storyHeaders.map((h, i) => [h, values[i]])
+                storyHeaders.map((h: string, i: number) => [h, values[i]])
               );
               const storyDramaHash = Number(row.mDramaHash);
               const storyHash = Number(row.mStoryHash);
@@ -161,11 +161,11 @@ function parseDramaCSV(
 
   for (const line of noteLines) {
     const values = line.split(',');
-    const row = Object.fromEntries(noteHeaders.map((h, i) => [h, values[i]]));
+    const row: Record<string, string> = Object.fromEntries(noteHeaders.map((h: string, i: number) => [h, values[i]]));
     const note_id = Number(row.mNoteID);
     const note_part_id = Number(row.mPartID);
     for (const ocean of oceanData) {
-      const part = ocean.part_list.find((p) => p.mst_part_id == note_part_id);
+      const part = ocean.part_list.find((p: any) => p.mst_part_id == note_part_id);
       if (part) {
         part.exploration_note.note_contents.push({
           mst_note_content_id: note_id,
@@ -176,20 +176,20 @@ function parseDramaCSV(
   }
 
   const noteQuestLines = nodeQuestData.trim().split('\n');
-  const noteQuestHeaders = noteQuestLines.shift().split(',');
+  const noteQuestHeaders = noteQuestLines.shift()!.split(',');
   const questLines = questData.trim().split('\n');
-  const questHeaders = questLines.shift().split(',');
+  const questHeaders = questLines.shift()!.split(',');
 
   const questSubtargetSetLines = questSubtargetSet.trim().split('\n');
-  const questSubtargetSetHeaders = questSubtargetSetLines.shift().split(',');
+  const questSubtargetSetHeaders = questSubtargetSetLines.shift()!.split(',');
   
 
   // Preprocess nodeQuestData into a Map (mNodeHash -> [mQuestHash])
   const nodeQuestMap = new Map();
   for (const line of noteQuestLines) {
     const values = line.split(',');
-    const row = Object.fromEntries(
-      noteQuestHeaders.map((h, i) => [h, values[i]])
+    const row: Record<string, string> = Object.fromEntries(
+      noteQuestHeaders.map((h: string, i: number) => [h, values[i]])
     );
 
     const nodeHash = Number(row.mNodeHash);
@@ -207,7 +207,7 @@ function parseDramaCSV(
   const questMap = new Map();
   for (const line of questLines) {
     const values = line.split(',');
-    const row = Object.fromEntries(questHeaders.map((h, i) => [h, values[i]]));
+    const row: Record<string, string> = Object.fromEntries(questHeaders.map((h: string, i: number) => [h, values[i]]));
 
     const questID = Number(row.mQuestID);
     const questTimeType = Number(row.mDayNight);
@@ -219,7 +219,7 @@ function parseDramaCSV(
    const questSubtargetSetMap = new Map();
    for (const line of questSubtargetSetLines) {
      const values = line.split(',');
-     const row = Object.fromEntries(questSubtargetSetHeaders.map((h, i) => [h, values[i]]));
+     const row: Record<string, string> = Object.fromEntries(questSubtargetSetHeaders.map((h: string, i: number) => [h, values[i]]));
  
      const questID = Number(row.mQuestID);
      const mSubTargetID = Number(row.mSubTargetID);
@@ -233,16 +233,18 @@ function parseDramaCSV(
       if (!part) continue;
 
       // Convert node list into a Map for fast lookups
-      const nodeMap = new Map<number, OceanNode>(part.node_list.map((n) => [n.mst_node_id, n]));
+      const nodeMap = new Map<number, OceanNode>(part.node_list.map((n: OceanNode) => [n.mst_node_id, n]));
 
       for (const [nodeHash, questHashList] of nodeQuestMap) {
         const node = nodeMap.get(nodeHash);
         if (node) {
           for (const {questHash,isCollectionQuest,isKeyQuest} of questHashList) {
-            const { time: questTimeType, name } = questMap.get(questHash);
+            const questInfo = questMap.get(questHash);
+            if (!questInfo) continue;
+            const { time: questTimeType, name } = questInfo;
             const subtarget = questSubtargetSetMap.get(questHash);
             if (questTimeType !== undefined) {
-              log.debug(node.mst_node_id, questHash, questTimeType);
+              log.debug(String(node.mst_node_id), questHash, questTimeType);
 
               switch (questTimeType) {
                 case 1:

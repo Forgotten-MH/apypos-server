@@ -3,10 +3,10 @@ import { createLogger } from '../middleware/logger';
 const log = createLogger('questService');
 
 export function lookupValueFromFile(
-  csvFilePath,
-  keyColumn,
-  valueColumn,
-  lookupKey
+  csvFilePath: string,
+  keyColumn: string,
+  valueColumn: string,
+  lookupKey: string
 ) {
   return new Promise((resolve, reject) => {
     fs.readFile(csvFilePath, 'utf-8', (err, data) => {
@@ -32,7 +32,7 @@ export function lookupValueFromFile(
           }
         }
         resolve(null);
-      } catch (parseError) {
+      } catch (parseError: any) {
         reject(`Error parsing CSV: ${parseError.message}`);
       }
     });
@@ -40,11 +40,11 @@ export function lookupValueFromFile(
 }
 
 function lookupValuesByPattern(
-  csvFilePath,
-  keyColumn,
-  valueColumn,
-  level,
-  suffix
+  csvFilePath: string,
+  keyColumn: string,
+  valueColumn: string,
+  level: string,
+  suffix: string
 ) {
   /**
    * Looks up values in a CSV file where the key matches a specific pattern.
@@ -90,7 +90,7 @@ function lookupValuesByPattern(
             }
           }
           if (results.length === 0) {
-            if (currentSuffix <= suffix + 500) {
+            if (currentSuffix <= parseInt(suffix, 10) + 500) {
               currentSuffix += 100;
             } else {
               return resolve([]);
@@ -100,14 +100,14 @@ function lookupValuesByPattern(
 
         log.debug('blocks Found:', results);
         resolve(results);
-      } catch (parseError) {
+      } catch (parseError: any) {
         reject(`Error parsing CSV: ${parseError.message}`);
       }
     });
   });
 }
 
-function parseString(input) {
+function parseString(input: string) {
   let match;
   if (input.startsWith('QUEST')) {
     // For QUEST format  QUEST 001 0205
@@ -135,12 +135,12 @@ function parseString(input) {
     throw new Error('Unsupported input format');
   }
 }
-function formatNumber(num) {
+function formatNumber(num: string) {
   const formatted = parseInt(num, 10).toString();
   return formatted.length === 1 ? `0${formatted}` : formatted;
 }
 
-export const getQuestNameFromQuestHash = async (questHash) => {
+export const getQuestNameFromQuestHash = async (questHash: string) => {
   const questCsvFilePath = './src/csv/quests.csv';
   log.debug('Quest Hash Inserted:', questHash);
   return await lookupValueFromFile(
@@ -150,7 +150,7 @@ export const getQuestNameFromQuestHash = async (questHash) => {
     questHash
   );
 };
-export const getBlockHashsFromQuestHash = async (questHash) => {
+export const getBlockHashsFromQuestHash = async (questHash: string): Promise<number[] | undefined> => {
   const csvFilePath = './src/csv/blocks.csv';
   log.debug('Quest Hash Inserted:', questHash);
   const questName = await getQuestNameFromQuestHash(questHash) as string;
@@ -165,8 +165,8 @@ export const getBlockHashsFromQuestHash = async (questHash) => {
       'mName',
       'Hash',
       formatNumber(level),
-      name
-    );
+      name!
+    ) as number[];
   } else if (questName.startsWith('EVENT')) {
     //EVENT 92 99 001
     //EVENT 92 15 6002
@@ -178,7 +178,8 @@ export const getBlockHashsFromQuestHash = async (questHash) => {
       'mName',
       'Hash',
       level,
-      combinedName.toString().padStart(4, '0')
-    );
+      combinedName!.toString().padStart(4, '0')
+    ) as number[];
   }
+  return undefined;
 };

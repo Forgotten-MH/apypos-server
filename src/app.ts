@@ -16,7 +16,7 @@ function sanitize(obj: unknown): unknown {
     const clean: Record<string, unknown> = {};
     for (const key of Object.keys(obj as Record<string, unknown>)) {
       if (!key.startsWith('$')) {
-        clean[key] = sanitize(obj[key]);
+        clean[key] = sanitize((obj as Record<string, unknown>)[key]);
       }
     }
     return clean;
@@ -28,7 +28,7 @@ const app = express();
 // Middleware to capture raw data from 'application/octet-stream' content type
 app.use((req, res, next) => {
   if (req.is('application/octet-stream')) {
-    const data = [];
+    const data: Buffer[] = [];
 
     req.on('data', (chunk) => {
       data.push(chunk);

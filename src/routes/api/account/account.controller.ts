@@ -4,7 +4,7 @@ import User from '../../../model/user';
 import { createLogger } from '../../../middleware/logger';
 const log = createLogger('account');
 
-function generateToken(length) {
+function generateToken(length: number) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let token = '';
   for (let i = 0; i < length; i++) {
@@ -185,8 +185,8 @@ export const loginAccount = async (req: Request, res: Response) => {
       message: 'Message FOR EVENT',
       start: '2020/12/30 00:05:00',
     },
-    game_id: doc.game_id,
-    gender: doc.model_info.gender,
+    game_id: doc!.game_id,
+    gender: doc!.model_info?.gender,
     is_review: 1,
     now_sale_premium_login_bonus_id: 0,
     popup_info: [
@@ -238,8 +238,8 @@ export const loginAccount = async (req: Request, res: Response) => {
         },
       },
     },
-    tutorial_step: doc.tutorial_step,
-    user_id: doc.user_id,
+    tutorial_step: doc!.tutorial_step,
+    user_id: doc!.user_id,
   };
 
   const return_login_bonus_info_active = false;

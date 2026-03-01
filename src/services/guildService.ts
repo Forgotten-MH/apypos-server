@@ -6,9 +6,9 @@ const log = createLogger('guildService');
 
 
 export const generateGuildId = async (): Promise<string> => {
-  let gid: string;
+  let gid = '';
   let exists = true;
-  
+
   while (exists) {
     gid = Math.floor(100000 + Math.random() * 900000).toString();
     const guild = await Guild.findOne({ gid });
@@ -20,9 +20,9 @@ export const generateGuildId = async (): Promise<string> => {
 
 
 export const generateSearchId = async (): Promise<string> => {
-  let searchId: string;
+  let searchId = '';
   let exists = true;
-  
+
   while (exists) {
     searchId = Array.from({ length: 8 }, () => {
       const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';

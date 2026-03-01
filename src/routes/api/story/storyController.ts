@@ -3,16 +3,79 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 const log = createLogger('story');
-const updateNodeList = (oceanList, mst_ocean_id, mst_part_id, newNode) => {
+
+interface Node {
+  is_collection_node: number;
+  mst_node_id: number;
+  mst_story_id: number;
+  state: number;
+}
+
+interface NoteContent {
+  mst_note_content_id: number;
+  state: number;
+}
+
+interface Part {
+  mst_part_id: number;
+  node_list: Node[];
+  exploration_note: {
+    note_contents: NoteContent[];
+    progress: number;
+  };
+}
+
+interface Ocean {
+  mst_ocean_id: number;
+  part_list: Part[];
+}
+
+interface Augite {
+  amount: number;
+  mst_augite_id: number;
+  mst_monument_type_id: number;
+}
+
+interface Monument {
+  augite: Augite[];
+  hr: number;
+  mlv: {
+    atk: number;
+    def: number;
+    hp: number;
+    sp: number;
+  };
+}
+
+interface PopItem {
+  item_list: {
+    pop_id: number;
+    monument?: {
+      augite: Augite[];
+      hr: number;
+      mlv: {
+        atk: number;
+        def: number;
+        hp: number;
+        sp: number;
+      };
+    };
+  };
+}
+
+interface OpenNode {
+  mst_node_id: number;
+}
+
+const updateNodeList = (oceanList: Ocean[], mst_ocean_id: number, mst_part_id: number, newNode: Node) => {
   const ocean = oceanList.find((ocean) => ocean.mst_ocean_id === mst_ocean_id);
 
   if (ocean) {
     const part = ocean.part_list.find(
-      (part) => part.mst_part_id === mst_part_id
+      (part: Part) => part.mst_part_id === mst_part_id
     );
 
     if (part) {
-      // Add the new node to the node_list
       part.node_list.push(newNode);
       log.debug('Node added successfully.');
     } else {
@@ -24,23 +87,23 @@ const updateNodeList = (oceanList, mst_ocean_id, mst_part_id, newNode) => {
 };
 
 const updateNodeState = (
-  oceanList,
-  mst_ocean_id,
-  mst_part_id,
-  mst_node_id,
-  mst_story_id,
-  newState
+  oceanList: Ocean[],
+  mst_ocean_id: number,
+  mst_part_id: number,
+  mst_node_id: number,
+  mst_story_id: number,
+  newState: number
 ) => {
-  const ocean = oceanList.find((ocean) => ocean.mst_ocean_id === mst_ocean_id);
+  const ocean = oceanList.find((ocean: Ocean) => ocean.mst_ocean_id === mst_ocean_id);
 
   if (ocean) {
     const part = ocean.part_list.find(
-      (part) => part.mst_part_id === mst_part_id
+      (part: Part) => part.mst_part_id === mst_part_id
     );
 
     if (part) {
       const node = part.node_list.find(
-        (node) =>
+        (node: Node) =>
           node.mst_node_id === mst_node_id && node.mst_story_id === mst_story_id
       );
 
@@ -59,7 +122,7 @@ const updateNodeState = (
   }
 };
 
-const updateMonument = (monument, augiteObj, hr, atk, def, hp, sp) => {
+const updateMonument = (monument: Monument, augiteObj: Augite, hr: number, atk: number, def: number, hp: number, sp: number) => {
   log.debug('old monumnet', monument);
 
   monument.augite.push(augiteObj);
@@ -73,22 +136,22 @@ const updateMonument = (monument, augiteObj, hr, atk, def, hp, sp) => {
 };
 
 export const updatePartNoteState = (
-  oceanList,
-  mst_ocean_id,
-  mst_part_id,
-  mst_note_content_id,
-  newState
+  oceanList: Ocean[],
+  mst_ocean_id: number,
+  mst_part_id: number,
+  mst_note_content_id: number,
+  newState: number
 ) => {
-  const ocean = oceanList.find((ocean) => ocean.mst_ocean_id === mst_ocean_id);
+  const ocean = oceanList.find((ocean: Ocean) => ocean.mst_ocean_id === mst_ocean_id);
 
   if (ocean) {
     const part = ocean.part_list.find(
-      (part) => part.mst_part_id === mst_part_id
+      (part: Part) => part.mst_part_id === mst_part_id
     );
 
     if (part) {
       const note = part.exploration_note.note_contents.find(
-        (note) => note.mst_note_content_id === mst_note_content_id
+        (note: NoteContent) => note.mst_note_content_id === mst_note_content_id
       );
 
       if (note) {
@@ -117,17 +180,11 @@ export const end = async (req: Request, res: Response) => {
   const data = {
     mst_part_id: 0,
     open_list: {
-      open_node: [],
-      open_ocean: [],
-      open_part: [],
+      open_node: [] as OpenNode[],
+      open_ocean: [] as unknown[],
+      open_part: [] as unknown[],
     },
-    pop_list: [
-      //   {
-      //   item_list:{
-      //     pop_id:0,
-      //   }
-      // }
-    ],
+    pop_list: [] as PopItem[],
   };
 
   if (
@@ -153,9 +210,9 @@ export const end = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, 2004); //Not authenticated
     }
     
-    updateNodeList(doc.ocean_list, mst_ocean_id, mst_part_id, newNode);
+    updateNodeList(doc.ocean_list as unknown as Ocean[], mst_ocean_id, mst_part_id, newNode);
     updateNodeState(
-      doc.ocean_list,
+      doc.ocean_list as unknown as Ocean[],
       mst_ocean_id,
       mst_part_id,
       mst_node_id,
@@ -210,10 +267,10 @@ export const end = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, 2004); //Not authenticated
     }
 
-    updateMonument(doc.box.monument, augiteObj,hr, atk, def, hp, sp);
+    updateMonument(doc.box!.monument as unknown as Monument, augiteObj, hr, atk, def, hp, sp);
 
     updatePartNoteState(
-      doc.ocean_list,
+      doc.ocean_list as unknown as Ocean[],
       mst_ocean_id,
       mst_part_id,
       mst_note_content_id,

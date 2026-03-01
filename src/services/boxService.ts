@@ -40,17 +40,20 @@ export class BoxService {
   }
 
   static incrementZeny(box: Box, amount: number): void {
-    box.zeny += amount;
+    box.zeny = (box.zeny || 0) + amount;
   }
 
-  static updateMonumentLevel(box: Box, stat: keyof Box['monument']['mlv'], amount: number): void {
-    if (!box.monument.mlv.hasOwnProperty(stat)) {
+  static updateMonumentLevel(box: Box, stat: 'atk' | 'def' | 'hp' | 'sp', amount: number): void {
+    if (!box.monument?.mlv || !box.monument.mlv.hasOwnProperty(stat)) {
       throw new Error(`Invalid monument stat: ${String(stat)}`);
     }
     box.monument.mlv[stat] += amount;
   }
 
-  static setCapacity(box: Box, key: keyof Box['capacity'], value: number): void {
+  static setCapacity(box: Box, key: string, value: number): void {
+    if (!box.capacity) {
+      throw new Error('Box capacity is undefined');
+    }
     box.capacity[key] = value;
   }
 }
