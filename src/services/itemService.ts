@@ -37,7 +37,6 @@ interface ItemList {
   powers: RewardItem[]
   stamp_sets: RewardItem[]
   zenny: number
-  [key: string]: unknown
 }
 
 function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
@@ -209,9 +208,10 @@ function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
       case 'stamp_set':
       case 'collection':
         // pluralize type for key matching
-        const listKey = type + (type.endsWith('s') ? '' : 's');
-        if (Array.isArray(item_list[listKey])) {
-          item_list[listKey].push({
+        const listKey = type + (type.endsWith('s') ? '' : 's') as keyof ItemList;
+        const list = item_list[listKey as keyof ItemList];
+        if (Array.isArray(list)) {
+          (list as RewardItem[]).push({
             type,
             amount,
             id,

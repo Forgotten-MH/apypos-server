@@ -3,7 +3,8 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import Present from '../../../model/presents';
-import { Box, BoxService } from '../../../services/boxService';
+import type { Box } from '../../../types/game';
+import { BoxService } from '../../../services/boxService';
 const log = createLogger('present');
 
 export const presentSync = async (req: Request, res: Response) => {

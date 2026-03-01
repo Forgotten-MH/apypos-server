@@ -821,7 +821,7 @@ export const memberList = async (req: Request, res: Response) => {
         return null;
       }
 
-      const memberData = memberUser.toObject() as unknown as GuildMemberData;
+      const memberData = memberUser.toObject() as GuildMemberData;
 
       return {
         comment: memberData.comment || '',

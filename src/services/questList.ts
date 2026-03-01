@@ -57,13 +57,13 @@ function condenseAutoDeleteArrays(obj: unknown) {
 condenseAutoDeleteArrays(questSheets);
 
 async function enrichAndPersist() {
-  const errors: unknown[] = [];
-  const allBlocks: unknown[] = [];
+  const errors: Record<string, number | string | number[]>[] = [];
+  const allBlocks: number[] = [];
   for (const obj of questSheets.rQuestSheet.mQuestDataList) {
     try {
-      const blocks: unknown[] = (await getBlockHashsFromQuestHash(
+      const blocks = (await getBlockHashsFromQuestHash(
         obj.mQuestID
-      )) as unknown[];
+      )) as number[];
       obj.mBlocks = blocks;
       blocks.map((block) => {
         allBlocks.push(block);
@@ -82,7 +82,7 @@ async function enrichAndPersist() {
     }
   }
   questSheets.rQuestSheet.mQuestDataList.map(
-    (obj: Record<string, unknown>) => {
+    (obj: Record<string, number | string | number[]>) => {
       if (
         !obj.mBlocks ||
         (Array.isArray(obj.mBlocks) && obj.mBlocks.length === 0)

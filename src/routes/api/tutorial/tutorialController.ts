@@ -2,8 +2,9 @@ import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
-import { updatePartNoteState, Ocean } from '../story/storyController';
-import { Box, BoxService } from '../../../services/boxService';
+import { updatePartNoteState } from '../story/storyController';
+import type { Box, Ocean } from '../../../types/game';
+import { BoxService } from '../../../services/boxService';
 const log = createLogger('tutorial');
 // tutorialFlags
 // 110 = is characterCreate

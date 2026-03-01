@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { createLogger } from '../middleware/logger';
+import type { Campaign, OceanObject, RaidInfo } from '../types/game';
 const log = createLogger('oceanService');
 
 interface QuestListItem {
@@ -25,12 +26,12 @@ interface OceanNode {
 
 interface OceanPart {
   mst_part_id: number
-  campaign: unknown[]
+  campaign: Campaign[]
   exploration_note: { note_contents: { mst_note_content_id: number; state: number }[]; progress: number }
   gingira_node_id: number
   node_list: OceanNode[]
-  object_list: unknown[]
-  raid_info: unknown[]
+  object_list: OceanObject[]
+  raid_info: RaidInfo[]
   silver_bonus: number
   state: number
 }

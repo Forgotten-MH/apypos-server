@@ -148,7 +148,7 @@ export const searchGuilds = async (filters: {
   timezone?: number
   recruit?: number
 }) => {
-  const query: Record<string, unknown> = {};
+  const query: Record<string, number | { $regex: string; $options: string }> = {};
 
   if (filters.name) {
     query.name = { $regex: filters.name, $options: 'i' };
@@ -448,7 +448,7 @@ export const leaveGuild = async (uid: string) => {
   return { success: true, disbanded: false };
 };
 
-export const updateGuild = async (gid: string, updates: Record<string, unknown> & { name?: string; rank?: number }) => {
+export const updateGuild = async (gid: string, updates: Record<string, string | number | undefined> & { name?: string; rank?: number }) => {
   const guild = await Guild.findOne({ gid });
   if (!guild) {
     throw new Error('Guild not found');
@@ -459,7 +459,7 @@ export const updateGuild = async (gid: string, updates: Record<string, unknown> 
   await guild.save();
 
   if (updates.name || updates.rank) {
-    const updateData: Record<string, unknown> = {};
+    const updateData: Record<string, string | number> = {};
     if (updates.name) {
       updateData['guild_info.name'] = updates.name;
     }

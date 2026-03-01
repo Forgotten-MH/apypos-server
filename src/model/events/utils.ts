@@ -1,5 +1,6 @@
 import event_nodes from '../../json/event_nodes.json';
 import { createLogger } from '../../middleware/logger';
+import type { QuestSubtarget } from '../../types/game';
 const log = createLogger('eventUtils');
 export const getDurationFromValue = (value: { getTime(): number } | null | undefined) => {
   if (!value) return null; // Handle cases where the date is not set
@@ -15,7 +16,7 @@ interface EventEntry {
     limited_amount: number
     mst_limited_id: number
     mst_quest_id: number
-    quest_subtargets: unknown[]
+    quest_subtargets: QuestSubtarget[]
     state: number
   }>
 }

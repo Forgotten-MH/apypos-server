@@ -1,22 +1,5 @@
-export type Box = {
-  capacity?: { [key: string]: number }
-  equipments?: unknown[]
-  growth_items?: unknown[]
-  limiteds?: unknown[]
-  matatabis?: unknown[]
-  materials?: unknown[]
-  monument?: {
-    augite?: unknown[]
-    hr?: number
-    mlv?: { atk: number; def: number; hp: number; sp: number }
-  }
-  otomos?: unknown[]
-  partners?: unknown[]
-  payments?: unknown[]
-  points?: unknown[]
-  powers?: unknown[]
-  zeny?: number
-};
+import type { Box } from '../types/game';
+export type { Box };
 
 export class BoxService {
   static addItem<T>(box: Box, field: keyof Box, item: T): void {
@@ -28,10 +11,11 @@ export class BoxService {
     }
   }
 
-  static removeItem<T extends Record<string, unknown>>(box: Box, field: keyof Box, matcher: Partial<T>): void {
-    const list = box[field] as T[];
+  static removeItem<T extends Record<string, number | string>>(box: Box, field: keyof Box, matcher: Partial<T>): void {
+    const boxRecord = box as Record<string, T[] | undefined>;
+    const list = boxRecord[field as string];
     if (Array.isArray(list)) {
-      (box as Record<string, unknown>)[field as string] = list.filter(item => {
+      boxRecord[field as string] = list.filter(item => {
         return !Object.entries(matcher).every(([k, v]) => item[k] === v);
       });
     } else {

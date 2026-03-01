@@ -2,50 +2,12 @@ import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
+import type { Ocean, OceanPart, OceanNode, NoteContent, Augite, Monument } from '../../../types/game';
+export type { Ocean };
 const log = createLogger('story');
 
-interface Node {
-  is_collection_node: number
-  mst_node_id: number
-  mst_story_id: number
-  state: number
-}
-
-interface NoteContent {
-  mst_note_content_id: number
-  state: number
-}
-
-interface Part {
-  mst_part_id: number
-  node_list: Node[]
-  exploration_note: {
-    note_contents: NoteContent[]
-    progress: number
-  }
-}
-
-export interface Ocean {
-  mst_ocean_id: number
-  part_list: Part[]
-}
-
-interface Augite {
-  amount: number
-  mst_augite_id: number
-  mst_monument_type_id: number
-}
-
-interface Monument {
-  augite: Augite[]
-  hr: number
-  mlv: {
-    atk: number
-    def: number
-    hp: number
-    sp: number
-  }
-}
+type Part = OceanPart;
+type Node = OceanNode;
 
 interface PopItem {
   item_list: {
@@ -181,8 +143,8 @@ export const end = async (req: Request, res: Response) => {
     mst_part_id: 0,
     open_list: {
       open_node: [] as OpenNode[],
-      open_ocean: [] as unknown[],
-      open_part: [] as unknown[],
+      open_ocean: [] as { mst_ocean_id: number }[],
+      open_part: [] as { mst_part_id: number }[],
     },
     pop_list: [] as PopItem[],
   };

@@ -20,7 +20,7 @@ import { readFile } from 'fs/promises';
 interface BlockListItem {
   block_idx: number
   block_instance_list: { instance_id: number; serial_no: number }[]
-  drop_list: unknown[]
+  drop_list: never[]
   instance_id: number
   is_insert: number
   is_raid: number
@@ -1184,18 +1184,26 @@ type Node = {
   mst_node_id: number
   day_quest_list?: QuestObject[]
   night_quest_list?: QuestObject[]
-  [key: string]: unknown
+  is_collection_node?: number
+  mst_story_id?: number
+  state?: number
 };
 
 type Part = {
   node_list?: Node[]
-  [key: string]: unknown
+  mst_part_id?: number
+  campaign?: { mst_campaign_id: number; remain_time: number }[]
+  exploration_note?: { note_contents: { mst_note_content_id: number; state: number }[]; progress: number }
+  gingira_node_id?: number
+  object_list?: { mst_object_id: number; state: number }[]
+  raid_info?: { end_remain: number; mst_node_id: number; start_remain: number }[]
+  silver_bonus?: number
+  state?: number
 };
 
 type Ocean = {
   mst_ocean_id: number
   part_list: Part[]
-  [key: string]: unknown
 };
 
 // --- CSV Parser ---
@@ -1350,7 +1358,7 @@ export const islandMapAll = async (req: Request, res: Response) => {
 
   const final_ocean = await enrichOceanData(
     doc.tutorial_step == 0xffff ? full_island : doc.ocean_list.toObject(),
-    doc.cleared_quests as unknown as { mst_quest_id: number; clear_time?: number }[]
+    doc.cleared_quests.toObject() as { mst_quest_id: number; clear_time?: number }[]
   );
   log.debug('FINAL ocean data: %o', final_ocean);
   const data = {
