@@ -1,7 +1,18 @@
 import { app } from './app.js';
 import { makeDownloadList } from './services/initResourceDownloadList.js';
 import mongoose from 'mongoose';
-import { IP, PORT, DB_USER, DB_NAME, DB_PASSWORD, DB_IP, DB_PORT } from './config.js';
+import {
+  IP,
+  PORT,
+  DB_USER,
+  DB_NAME,
+  DB_PASSWORD,
+  DB_IP,
+  DB_PORT,
+  SSL_KEY_PATH,
+  SSL_CERT_PATH,
+  SSL_CA_PATH,
+} from './config.js';
 import { createLogger } from './middleware/logger.js';
 
 const log = createLogger('server');
@@ -19,7 +30,8 @@ import normEvents from './json/norm_events.json' with { type: 'json' };
 import hardEvents from './json/hard_events.json' with { type: 'json' };
 import forbEvents from './json/forb_events.json' with { type: 'json' };
 
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { Server } from 'socket.io';
 import Event from './model/events.js';
 import QuestSheet from './model/questSheet.js';
@@ -34,11 +46,12 @@ import https from 'https';
 import { restoreSessions } from './services/crypto/encryptionHelpers.js';
 
 const useHttps = PORT === 443;
+const defaultKeysDir = join(import.meta.dirname, '..', 'keys');
 const credentials: https.ServerOptions = useHttps
   ? {
-      key: readFileSync('../keys/private.key'),
-      cert: readFileSync('../keys/certificate.crt'),
-      ca: readFileSync('../keys/certificate.crt'),
+      key: readFileSync(SSL_KEY_PATH || join(defaultKeysDir, 'private.key')),
+      cert: readFileSync(SSL_CERT_PATH || join(defaultKeysDir, 'certificate.crt')),
+      ca: readFileSync(SSL_CA_PATH || SSL_CERT_PATH || join(defaultKeysDir, 'certificate.crt')),
     }
   : {};
 
