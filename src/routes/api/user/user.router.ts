@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import * as userController from './user.controller';
-import * as userModelController from './model/userModel.controller';
-import * as userOtomoTeamController from './otomoteam/userOtomoTeam.controller';
+import * as userController from './user.controller.js';
+import * as userModelController from './model/userModel.controller.js';
+import * as userOtomoTeamController from './otomoteam/userOtomoTeam.controller.js';
 
-import * as userEquipSetController from './equipset/userEquipSet.controller';
+import * as userEquipSetController from './equipset/userEquipSet.controller.js';
 
 const userRouter = Router();
 //User

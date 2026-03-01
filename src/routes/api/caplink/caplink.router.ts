@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { pushModify, pushRegister, pushSetting } from './caplink.controller';
+import { pushModify, pushRegister, pushSetting } from './caplink.controller.js';
 
 const capLinkRouter = Router();
 

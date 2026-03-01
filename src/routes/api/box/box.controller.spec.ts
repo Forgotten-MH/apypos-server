@@ -13,9 +13,9 @@ vi.mock('../../../middleware/logger', () => ({
   }),
 }));
 
-import User from '../../../model/user';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { get, otomoGet, equipLevelup, storageInfo, sale, favoriteSet } from './box.controller';
+import User from '../../../model/user.js';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { get, otomoGet, equipLevelup, storageInfo, sale, favoriteSet } from './box.controller.js';
 
 function mockReqRes(body: Record<string, unknown> = {}) {
   const req = { body, ip: '127.0.0.1', get: vi.fn() } as unknown as Request;

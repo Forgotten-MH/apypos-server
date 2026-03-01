@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { IP, API_NOT_AVAILABLE_MAINTENANCE, PORT, WEB_URL, RES_URL } from '../../config';
-import { createLogger } from '../../middleware/logger';
+import { IP, API_NOT_AVAILABLE_MAINTENANCE, PORT, WEB_URL, RES_URL } from '../../config.js';
+import { createLogger } from '../../middleware/logger.js';
 const log = createLogger('version');
 
 export const getVersionData = (req: Request, res: Response) => {

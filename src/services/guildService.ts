@@ -1,7 +1,7 @@
-import Guild from '../model/guild';
-import User from '../model/user';
-import { generateUniqueId } from './crypto/encryptionHelpers';
-import { createLogger } from '../middleware/logger';
+import Guild from '../model/guild.js';
+import User from '../model/user.js';
+import { generateUniqueId } from './crypto/encryptionHelpers.js';
+import { createLogger } from '../middleware/logger.js';
 const log = createLogger('guildService');
 
 export const generateGuildId = async (): Promise<string> => {

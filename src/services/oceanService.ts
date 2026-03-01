@@ -1,6 +1,6 @@
 import fs from 'fs';
-import { createLogger } from '../middleware/logger';
-import type { Campaign, OceanObject, RaidInfo } from '../types/game';
+import { createLogger } from '../middleware/logger.js';
+import type { Campaign, OceanObject, RaidInfo } from '../types/game.js';
 const log = createLogger('oceanService');
 
 interface QuestListItem {

@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { getDurationFromValue } from './utils';
+import { getDurationFromValue } from './utils.js';
 
 const TicketEventSchema = new mongoose.Schema(
   {

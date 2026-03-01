@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { getDurationFromValue } from './utils';
+import { getDurationFromValue } from './utils.js';
 const AssaultEventSchema = new mongoose.Schema(
   {
     appear_remain: {

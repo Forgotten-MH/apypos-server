@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "Node16",
     "esModuleInterop": true,
     "target": "ES2022",
-    "moduleResolution": "node",
+    "moduleResolution": "Node16",
     "resolveJsonModule": true,
     "sourceMap": true,
     "outDir": "dist",

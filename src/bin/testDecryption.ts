@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import fs from 'fs';
-import { createLogger } from '../middleware/logger';
+import { createLogger } from '../middleware/logger.js';
 const log = createLogger('testDecryption');
 
 const cacheKey = 'K@HW`wQ=O_fAHSoy/bV';

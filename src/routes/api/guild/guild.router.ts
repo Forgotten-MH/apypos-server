@@ -13,7 +13,7 @@ import {
   chatGet,
   mailList,
   memberList,
-} from './guild.controller';
+} from './guild.controller.js';
 
 const guildRouter = Router();
 

@@ -1,14 +1,14 @@
-import augiteSchema from './items/augite';
-import equipmentSchema from './items/equipment';
-import growthItemSchema from './items/growth_item';
-import limitedSchema from './items/limited';
-import matatabiSchema from './items/matatabi';
-import materialSchema from './items/material';
-import paymentSchema from './items/payment';
-import pointSchema from './items/point';
-import powerSchema from './items/power';
-import otomoSchema from './sidekicks/otomo';
-import partnerSchema from './sidekicks/partner';
+import augiteSchema from './items/augite.js';
+import equipmentSchema from './items/equipment.js';
+import growthItemSchema from './items/growth_item.js';
+import limitedSchema from './items/limited.js';
+import matatabiSchema from './items/matatabi.js';
+import materialSchema from './items/material.js';
+import paymentSchema from './items/payment.js';
+import pointSchema from './items/point.js';
+import powerSchema from './items/power.js';
+import otomoSchema from './sidekicks/otomo.js';
+import partnerSchema from './sidekicks/partner.js';
 
 import mongoose from 'mongoose';
 

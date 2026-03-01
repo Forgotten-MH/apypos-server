@@ -1,4 +1,4 @@
-import { createLogger } from '../middleware/logger';
+import { createLogger } from '../middleware/logger.js';
 const log = createLogger('itemService');
 
 interface RewardEntry {

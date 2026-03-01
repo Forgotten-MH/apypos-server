@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { IS_MAINTENANCE } from '../../../config';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { IS_MAINTENANCE } from '../../../config.js';
 
 export const checkMaintenance = (req: Request, res: Response) => {
   const data = {

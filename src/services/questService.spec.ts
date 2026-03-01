@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import fs from 'fs';
-import { lookupValueFromFile } from './questService';
+import { lookupValueFromFile } from './questService.js';
 
 // Mock fs.readFile to avoid depending on real CSV files
 vi.mock('fs');

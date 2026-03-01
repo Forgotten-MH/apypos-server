@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { createLogger } from '../../../middleware/logger';
-import User from '../../../model/user';
-import { calcMstId as _calcMstId } from '../../../services/defineService';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { createLogger } from '../../../middleware/logger.js';
+import User from '../../../model/user.js';
+import { calcMstId as _calcMstId } from '../../../services/defineService.js';
 const log = createLogger('box');
 
 export const get = async (req: Request, res: Response) => {

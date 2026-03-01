@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { getDurationFromValue } from './utils';
+import { getDurationFromValue } from './utils.js';
 const ScoreEventSchema = new mongoose.Schema(
   {
     big_node_banner_id: { type: Number, required: true },

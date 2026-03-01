@@ -1,5 +1,8 @@
+import { fileURLToPath } from 'node:url';
 import { Request, Response } from 'express';
 import path from 'path';
+
+const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
 
 const huntersWebUrl = 'https://localhost/'; //this is the hunters.mh-xr.jp
 

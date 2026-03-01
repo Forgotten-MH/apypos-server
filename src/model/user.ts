@@ -1,17 +1,17 @@
 import mongoose, { Document } from 'mongoose';
-import OceanSchema from './ocean';
-import equipmentSchema from './items/equipment';
-import growthItemSchema from './items/growth_item';
-import limitedSchema from './items/limited';
-import matatabiSchema from './items/matatabi';
-import materialSchema from './items/material';
-import paymentSchema from './items/payment';
-import pointSchema from './items/point';
-import powerSchema from './items/power';
-import augiteSchema from './items/augite';
-import otomoSchema from './sidekicks/otomo';
-import partnerSchema from './sidekicks/partner';
-import otomoTeamSchema from './sidekicks/otomoTeam';
+import OceanSchema from './ocean.js';
+import equipmentSchema from './items/equipment.js';
+import growthItemSchema from './items/growth_item.js';
+import limitedSchema from './items/limited.js';
+import matatabiSchema from './items/matatabi.js';
+import materialSchema from './items/material.js';
+import paymentSchema from './items/payment.js';
+import pointSchema from './items/point.js';
+import powerSchema from './items/power.js';
+import augiteSchema from './items/augite.js';
+import otomoSchema from './sidekicks/otomo.js';
+import partnerSchema from './sidekicks/partner.js';
+import otomoTeamSchema from './sidekicks/otomoTeam.js';
 import type {
   Box,
   Ocean,
@@ -23,7 +23,7 @@ import type {
   GuildInfo,
   NyankenCooldown,
   SelectedPartner,
-} from '../types/game';
+} from '../types/game.js';
 const { Schema, model } = mongoose;
 
 export interface IUser extends Document {

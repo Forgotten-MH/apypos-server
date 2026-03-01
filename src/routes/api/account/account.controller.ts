@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import User from '../../../model/user';
-import { createLogger } from '../../../middleware/logger';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import User from '../../../model/user.js';
+import { createLogger } from '../../../middleware/logger.js';
 const log = createLogger('account');
 
 function generateToken(length: number) {

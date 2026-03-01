@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { TimeService } from './timeService';
+import { TimeService } from './timeService.js';
 
 describe('TimeService', () => {
   let timeService: TimeService;

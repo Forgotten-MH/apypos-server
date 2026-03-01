@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../services/crypto/encryptionHelpers';
-import { createLogger } from '../../middleware/logger';
+import { encryptAndSend } from '../../services/crypto/encryptionHelpers.js';
+import { createLogger } from '../../middleware/logger.js';
 const log = createLogger('notImplemented');
 
 export const blankResponseEncrypted = (req: Request, res: Response) => {

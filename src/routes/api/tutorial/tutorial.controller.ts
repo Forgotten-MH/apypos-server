@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { createLogger } from '../../../middleware/logger';
-import User from '../../../model/user';
-import { updatePartNoteState } from '../story/story.controller';
-import type { Box } from '../../../types/game';
-import { addItem } from '../../../services/boxService';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { createLogger } from '../../../middleware/logger.js';
+import User from '../../../model/user.js';
+import { updatePartNoteState } from '../story/story.controller.js';
+import type { Box } from '../../../types/game.js';
+import { addItem } from '../../../services/boxService.js';
 const log = createLogger('tutorial');
 // tutorialFlags
 // 110 = is characterCreate

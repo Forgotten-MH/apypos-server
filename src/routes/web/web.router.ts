@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as webController from './web.controller';
+import * as webController from './web.controller.js';
 
 const webRouter = Router();
 

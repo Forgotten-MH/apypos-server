@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import * as boxController from './box.controller';
-import * as notImplemented from '../notImplemented.controller';
+import * as boxController from './box.controller.js';
+import * as notImplemented from '../notImplemented.controller.js';
 
 const boxRouter = Router();
 

@@ -12,14 +12,14 @@ vi.mock('../../../../middleware/logger', () => ({
   }),
 }));
 
-import User from '../../../../model/user';
-import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers';
+import User from '../../../../model/user.js';
+import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers.js';
 import {
   equipSetGet,
   equipSetSet,
   equipSetSocialGet,
   equipSetSocialSet,
-} from './userEquipSet.controller';
+} from './userEquipSet.controller.js';
 
 function mockReqRes(body: Record<string, unknown> = {}) {
   const req = { body, ip: '127.0.0.1', get: vi.fn() } as unknown as Request;

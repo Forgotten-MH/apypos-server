@@ -1,15 +1,6 @@
-let Blowfish: typeof import('egoroof-blowfish').Blowfish;
-let blowfishReady: Promise<void>;
+import { Blowfish } from 'egoroof-blowfish';
 
 const KEY_HEX = 'FFFFFFFF00000000FFFFFFFF000000006E7900002D5700004F3F2D5600000000';
-
-function init() {
-  blowfishReady = import('egoroof-blowfish').then((mod) => {
-    Blowfish = mod.Blowfish;
-  });
-  return blowfishReady;
-}
-void init();
 
 export class EncryptionService {
   private readonly key = Buffer.from(KEY_HEX, 'hex');
@@ -24,5 +15,3 @@ export class EncryptionService {
     return bf.decode(data, Blowfish.TYPE.STRING);
   }
 }
-
-export { blowfishReady };

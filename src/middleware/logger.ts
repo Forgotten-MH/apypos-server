@@ -1,5 +1,8 @@
+import { fileURLToPath } from 'node:url';
 import winston from 'winston';
 import * as path from 'path';
+
+const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
 
 const level = process.env.DEBUG === 'true' ? 'debug' : 'info';
 

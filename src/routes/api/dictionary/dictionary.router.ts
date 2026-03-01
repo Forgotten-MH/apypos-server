@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as dictionaryController from './dictionary.controller';
+import * as dictionaryController from './dictionary.controller.js';
 
 const dictionaryRouter = Router();
 

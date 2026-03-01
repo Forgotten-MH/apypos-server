@@ -1,8 +1,8 @@
-import { app } from './app';
-import { makeDownloadList } from './services/initResourceDownloadList';
+import { app } from './app.js';
+import { makeDownloadList } from './services/initResourceDownloadList.js';
 import mongoose from 'mongoose';
-import { IP, PORT, DB_USER, DB_NAME, DB_PASSWORD, DB_IP, DB_PORT } from './config';
-import { createLogger } from './middleware/logger';
+import { IP, PORT, DB_USER, DB_NAME, DB_PASSWORD, DB_IP, DB_PORT } from './config.js';
+import { createLogger } from './middleware/logger.js';
 
 const log = createLogger('server');
 import normalTutorialQuestSheets from './json/questDB/normal.extended.complete.json';
@@ -21,17 +21,17 @@ import forbEvents from './json/forb_events.json';
 
 import { readFileSync } from 'fs';
 import { Server } from 'socket.io';
-import Event from './model/events';
-import QuestSheet from './model/questSheet';
+import Event from './model/events.js';
+import QuestSheet from './model/questSheet.js';
 
-import { onConnect } from './multiServer';
-import AssualtEvents from './model/events/assualts';
-import TicketEvents from './model/events/tickets';
-import ScoreEvents from './model/events/score';
+import { onConnect } from './multiServer.js';
+import AssualtEvents from './model/events/assualts.js';
+import TicketEvents from './model/events/tickets.js';
+import ScoreEvents from './model/events/score.js';
 
 import http from 'http';
 import https from 'https';
-import { restoreSessions } from './services/crypto/encryptionHelpers';
+import { restoreSessions } from './services/crypto/encryptionHelpers.js';
 
 const useHttps = PORT === 443;
 const credentials: https.ServerOptions = useHttps

@@ -9,8 +9,8 @@ import {
   verifySessionToken,
   generateUniqueId,
   findSessionsByUser,
-} from './encryptionHelpers';
-import { EncryptionService } from './encryptionService';
+} from './encryptionHelpers.js';
+import { EncryptionService } from './encryptionService.js';
 
 describe('encryptionHelpers - session management', () => {
   beforeEach(() => {

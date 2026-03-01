@@ -1,9 +1,9 @@
 import { Response, Request } from 'express';
-import { EncryptionService } from './encryptionService';
-import { TimeService } from '../timeService';
+import { EncryptionService } from './encryptionService.js';
+import { TimeService } from '../timeService.js';
 import * as crypto from 'crypto';
-import { createLogger } from '../../middleware/logger';
-import Session from '../../model/session';
+import { createLogger } from '../../middleware/logger.js';
+import Session from '../../model/session.js';
 
 const log = createLogger('session');
 

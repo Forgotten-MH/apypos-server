@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { createLogger } from '../../../middleware/logger';
-import User from '../../../model/user';
-import Present from '../../../model/presents';
-import { addItem } from '../../../services/boxService';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { createLogger } from '../../../middleware/logger.js';
+import User from '../../../model/user.js';
+import Present from '../../../model/presents.js';
+import { addItem } from '../../../services/boxService.js';
 const log = createLogger('present');
 
 export const presentSync = async (req: Request, res: Response) => {
@@ -41,7 +41,7 @@ export const presentReceive = async (req: Request, res: Response) => {
       _id: { $in: requestedIdsToBePutInBox },
     });
 
-    type BoxKey = keyof import('../../../types/game').Box;
+    type BoxKey = keyof import('../../../types/game.js').Box;
     await Promise.all(
       presents.map(async (present) => {
         for (const [key, value] of Object.entries(present.toObject().content)) {

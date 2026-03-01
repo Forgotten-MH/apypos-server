@@ -1,8 +1,11 @@
+import { fileURLToPath } from 'node:url';
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { createLogger } from '../../../middleware/logger';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { createLogger } from '../../../middleware/logger.js';
 import { promises as fs } from 'fs';
 import path from 'path';
+
+const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
 import crcjam from 'crc/crcjam';
 const log = createLogger('banner');
 

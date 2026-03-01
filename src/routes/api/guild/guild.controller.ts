@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import * as guildService from '../../../services/guildService';
-import User from '../../../model/user';
-import { createLogger } from '../../../middleware/logger';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import * as guildService from '../../../services/guildService.js';
+import User from '../../../model/user.js';
+import { createLogger } from '../../../middleware/logger.js';
 const log = createLogger('guild');
 
 interface EquipPiece {

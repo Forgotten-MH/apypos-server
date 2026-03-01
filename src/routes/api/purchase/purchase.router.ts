@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import * as notImplementedController from '../notImplemented.controller';
-import { purchaseList } from './purchase.controller';
+import * as notImplementedController from '../notImplemented.controller.js';
+import { purchaseList } from './purchase.controller.js';
 
 const purchaseRouter = Router();
 

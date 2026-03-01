@@ -1,8 +1,11 @@
-import { getBlockHashsFromQuestHash, getQuestNameFromQuestHash } from './questService';
+import { fileURLToPath } from 'node:url';
+import { getBlockHashsFromQuestHash, getQuestNameFromQuestHash } from './questService.js';
 import * as fs from 'fs/promises';
 import { readFileSync } from 'fs';
 import * as path from 'path';
-import { createLogger } from '../middleware/logger';
+
+const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
+import { createLogger } from '../middleware/logger.js';
 const log = createLogger('questList');
 
 const questType = process.argv[2] || 'event';

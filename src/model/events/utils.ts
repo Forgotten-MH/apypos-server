@@ -1,6 +1,6 @@
 import event_nodes from '../../json/event_nodes.json';
-import { createLogger } from '../../middleware/logger';
-import type { QuestSubtarget } from '../../types/game';
+import { createLogger } from '../../middleware/logger.js';
+import type { QuestSubtarget } from '../../types/game.js';
 const log = createLogger('eventUtils');
 export const getDurationFromValue = (value: { getTime(): number } | null | undefined) => {
   if (!value) return null; // Handle cases where the date is not set

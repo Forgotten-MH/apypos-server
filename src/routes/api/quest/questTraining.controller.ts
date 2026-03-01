@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { createLogger } from '../../../middleware/logger';
-import { calcMstId } from '../../../services/defineService';
-import User from '../../../model/user';
-import Present from '../../../model/presents';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { createLogger } from '../../../middleware/logger.js';
+import { calcMstId } from '../../../services/defineService.js';
+import User from '../../../model/user.js';
+import Present from '../../../model/presents.js';
 const log = createLogger('questTraining');
 const getRewardItemByQuestId = (questId: number) => {
   switch (questId) {

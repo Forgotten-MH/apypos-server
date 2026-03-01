@@ -4,13 +4,16 @@
 //10004 The selected quest is out of session or does not exist
 //10006 The quest is already in progress
 //10007 Quest not unlocked
+import { fileURLToPath } from 'node:url';
 import path from 'path';
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { createLogger } from '../../../middleware/logger';
-import User from '../../../model/user';
-import Event from '../../../model/events';
-import AssualtEvents from '../../../model/events/assualts';
+
+const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { createLogger } from '../../../middleware/logger.js';
+import User from '../../../model/user.js';
+import Event from '../../../model/events.js';
+import AssualtEvents from '../../../model/events/assualts.js';
 const log = createLogger('quest');
 
 import full_island from '../../../json/full_enabled_state.json';
@@ -27,13 +30,13 @@ interface BlockListItem {
   mst_block_id: number;
   repop_list: { amount: number; serial_no: number }[];
 }
-import QuestSheet from '../../../model/questSheet';
-import { enrichEvent } from '../../../model/events/utils';
-import M16Events from '../../../model/events/m16';
-import ScoreEvents from '../../../model/events/score';
-import StandingEvents from '../../../model/events/standing';
-import TicketEvents from '../../../model/events/tickets';
-import TourEvents from '../../../model/events/tour';
+import QuestSheet from '../../../model/questSheet.js';
+import { enrichEvent } from '../../../model/events/utils.js';
+import M16Events from '../../../model/events/m16.js';
+import ScoreEvents from '../../../model/events/score.js';
+import StandingEvents from '../../../model/events/standing.js';
+import TicketEvents from '../../../model/events/tickets.js';
+import TourEvents from '../../../model/events/tour.js';
 
 export const questProgress = (req: Request, res: Response) => {
   const data = {

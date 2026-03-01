@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { createLogger } from '../../../middleware/logger';
-import User from '../../../model/user';
-import Present from '../../../model/presents';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { createLogger } from '../../../middleware/logger.js';
+import User from '../../../model/user.js';
+import Present from '../../../model/presents.js';
 const log = createLogger('notice');
 
 export const get = async (req: Request, res: Response) => {

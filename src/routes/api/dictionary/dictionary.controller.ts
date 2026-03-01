@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 
 export const getEquipment = (req: Request, res: Response) => {
   const data = {

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as multiController from './multi.controller';
+import * as multiController from './multi.controller.js';
 
 const multiRouter = Router();
 multiRouter.post('/room/reserve', multiController.roomReserve);

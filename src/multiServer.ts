@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io';
-import { createMaintenancePacket, createChatPacket, parseHeader, createHeader } from './multiUtils';
-import { createLogger } from './middleware/logger';
+import { createMaintenancePacket, createChatPacket, parseHeader, createHeader } from './multiUtils.js';
+import { createLogger } from './middleware/logger.js';
 const log = createLogger('multiServer');
 
 //Client Sends: host_change_request, lock, unlock, kick, entry, cancel, data

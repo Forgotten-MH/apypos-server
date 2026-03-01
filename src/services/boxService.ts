@@ -1,4 +1,4 @@
-import type { Box } from '../types/game';
+import type { Box } from '../types/game.js';
 export type { Box };
 
 export function addItem(box: Box, field: keyof Box, item: unknown): void {

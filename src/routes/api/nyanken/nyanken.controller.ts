@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 
 export const progress = (req: Request, res: Response) => {
   //Initial Load

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as versionController from './version.controller';
+import * as versionController from './version.controller.js';
 
 const versionRouter = Router();
 

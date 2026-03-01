@@ -1,10 +1,13 @@
+import { fileURLToPath } from 'node:url';
 import express from 'express';
-import routes from './routes/routes';
+
+const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
+import routes from './routes/routes.js';
 import expressWinston from 'express-winston';
-import { logger } from './middleware/logger';
-import { createLogger } from './middleware/logger';
+import { logger } from './middleware/logger.js';
+import { createLogger } from './middleware/logger.js';
 import winston from 'winston';
-import { decryptAndParse } from './services/crypto/encryptionHelpers';
+import { decryptAndParse } from './services/crypto/encryptionHelpers.js';
 
 const log = createLogger('app');
 

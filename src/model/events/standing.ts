@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { getDurationFromValue } from './utils';
+import { getDurationFromValue } from './utils.js';
 const StandingEventSchema = new mongoose.Schema(
   {
     recommended_flag: { type: Number, default: 0 },

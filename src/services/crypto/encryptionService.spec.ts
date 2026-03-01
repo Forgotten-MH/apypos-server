@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeAll } from 'vitest';
-import { EncryptionService, blowfishReady } from './encryptionService';
+import { describe, it, expect } from 'vitest';
+import { EncryptionService } from './encryptionService.js';
 
 // Decrypt with autoPadding disabled returns PKCS5 padding bytes;
 // strip them the same way the production decrypt strips null bytes.
@@ -11,10 +11,6 @@ function stripPadding(s: string): string {
 
 describe('EncryptionService', () => {
   const service = new EncryptionService();
-
-  beforeAll(async () => {
-    await blowfishReady;
-  });
 
   it('encrypt returns a Buffer', () => {
     const result = service.encrypt('hello');

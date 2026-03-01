@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { createLogger } from '../../../middleware/logger';
-import User from '../../../model/user';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { createLogger } from '../../../middleware/logger.js';
+import User from '../../../model/user.js';
 import type {
   Ocean,
   OceanPart,
@@ -9,7 +9,7 @@ import type {
   NoteContent,
   Augite,
   Monument,
-} from '../../../types/game';
+} from '../../../types/game.js';
 export type { Ocean };
 const log = createLogger('story');
 

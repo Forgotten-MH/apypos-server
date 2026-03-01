@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import { IP } from '../../../config';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { IP } from '../../../config.js';
 const server = 'http://' + IP + '/';
 
 export const roomReserve = (req: Request, res: Response) => {
