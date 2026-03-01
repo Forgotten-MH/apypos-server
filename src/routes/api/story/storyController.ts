@@ -25,7 +25,7 @@ interface Part {
   }
 }
 
-interface Ocean {
+export interface Ocean {
   mst_ocean_id: number
   part_list: Part[]
 }

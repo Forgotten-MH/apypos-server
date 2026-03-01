@@ -230,8 +230,8 @@ export const trainingStart = (req: Request, res: Response) => {
   };
   encryptAndSend(data, res, req);
 };
-const isTrainingCleared = (cleared_quests: any[], questID: number | null) => {
-  return cleared_quests.find((q: any) => q.mst_quest_id === questID) ? 1 : 0;
+const isTrainingCleared = (cleared_quests: { mst_quest_id: number }[], questID: number | null) => {
+  return cleared_quests.find((q) => q.mst_quest_id === questID) ? 1 : 0;
 };
 
 export const trainingList = async (req: Request, res: Response) => {

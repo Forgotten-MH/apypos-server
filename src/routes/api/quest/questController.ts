@@ -16,6 +16,17 @@ const log = createLogger('quest');
 import full_island from '../../../json/full_enabled_state.json';
 
 import { readFile } from 'fs/promises';
+
+interface BlockListItem {
+  block_idx: number
+  block_instance_list: { instance_id: number; serial_no: number }[]
+  drop_list: unknown[]
+  instance_id: number
+  is_insert: number
+  is_raid: number
+  mst_block_id: number
+  repop_list: { amount: number; serial_no: number }[]
+}
 import QuestSheet from '../../../model/questSheet';
 import { enrichEvent } from '../../../model/events/utils';
 import M16Events from '../../../model/events/m16';
@@ -91,7 +102,7 @@ export const eventNormalStart = async (req: Request, res: Response) => {
 
   const data = {
     instance_data: {
-      block_list: [] as any[],
+      block_list: [] as BlockListItem[],
       bomb_lot_no: [
         {
           bomb_lottery: [{ bomb_id: 0, weight: 0 }],
@@ -174,7 +185,7 @@ export const eventTicketStart = async (req: Request, res: Response) => {
   const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
   const data = {
     instance_data: {
-      block_list: [] as any[],
+      block_list: [] as BlockListItem[],
       bomb_lot_no: [
         {
           bomb_lottery: [{ bomb_id: 0, weight: 0 }],
@@ -262,7 +273,7 @@ export const eventScoreStart = async (req: Request, res: Response) => {
   const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
   const data = {
     instance_data: {
-      block_list: [] as any[],
+      block_list: [] as BlockListItem[],
       bomb_lot_no: [
         {
           bomb_lottery: [{ bomb_id: 0, weight: 0 }],
@@ -346,7 +357,7 @@ export const eternalStart = async (req: Request, res: Response) => {
   const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
   const data = {
     instance_data: {
-      block_list: [] as any[],
+      block_list: [] as BlockListItem[],
       bomb_lot_num: [],
       bomb_lottery: [],
 
@@ -685,7 +696,7 @@ export const islandStart = async (req: Request, res: Response) => {
   await User.findOneAndUpdate(filter, update, { new: true });
   const data = {
     instance_data: {
-      block_list: [] as any[],
+      block_list: [] as BlockListItem[],
       bomb_lot_no: [
         {
           bomb_lottery: [{ bomb_id: 0, weight: 0 }],
@@ -1339,7 +1350,7 @@ export const islandMapAll = async (req: Request, res: Response) => {
 
   const final_ocean = await enrichOceanData(
     doc.tutorial_step == 0xffff ? full_island : doc.ocean_list.toObject(),
-    doc.cleared_quests as any
+    doc.cleared_quests as unknown as { mst_quest_id: number; clear_time?: number }[]
   );
   log.debug('FINAL ocean data: %o', final_ocean);
   const data = {

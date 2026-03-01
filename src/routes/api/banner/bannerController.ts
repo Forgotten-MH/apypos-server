@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { createLogger } from '../../../middleware/logger';
 import { promises as fs } from 'fs';
@@ -29,7 +30,7 @@ const readFilesFromDir = async (dir: string, data: { download_list: { hash: numb
   }
 };
 
-export const getDlList = async (req: any, res: any) => {
+export const getDlList = async (req: Request, res: Response) => {
   const data = {
     download_list: [],
   };
@@ -49,7 +50,8 @@ export const getDlList = async (req: any, res: any) => {
         );
         break;
       default:
-        return res.status(400);
+        res.status(400).send('Bad Request');
+        return;
     }
 
     encryptAndSend(data, res, req);
