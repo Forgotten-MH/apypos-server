@@ -23,10 +23,28 @@ interface OceanNode {
   state: number
 }
 
+interface OceanPart {
+  mst_part_id: number
+  campaign: unknown[]
+  exploration_note: { note_contents: { mst_note_content_id: number; state: number }[]; progress: number }
+  gingira_node_id: number
+  node_list: OceanNode[]
+  object_list: unknown[]
+  raid_info: unknown[]
+  silver_bonus: number
+  state: number
+}
+
+interface OceanData {
+  ocean_name: string
+  mst_ocean_id: number
+  part_list: OceanPart[]
+}
+
 function parseCSV(csvContent: string) {
   const lines = csvContent.trim().split('\n');
   const headers = lines.shift()!.split(',');
-  const data: Record<string, any> = {};
+  const data: Record<string, OceanData> = {};
 
   for (const line of lines) {
     const values = line.split(',');
@@ -71,7 +89,7 @@ function parseCSV(csvContent: string) {
   return Object.values(data);
 }
 
-function parsePartCSV(csvContent: string, oceanData: any[]) {
+function parsePartCSV(csvContent: string, oceanData: OceanData[]) {
   const lines = csvContent.trim().split('\n');
   const headers = lines.shift()!.split(',');
   const partNodeMap: Record<number, Record<number, number>> = {};
@@ -92,7 +110,7 @@ function parsePartCSV(csvContent: string, oceanData: any[]) {
     partNodeMap[partHash][nodeOrder] = nodeHash;
 
     for (const ocean of oceanData) {
-      const part = ocean.part_list.find((p: any) => p.mst_part_id === partHash);
+      const part = ocean.part_list.find((p) => p.mst_part_id === partHash);
       if (part) {
         part.node_list.push({
           name: mNodeName,
@@ -118,7 +136,7 @@ function parseDramaCSV(
   questData: string,
   questSubtargetSet: string,
   partNodeMap: Record<number, Record<number, number>>,
-  oceanData: any[]
+  oceanData: OceanData[]
 ) {
   const dramaLines = dramaCsv.trim().split('\n');
   const dramaHeaders = dramaLines.shift()!.split(',');
@@ -136,9 +154,9 @@ function parseDramaCSV(
     const nodeHash = partNodeMap[partHash]?.[dramaOrder];
     if (nodeHash !== undefined) {
       for (const ocean of oceanData) {
-        const part = ocean.part_list.find((p: any) => p.mst_part_id === partHash);
+        const part = ocean.part_list.find((p) => p.mst_part_id === partHash);
         if (part) {
-          const node = part.node_list.find((n: any) => n.mst_node_id === nodeHash);
+          const node = part.node_list.find((n) => n.mst_node_id === nodeHash);
           if (node) {
             for (const line of storyLines) {
               const values = line.split(',');
@@ -165,7 +183,7 @@ function parseDramaCSV(
     const note_id = Number(row.mNoteID);
     const note_part_id = Number(row.mPartID);
     for (const ocean of oceanData) {
-      const part = ocean.part_list.find((p: any) => p.mst_part_id == note_part_id);
+      const part = ocean.part_list.find((p) => p.mst_part_id == note_part_id);
       if (part) {
         part.exploration_note.note_contents.push({
           mst_note_content_id: note_id,
@@ -293,7 +311,7 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
     log.error('Error reading ocean file:', err);
     return;
   }
-  let parsedOceanData = parseCSV(oceanData);
+  let parsedOceanData: OceanData[] = parseCSV(oceanData);
 
   fs.readFile('./src/csv/oceans/parts/1-parts.csv', 'utf8', (err, partData) => {
     if (err) {

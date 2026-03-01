@@ -32,8 +32,8 @@ export function lookupValueFromFile(
           }
         }
         resolve(null);
-      } catch (parseError: any) {
-        reject(`Error parsing CSV: ${parseError.message}`);
+      } catch (parseError: unknown) {
+        reject(`Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
       }
     });
   });
@@ -100,8 +100,8 @@ function lookupValuesByPattern(
 
         log.debug('blocks Found:', results);
         resolve(results);
-      } catch (parseError: any) {
-        reject(`Error parsing CSV: ${parseError.message}`);
+      } catch (parseError: unknown) {
+        reject(`Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
       }
     });
   });

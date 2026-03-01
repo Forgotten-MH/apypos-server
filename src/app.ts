@@ -36,9 +36,15 @@ app.use((req, res, next) => {
 
     req.on('end', () => {
       const rawBody = Buffer.concat(data);
-      const decryptedBody = decryptAndParse(rawBody);
-      req.body = decryptedBody;
-      log.debug('Request Body:\n%s', JSON.stringify(req.body, null, '\t'));
+      try {
+        const decryptedBody = decryptAndParse(rawBody);
+        req.body = decryptedBody;
+        log.debug('Request Body:\n%s', JSON.stringify(req.body, null, '\t'));
+      } catch (err) {
+        log.error('Failed to decrypt request body:', err);
+        res.status(400).send('Bad Request');
+        return;
+      }
 
       next();
     });

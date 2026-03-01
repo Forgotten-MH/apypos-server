@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import {
   clearAllSessions,
+  decryptAndParse,
   getSessionCount,
   getAllActiveSessions,
   getSessionStats,
@@ -9,6 +10,7 @@ import {
   generateUniqueId,
   findSessionsByUser,
 } from './encryptionHelpers';
+import { EncryptionService } from './encryptionService';
 
 describe('encryptionHelpers - session management', () => {
   beforeEach(() => {
@@ -58,5 +60,25 @@ describe('encryptionHelpers - session management', () => {
     expect(findSessionsByUser('unknown', 'account')).toEqual([]);
     expect(findSessionsByUser('unknown', 'game')).toEqual([]);
     expect(findSessionsByUser('unknown', 'session')).toEqual([]);
+  });
+});
+
+describe('decryptAndParse', () => {
+  const encryptionService = new EncryptionService();
+
+  it('decrypts and parses a valid encrypted JSON payload', () => {
+    const original = { user_id: 'test123', action: 'login' };
+    const encrypted = encryptionService.encrypt(JSON.stringify(original));
+    const result = decryptAndParse(encrypted);
+    expect(result).toEqual(original);
+  });
+
+  it('throws on random (non-encrypted) data', () => {
+    const garbage = Buffer.from('this is not encrypted data!!!!!!!');
+    expect(() => decryptAndParse(garbage)).toThrow();
+  });
+
+  it('throws on empty buffer', () => {
+    expect(() => decryptAndParse(Buffer.alloc(0))).toThrow();
   });
 });
