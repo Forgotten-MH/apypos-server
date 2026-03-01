@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../../services/crypto/encryptionHelpers";
-import User from "../../../../model/user";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers';
+import User from '../../../../model/user';
 
 
 

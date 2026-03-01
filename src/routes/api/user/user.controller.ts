@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import User from '../../../model/user';
 
 export const rename = async (req: Request, res: Response) => {
   const name = req.body.name;
@@ -42,7 +42,7 @@ export const get = async (req: Request, res: Response) => {
     },
     user_info: {
       capacity_eqp_set: doc.equipset.capacity_eqp_set,
-      caplink_id: "caplnk",
+      caplink_id: 'caplnk',
       comment: doc.comment,
       equip_sets: doc.equipset.equip_sets,
       game_id: doc.game_id,
@@ -71,23 +71,23 @@ export const get = async (req: Request, res: Response) => {
       },
       social_equip: {
         social_arm: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
         social_body: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
         social_head: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
         social_leg: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
         social_waist: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
       },
@@ -127,13 +127,13 @@ export const navigationNews = async (req: Request, res: Response) => {
     data.navigations.push({
       close_at: 3600,
       end_at: 3600,
-      explain: "explain",
+      explain: 'explain',
       is_clear: 0,
       is_reward: 0,
       item_list: {},
       limited_flag: 0,
       mst_navigation_id: 1,
-      name: "Achivement Name",
+      name: 'Achivement Name',
       progress: 0,
       progress_max: 99,
       start_at: 1,
@@ -175,11 +175,11 @@ export const OfferCheck = async (req: Request, res: Response) => {
         additional_point: 0,
         additional_state: 0,
         amount: 1,
-        banner: "coev_04480",
-        explain: "Explain offer...",
+        banner: 'coev_04480',
+        explain: 'Explain offer...',
         id: 0,
         is_started: 1,
-        name: "Offer Name",
+        name: 'Offer Name',
         remain: 3600,
         start: 0,
         state: 1,
@@ -197,7 +197,7 @@ export const navigationAll = (req: Request, res: Response) => {
       {
         close_at: 360000,
         end_at: 36000,
-        explain: "Explaination! Quick brown fox.",
+        explain: 'Explaination! Quick brown fox.',
         is_clear: 0,
         is_reward: 0,
         item_list: {
@@ -210,7 +210,7 @@ export const navigationAll = (req: Request, res: Response) => {
         },
         limited_flag: 0,
         mst_navigation_id: 0,
-        name: "Name 1!",
+        name: 'Name 1!',
         progress: 1,
         progress_max: 6,
         start_at: 0,
@@ -218,7 +218,7 @@ export const navigationAll = (req: Request, res: Response) => {
       {
         close_at: 360000,
         end_at: 36000,
-        explain: "Explaination! Quick brown fox.",
+        explain: 'Explaination! Quick brown fox.',
         is_clear: 0,
         is_reward: 0,
         item_list: {
@@ -231,7 +231,7 @@ export const navigationAll = (req: Request, res: Response) => {
         },
         limited_flag: 1,
         mst_navigation_id: 1,
-        name: "Name 2!",
+        name: 'Name 2!',
         progress: 1,
         progress_max: 6,
         start_at: 0,
@@ -239,7 +239,7 @@ export const navigationAll = (req: Request, res: Response) => {
       {
         close_at: 360000,
         end_at: 36000,
-        explain: "Explaination! Quick brown fox.",
+        explain: 'Explaination! Quick brown fox.',
         is_clear: 0,
         is_reward: 0,
         item_list: {
@@ -252,7 +252,7 @@ export const navigationAll = (req: Request, res: Response) => {
         },
         limited_flag: 2,
         mst_navigation_id: 2,
-        name: "Name 3!",
+        name: 'Name 3!',
         progress: 6,
         progress_max: 6,
         start_at: 0,
@@ -322,7 +322,7 @@ export const titleSet = async (req: Request, res: Response) => {
   const data = {
     user_info: {
       capacity_eqp_set: doc.equipset.capacity_eqp_set,
-      caplink_id: "caplnk",
+      caplink_id: 'caplnk',
       comment: doc.comment,
       equip_sets: doc.equipset.equip_sets,
       game_id: doc.game_id,
@@ -350,23 +350,23 @@ export const titleSet = async (req: Request, res: Response) => {
       },
       social_equip: {
         social_arm: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
         social_body: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
         social_head: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
         social_leg: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
         social_waist: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: 0,
         },
       },
@@ -387,7 +387,7 @@ export const partnerGet = async (req: Request, res: Response) => {
   doc.selected_partner.main_partner_id = req.body.main_partner_id;
   doc.selected_partner.quest_partner_id = req.body.quest_partner_id;
 
-  let update = { selected_partner: doc.selected_partner };
+  const update = { selected_partner: doc.selected_partner };
   doc = await User.findOneAndUpdate(filter, update, {
     new: true,
   });
@@ -409,7 +409,7 @@ export const searchId = async (req: Request, res: Response) => {
 
     player_details: [
       {
-        comment: "<string>",
+        comment: '<string>',
         created: 12345,
 
         equip_arm: {
@@ -488,14 +488,14 @@ export const searchId = async (req: Request, res: Response) => {
         },
 
         friend_at: 1,
-        game_id: "<string>",
+        game_id: '<string>',
 
         guild_info: {
-          gid: "<string>",
+          gid: '<string>',
           is_guild: 1,
           is_same: 1,
           member_type: 1,
-          name: "<string>",
+          name: '<string>',
           rank: 1,
         },
 
@@ -515,7 +515,7 @@ export const gameId = async (req: Request, res: Response) => {
     capacity_eqp_set: 3,
     player_details: [
       {
-        comment: "test",
+        comment: 'test',
         created: 0,
         equip_arm: {
           equip_info: {
@@ -584,21 +584,21 @@ export const gameId = async (req: Request, res: Response) => {
           },
         },
         friend_at: 1,
-        game_id: "abcdef1234567890",
+        game_id: 'abcdef1234567890',
         guild_info: {
-          gid: "5f8e7a2b9a1b3c1d2e3f4a5b",
+          gid: '5f8e7a2b9a1b3c1d2e3f4a5b',
           is_guild: 1,
           is_same: 1,
           member_type: 1,
-          name: "Guild of Heroes",
+          name: 'Guild of Heroes',
           rank: 54,
         },
         is_captomo: 1,
         is_friend: 1,
         last_access_at: 1,
         login_freq: 1,
-        player_id: "abcdef1234567890",
-        player_name: "test",
+        player_id: 'abcdef1234567890',
+        player_name: 'test',
         player_rank: 1,
         player_rank_point: 1,
         player_s_flag: 1,

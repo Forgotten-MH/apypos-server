@@ -53,7 +53,7 @@ ubyte array[pktlength];
 function createMaintenance({ durationSecondsTill }) {
   const pktId = 0x0a;
   const data = Buffer.alloc(4);
-    console.log("Maintenance Message Sent: ",durationSecondsTill)
+    console.log('Maintenance Message Sent: ',durationSecondsTill)
 
   data.writeUInt32LE(durationSecondsTill, 0);
   return { data, pktId };
@@ -79,12 +79,12 @@ export function createMaintenancePacket({ durationSecondsTill }) {
 
 function createChat(message) {
   const data = Buffer.alloc(100);
-  let messageStartIndex = 0x36;
-  let name = "Command User";
-  console.log("Message From: ",name,"-",message)
-  data.write(name, 0x00, "ascii");
+  const messageStartIndex = 0x36;
+  const name = 'Command User';
+  console.log('Message From: ',name,'-',message)
+  data.write(name, 0x00, 'ascii');
   data[0x00 + name.length] = 0x00; // null terminator
-  data.write(message, messageStartIndex, "ascii");
+  data.write(message, messageStartIndex, 'ascii');
   data[messageStartIndex + message.length + 1] = 0x00; // null terminator
 
   return { data };
@@ -142,7 +142,7 @@ function createInfo(msgType) {
 
     case 0x05: // setSelectedRoomNoFromID + string
       data.writeUInt32LE(1234, 4); // Room ID at offset 4
-      data.write("Room42\0", 8, "ascii"); // Null-terminated ASCII string
+      data.write('Room42\0', 8, 'ascii'); // Null-terminated ASCII string
       break;
 
     case 0x06: // setPhase1EndFlg
@@ -182,7 +182,7 @@ export function createInfoPacket() {
   const allowed = [0, 2, 3, 4, 5, 6, 7, 8, 9];
   const msgType = allowed[Math.floor(Math.random() * allowed.length)];
   const playerId = Math.floor(Math.random() * 4);
-  console.log("msg", msgType, "pId", playerId);
+  console.log('msg', msgType, 'pId', playerId);
   const { data, pktId } = createInfo(msgType); // 0 to 9 (0x0 to 0x09)
   const header = createHeader({
     roomNumber: 0x00000000,
@@ -265,7 +265,7 @@ function createRandomBuffer(minLength = 50, maxLength = 300) {
 
 export function parseHeader(buffer) {
   if (buffer.length < 16) {
-    throw new Error("Buffer too short to contain valid header");
+    throw new Error('Buffer too short to contain valid header');
   }
 
   let offset = 0;

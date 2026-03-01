@@ -4,26 +4,26 @@
 //10004 The selected quest is out of session or does not exist
 //10006 The quest is already in progress
 //10007 Quest not unlocked
-import path from "path";
+import path from 'path';
 
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
-import Event from "../../../model/events";
-import AssualtEvents from "../../../model/events/assualts";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import User from '../../../model/user';
+import Event from '../../../model/events';
+import AssualtEvents from '../../../model/events/assualts';
 
 const full_island = require(
-  path.resolve(__dirname, "../../../json/full_enabled_state.json")
+  path.resolve(__dirname, '../../../json/full_enabled_state.json')
 );
 
-import { readFile } from "fs/promises";
-import QuestSheet from "../../../model/questSheet";
-import { enrichEvent } from "../../../model/events/utils";
-import M16Events from "../../../model/events/m16";
-import ScoreEvents from "../../../model/events/score";
-import StandingEvents from "../../../model/events/standing";
-import TicketEvents from "../../../model/events/tickets";
-import TourEvents from "../../../model/events/tour";
+import { readFile } from 'fs/promises';
+import QuestSheet from '../../../model/questSheet';
+import { enrichEvent } from '../../../model/events/utils';
+import M16Events from '../../../model/events/m16';
+import ScoreEvents from '../../../model/events/score';
+import StandingEvents from '../../../model/events/standing';
+import TicketEvents from '../../../model/events/tickets';
+import TourEvents from '../../../model/events/tour';
 
 export const questProgress = (req: Request, res: Response) => {
   const data = {
@@ -52,7 +52,7 @@ export const eventTicketFree = (req: Request, res: Response) => {
         free_group_id: 1,
         max_free_count: 10,
         remain_free_count: 10,
-        text: "TICKET FREE",
+        text: 'TICKET FREE',
       },
     ],
     quests: [
@@ -109,7 +109,7 @@ export const eventNormalStart = async (req: Request, res: Response) => {
         },
       ],
       instance_id: 0,
-      mission_message: "start",
+      mission_message: 'start',
       mst_quest_id: req.body.mst_quest_id,
       multi_leave_check_time: 0,
       point_info: {
@@ -198,7 +198,7 @@ export const eventTicketStart = async (req: Request, res: Response) => {
         },
       ],
       instance_id: 0,
-      mission_message: "start",
+      mission_message: 'start',
       mst_quest_id: req.body.mst_quest_id,
       multi_leave_check_time: 0,
       point_info: {
@@ -292,7 +292,7 @@ export const eventScoreStart = async (req: Request, res: Response) => {
         },
       ],
       instance_id: 0,
-      mission_message: "start",
+      mission_message: 'start',
       mst_quest_id: req.body.mst_quest_id,
       multi_leave_check_time: 0,
       point_info: {
@@ -375,7 +375,7 @@ export const eternalStart = async (req: Request, res: Response) => {
       enable_talisman_partner: 0,
       enemy_point_list: [],
       instance_id: 0,
-      mission_message: "start",
+      mission_message: 'start',
       mst_quest_id: req.body.mst_quest_id,
       multi_leave_check_time: 0,
       point_info: {
@@ -477,7 +477,7 @@ export const eternalAll = (req: Request, res: Response) => {
   //ukyu_0020000 - Wind & Thunder (Kirin)
   //ukyu_0030000 - Explosion (Brachydios)
   const data = {
-    banner_path: "ukyu_00100",
+    banner_path: 'ukyu_00100',
     eternal_collection_list: [
       // {
       //   mst_collection_id: 2416931437,
@@ -486,7 +486,7 @@ export const eternalAll = (req: Request, res: Response) => {
     ],
     eternal_nodes: [
       {
-        banner_path: "ukyu_00100",
+        banner_path: 'ukyu_00100',
         eternal_quest_list: [
           {
             clear_time: 0,
@@ -687,14 +687,14 @@ export const islandStart = async (req: Request, res: Response) => {
   if (!doc) {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
   }
-  let cleared_quests = doc.cleared_quests;
+  const cleared_quests = doc.cleared_quests;
 
   const questExists = cleared_quests.some(
     (q) => q.mst_quest_id === startedQuest
   );
 
   if (!questExists) {
-    console.log("Inserted Quest as seen");
+    console.log('Inserted Quest as seen');
     cleared_quests.push({ mst_quest_id: startedQuest });
   }
 
@@ -721,7 +721,7 @@ export const islandStart = async (req: Request, res: Response) => {
         // },
       ],
       instance_id: 0,
-      mission_message: "start",
+      mission_message: 'start',
       mst_quest_id: startedQuest,
       multi_leave_check_time: 0,
       point_info: {
@@ -771,22 +771,22 @@ export const islandEnd = async (req: Request, res: Response) => {
   const clearTime = req.body.clear_time;
   const filter = { current_session: req.body.session_id };
   const quest = await QuestSheet.findOne({ mQuestID: cleared_quest });
-  console.log("Rewards:", quest?.mRewardItemList);
+  console.log('Rewards:', quest?.mRewardItemList);
   const doc = await User.findOne(filter);
   if (!doc) {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
   }
-  let cleared_quests = doc.cleared_quests;
+  const cleared_quests = doc.cleared_quests;
 
   const questIndex = cleared_quests.findIndex(
     (q) => q.mst_quest_id === cleared_quest
   );
 
   if (questIndex === -1) {
-    console.log("Inserted Quest as seen");
+    console.log('Inserted Quest as seen');
     cleared_quests.push({ mst_quest_id: cleared_quest, clear_time: clearTime });
   } else {
-    console.log("Updated clear_time for existing quest");
+    console.log('Updated clear_time for existing quest');
     cleared_quests[questIndex].clear_time = clearTime;
   }
 
@@ -1157,61 +1157,61 @@ export const islandEnd = async (req: Request, res: Response) => {
 
 // --- Types ---
 type QuestRow = {
-  mQuestID: string;
-  mDayNight: string;
-  [key: string]: string;
+  mQuestID: string
+  mDayNight: string
+  [key: string]: string
 };
 
 type NodeQuestRow = {
-  mNodeHash: string;
-  mQuestHash: string;
-  isCollectionQuest: string;
-  isKeyQuest: string;
-  [key: string]: string;
+  mNodeHash: string
+  mQuestHash: string
+  isCollectionQuest: string
+  isKeyQuest: string
+  [key: string]: string
 };
 
 type QuestSubtargetRow = {
-  mQuestID: string;
-  mSubTargetID: string;
-  mDifficulty: string;
-  mFixedItemTableID: string;
-  [key: string]: string;
+  mQuestID: string
+  mSubTargetID: string
+  mDifficulty: string
+  mFixedItemTableID: string
+  [key: string]: string
 };
 
 // Adjust based on your actual ocean/part/node structure
 type QuestObject = {
-  clear_time: number;
-  is_collection_quest: 0 | 1;
-  is_key_quest: 0 | 1;
-  mst_quest_id: number;
-  quest_subtargets: [];
-  state: number;
+  clear_time: number
+  is_collection_quest: 0 | 1
+  is_key_quest: 0 | 1
+  mst_quest_id: number
+  quest_subtargets: []
+  state: number
 };
 
 type Node = {
-  mst_node_id: number;
-  day_quest_list?: QuestObject[];
-  night_quest_list?: QuestObject[];
-  [key: string]: any;
+  mst_node_id: number
+  day_quest_list?: QuestObject[]
+  night_quest_list?: QuestObject[]
+  [key: string]: any
 };
 
 type Part = {
-  node_list?: Node[];
-  [key: string]: any;
+  node_list?: Node[]
+  [key: string]: any
 };
 
 type Ocean = {
-  mst_ocean_id: number;
-  part_list: Part[];
-  [key: string]: any;
+  mst_ocean_id: number
+  part_list: Part[]
+  [key: string]: any
 };
 
 // --- CSV Parser ---
 function parseCsv<T = Record<string, string>>(csv: string): T[] {
-  const lines = csv.trim().split("\n");
-  const headers = lines.shift()!.split(",");
+  const lines = csv.trim().split('\n');
+  const headers = lines.shift()!.split(',');
   return lines.map((line) => {
-    const values = line.split(",");
+    const values = line.split(',');
     return Object.fromEntries(headers.map((h, i) => [h, values[i]])) as T;
   });
 }
@@ -1226,14 +1226,14 @@ export async function enrichOceanData(
     readFile(
       path.resolve(
         __dirname,
-        "../../../csv/oceans/parts/nodes/2-node-quests.csv"
+        '../../../csv/oceans/parts/nodes/2-node-quests.csv'
       ),
-      "utf8"
+      'utf8'
     ),
-    readFile(path.resolve(__dirname, "../../../csv/questData.csv"), "utf8"),
+    readFile(path.resolve(__dirname, '../../../csv/questData.csv'), 'utf8'),
     readFile(
-      path.resolve(__dirname, "../../../csv/questSubtargetSet.csv"),
-      "utf8"
+      path.resolve(__dirname, '../../../csv/questSubtargetSet.csv'),
+      'utf8'
     ),
   ]);
 
@@ -1269,7 +1269,7 @@ export async function enrichOceanData(
     }
   }
   // Enrich ocean data
-  let enrichedOcean = oceanData.map((ocean) => {
+  const enrichedOcean = oceanData.map((ocean) => {
     const enrichedParts = ocean.part_list.map((part) => {
       if (!part.node_list) return { ...part };
 
@@ -1297,7 +1297,7 @@ export async function enrichOceanData(
 
           const clearTime = clearedQuest?.clear_time ?? 0;
 
-          const isCollectionQuestFlag = nq.isCollectionQuest === "true" ? 1 : 0;
+          const isCollectionQuestFlag = nq.isCollectionQuest === 'true' ? 1 : 0;
 
           const is_collection_quest = clearTime
             ? isCollectionQuestFlag === 1
@@ -1308,7 +1308,7 @@ export async function enrichOceanData(
           const questObj: QuestObject = {
             clear_time: clearTime,
             is_collection_quest,
-            is_key_quest: nq.isKeyQuest === "true" ? 1 : 0,
+            is_key_quest: nq.isKeyQuest === 'true' ? 1 : 0,
             mst_quest_id: questID,
             quest_subtargets: [],
             state: state,
@@ -1356,11 +1356,11 @@ export const islandMapAll = async (req: Request, res: Response) => {
   //   ocean_list: final_ocean,
   // };
 
-  let final_ocean = await enrichOceanData(
+  const final_ocean = await enrichOceanData(
     doc.tutorial_step == 0xffff ? full_island : doc.ocean_list.toObject(),
     doc.cleared_quests
   );
-  console.log("FINAL", final_ocean);
+  console.log('FINAL', final_ocean);
   const data = {
     ocean_list: final_ocean,
   };

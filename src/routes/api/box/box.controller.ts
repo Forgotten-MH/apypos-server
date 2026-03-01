@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
-import { calcMstId } from "../../../services/defineService";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import User from '../../../model/user';
+import { calcMstId } from '../../../services/defineService';
 
 export const get = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
@@ -21,7 +21,7 @@ export const storageInfo = (req: Request, res: Response) => {
       storage_details: [
         {
           max: 200,
-          name: "装備倉庫1",
+          name: '装備倉庫1',
           now: 0,
           storage_idx: 1,
         },
@@ -41,7 +41,7 @@ export const storageGet = (req: Request, res: Response) => {
       storage_details: [
         {
           max: 200,
-          name: "装備倉庫1",
+          name: '装備倉庫1',
           now: 0,
           storage_idx: 1,
         },
@@ -58,7 +58,7 @@ export const storageGet = (req: Request, res: Response) => {
         endAwakeCount: 3,
         endAwakeRemain: 1,
         end_remain: 10,
-        equipment_id: "EQP123456",
+        equipment_id: 'EQP123456',
         favorite: 0,
         is_awake: 1,
         mst_equipment_id: 2006810019,
@@ -214,7 +214,7 @@ export const equipLevelup = async (req: Request, res: Response) => {
 
   if (equipmentIndex === -1) {
     // Equipment not found
-    return encryptAndSend({}, res, req, 2001, 0, "equipment not found");
+    return encryptAndSend({}, res, req, 2001, 0, 'equipment not found');
   }
 
   // Apply level up
@@ -299,7 +299,7 @@ export const potentialupAutoSet = async (req: Request, res: Response) => {
       endAwakeCount: 10,
       endAwakeRemain: 3,
       end_remain: 100,
-      equipment_id: "EQP_ABC123",
+      equipment_id: 'EQP_ABC123',
       evolve_start_time: 1700001234,
       favorite: 0,
       is_awake: 1,
@@ -324,7 +324,7 @@ export const potentialupAutoSet = async (req: Request, res: Response) => {
         endAwakeCount: 5,
         endAwakeRemain: 1,
         end_remain: 50,
-        equipment_id: "EQP_XYZ999",
+        equipment_id: 'EQP_XYZ999',
         evolve_start_time: 1700001111,
         favorite: 1,
         is_awake: 1,
@@ -356,7 +356,7 @@ export const sale = async (req: Request, res: Response) => {
   //todo real data
   const data = {
     equip_sell: {
-      eqp_obj_ids: ["EQP_OBJ_12345", "EQP_OBJ_67890", "EQP_OBJ_ABCDE"],
+      eqp_obj_ids: ['EQP_OBJ_12345', 'EQP_OBJ_67890', 'EQP_OBJ_ABCDE'],
       point: {
         amount: 2500,
         mst_event_point_id: 42,
@@ -397,10 +397,10 @@ export const favoriteSet = async (req: Request, res: Response) => {
 
 export const leveupAuto = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
-  let doc = await User.findOne(filter);
+  const doc = await User.findOne(filter);
   let targetIndex;
   switch (req.body.type) {
-    case "hp":
+    case 'hp':
       // Increment HP
       doc.box.monument.mlv.hp = doc.box.monument.mlv.hp + 1;
       // Increase HR
@@ -417,17 +417,17 @@ export const leveupAuto = async (req: Request, res: Response) => {
       );
       
       break;
-    case "atk":
+    case 'atk':
       doc.box.monument.mlv.atk = doc.box.monument.mlv.atk + 1;
       // Increase HR
       doc.box.monument.hr = doc.box.monument.hr + 1;
       break;
-    case "def":
+    case 'def':
       doc.box.monument.mlv.def = doc.box.monument.mlv.def + 1;
       // Increase HR
       doc.box.monument.hr = doc.box.monument.hr + 1;
       break;
-    case "sp":
+    case 'sp':
       doc.box.monument.mlv.sp = doc.box.monument.mlv.sp + 1;
       // Increase HR
       doc.box.monument.hr = doc.box.monument.hr + 1;

@@ -16,5 +16,6 @@ src/ipconfig.ts
 *.list
 *.fpk
 
+scripts/patcher/out/
 
 /website/

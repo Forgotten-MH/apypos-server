@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const QuestSchema = new mongoose.Schema({
   mst_node_id: Number, // Link quests to a node
@@ -9,5 +9,5 @@ const QuestSchema = new mongoose.Schema({
   time_of_day: String, // "day" or "night"
 });
 
-export default mongoose.model("Quest", QuestSchema);
+export default mongoose.model('Quest', QuestSchema);
 

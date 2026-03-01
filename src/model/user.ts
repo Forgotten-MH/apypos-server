@@ -1,21 +1,21 @@
-import mongoose from "mongoose";
-import OceanSchema from "./ocean";
-import equipmentSchema from "./items/equipment";
-import growthItemSchema from "./items/growth_item";
-import limitedSchema from "./items/limited";
-import matatabiSchema from "./items/matatabi";
-import materialSchema from "./items/material";
-import paymentSchema from "./items/payment";
-import pointSchema from "./items/point";
-import powerSchema from "./items/power";
-import augiteSchema from "./items/augite";
-import otomoSchema from "./sidekicks/otomo";
-import partnerSchema from "./sidekicks/partner";
-import otomoTeamSchema from "./sidekicks/otomoTeam";
+import mongoose from 'mongoose';
+import OceanSchema from './ocean';
+import equipmentSchema from './items/equipment';
+import growthItemSchema from './items/growth_item';
+import limitedSchema from './items/limited';
+import matatabiSchema from './items/matatabi';
+import materialSchema from './items/material';
+import paymentSchema from './items/payment';
+import pointSchema from './items/point';
+import powerSchema from './items/power';
+import augiteSchema from './items/augite';
+import otomoSchema from './sidekicks/otomo';
+import partnerSchema from './sidekicks/partner';
+import otomoTeamSchema from './sidekicks/otomoTeam';
 const { Schema, model } = mongoose;
 const equipPieceSchema = new Schema({
   created: Number,
-  equipment_id: { type: String, default: "NO_EQUIP" },
+  equipment_id: { type: String, default: 'NO_EQUIP' },
   level: Number,
   mst_equipment_id: Number,
   potential: Number,
@@ -23,7 +23,7 @@ const equipPieceSchema = new Schema({
 });
 
 const equipSetPieceSchema = new Schema({
-  equipment_id: { type: String, default: "NO_EQUIP" },
+  equipment_id: { type: String, default: 'NO_EQUIP' },
 });
 const ClearedQuests = new mongoose.Schema({
   mst_quest_id: {
@@ -125,7 +125,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "AD_ARM006",
+          equipment_id: 'AD_ARM006',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -143,7 +143,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "AD_BODY006",
+          equipment_id: 'AD_BODY006',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -161,7 +161,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "AD_LEG006",
+          equipment_id: 'AD_LEG006',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -179,7 +179,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "AD_HEAD006",
+          equipment_id: 'AD_HEAD006',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -197,7 +197,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "WD_SWORD001",
+          equipment_id: 'WD_SWORD001',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -215,7 +215,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "AD_WST006",
+          equipment_id: 'AD_WST006',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -234,7 +234,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "WD_LBOWGUN001",
+          equipment_id: 'WD_LBOWGUN001',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -253,7 +253,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1387",
+          equipment_id: 'OD_OMA1387',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -271,7 +271,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1388",
+          equipment_id: 'OD_OMA1388',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -290,7 +290,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1389",
+          equipment_id: 'OD_OMA1389',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -308,7 +308,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1390",
+          equipment_id: 'OD_OMA1390',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -326,7 +326,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1391",
+          equipment_id: 'OD_OMA1391',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -344,7 +344,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1392",
+          equipment_id: 'OD_OMA1392',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -363,7 +363,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1393",
+          equipment_id: 'OD_OMA1393',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -382,7 +382,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1394",
+          equipment_id: 'OD_OMA1394',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -400,7 +400,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1395",
+          equipment_id: 'OD_OMA1395',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -418,7 +418,7 @@ const userSchema = new Schema({
           endAwakeCount: 0,
           endAwakeRemain: 0,
           end_remain: 0,
-          equipment_id: "OD_OMA1396",
+          equipment_id: 'OD_OMA1396',
           evolve_start_time: 0,
           favorite: 0,
           is_awake: 0,
@@ -451,7 +451,7 @@ const userSchema = new Schema({
           created: 2,
           exp: 1,
           mst_otomo_id: 498951865,
-          otomo_id: "OT_OTOMO_CHAR_ID_118",
+          otomo_id: 'OT_OTOMO_CHAR_ID_118',
           subskill: [],
           attack: 1,
           defense: 1,
@@ -462,7 +462,7 @@ const userSchema = new Schema({
           created: 2,
           exp: 1,
           mst_otomo_id: 1790596655,
-          otomo_id: "OT_OTOMO_CHAR_ID_119",
+          otomo_id: 'OT_OTOMO_CHAR_ID_119',
           subskill: [],
           attack: 1,
           defense: 1,
@@ -483,7 +483,7 @@ const userSchema = new Schema({
           level_cap_tier: 0,
           level_max: 1,
           mst_partner_id: 507850012,
-          partner_id: "PT_CHAR_ID_001",
+          partner_id: 'PT_CHAR_ID_001',
         },
         {
           created: 0,
@@ -493,7 +493,7 @@ const userSchema = new Schema({
           level_cap_tier: 0,
           level_max: 1,
           mst_partner_id: 2269936806,
-          partner_id: "PT_CHAR_ID_002",
+          partner_id: 'PT_CHAR_ID_002',
         },
         {
           created: 0,
@@ -503,7 +503,7 @@ const userSchema = new Schema({
           level_cap_tier: 0,
           level_max: 1,
           mst_partner_id: 4031466544,
-          partner_id: "PT_CHAR_ID_003",
+          partner_id: 'PT_CHAR_ID_003',
         },
         {
           created: 0,
@@ -513,7 +513,7 @@ const userSchema = new Schema({
           level_cap_tier: 0,
           level_max: 1,
           mst_partner_id: 1848629651,
-          partner_id: "PT_CHAR_ID_004",
+          partner_id: 'PT_CHAR_ID_004',
         },
         {
           created: 0,
@@ -523,7 +523,7 @@ const userSchema = new Schema({
           level_cap_tier: 0,
           level_max: 1,
           mst_partner_id: 422111493,
-          partner_id: "PT_CHAR_ID_005",
+          partner_id: 'PT_CHAR_ID_005',
         },
       ],
     },
@@ -542,54 +542,54 @@ const userSchema = new Schema({
           {
             mst_partner_id: 507850012,
             arm: {
-              equipment_id: "NO_EQUIP",
+              equipment_id: 'NO_EQUIP',
             },
             body: {
-              equipment_id: "NO_EQUIP",
+              equipment_id: 'NO_EQUIP',
             },
             leg: {
-              equipment_id: "NO_EQUIP",
+              equipment_id: 'NO_EQUIP',
             },
             head: {
-              equipment_id: "NO_EQUIP",
+              equipment_id: 'NO_EQUIP',
             },
             secret_weapon: {
-              equipment_id: "NO_EQUIP",
+              equipment_id: 'NO_EQUIP',
             },
             talisman: {
-              equipment_id: "NO_EQUIP",
+              equipment_id: 'NO_EQUIP',
             },
             waist: {
-              equipment_id: "NO_EQUIP",
+              equipment_id: 'NO_EQUIP',
             },
             weapon: {
-              equipment_id: "WD_LBOWGUN001",
+              equipment_id: 'WD_LBOWGUN001',
             },
           },
         ],
         arm: {
-          equipment_id: "AD_ARM006",
+          equipment_id: 'AD_ARM006',
         },
         body: {
-          equipment_id: "AD_BODY006",
+          equipment_id: 'AD_BODY006',
         },
         leg: {
-          equipment_id: "AD_LEG006",
+          equipment_id: 'AD_LEG006',
         },
         head: {
-          equipment_id: "AD_HEAD006",
+          equipment_id: 'AD_HEAD006',
         },
         secret_weapon: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
         },
         talisman: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
         },
         waist: {
-          equipment_id: "AD_WST006",
+          equipment_id: 'AD_WST006',
         },
         weapon: {
-          equipment_id: "WD_SWORD001",
+          equipment_id: 'WD_SWORD001',
         },
       },
     },
@@ -600,52 +600,52 @@ const userSchema = new Schema({
     default: {
       gunner: {
         social_arm: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
 
           mst_equipment_id: -1,
         },
         social_body: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
 
           mst_equipment_id: -1,
         },
         social_head: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: -1,
         },
         social_leg: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: -1,
         },
         social_waist: {
-          equipment_id: "NO_EQUIP",
+          equipment_id: 'NO_EQUIP',
           mst_equipment_id: -1,
         },
       },
       is_used: 0,
       knight: {
         social_arm: {
-          equipment_id: "AD_ARM006",
+          equipment_id: 'AD_ARM006',
 
           mst_equipment_id: -1,
         },
         social_body: {
-          equipment_id: "AD_BODY006",
+          equipment_id: 'AD_BODY006',
 
           mst_equipment_id: -1,
         },
         social_head: {
-          equipment_id: "AD_HEAD006",
+          equipment_id: 'AD_HEAD006',
 
           mst_equipment_id: -1,
         },
         social_leg: {
-          equipment_id: "AD_LEG006",
+          equipment_id: 'AD_LEG006',
 
           mst_equipment_id: -1,
         },
         social_waist: {
-          equipment_id: "AD_WST006",
+          equipment_id: 'AD_WST006',
 
           mst_equipment_id: -1,
         },
@@ -661,15 +661,15 @@ const userSchema = new Schema({
       default: [
         {
           index: 1,
-          otomo_ids: ["OT_OTOMO_CHAR_ID_118", "OT_OTOMO_CHAR_ID_119"],
+          otomo_ids: ['OT_OTOMO_CHAR_ID_118', 'OT_OTOMO_CHAR_ID_119'],
         },
       ],
     },
     selected_index: { type: Number, default: 1 },
   },
   selected_partner: {
-    main_partner_id: { type: String, default: "PT_CHAR_ID_001" },
-    quest_partner_id: { type: String, default: "PT_CHAR_ID_001" },
+    main_partner_id: { type: String, default: 'PT_CHAR_ID_001' },
+    quest_partner_id: { type: String, default: 'PT_CHAR_ID_001' },
   },
   ocean_list: {
     type: [OceanSchema],
@@ -731,11 +731,11 @@ nyanken_cooldown: {
 },
 equipment_id_counter: { type: Number, default: 0 },
 guild_info: {
-  gid: { type: String, default: "" },
+  gid: { type: String, default: '' },
   is_guild: { type: Number, default: 0 },
   is_same: { type: Number, default: 0 },
   member_type: { type: Number, default: 0 },
-  name: { type: String, default: "" },
+  name: { type: String, default: '' },
   rank: { type: Number, default: 0 },
   login_freq: { type: Number, default: 0 },
   chat_freq: { type: Number, default: 0 },
@@ -764,5 +764,5 @@ guild_info: {
 },
 });
 
-const User = model("User", userSchema);
+const User = model('User', userSchema);
 export default User;

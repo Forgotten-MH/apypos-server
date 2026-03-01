@@ -1,15 +1,15 @@
-import { Router } from "express";
-import * as maintenanceEnvController from "./maintenanceEnvController";
-import * as webController from "../web/webController";
+import { Router } from 'express';
+import * as maintenanceEnvController from './maintenanceEnvController';
+import * as webController from '../web/webController';
 
 const maintenanceEnvRouter = Router();
 
 maintenanceEnvRouter.get(
-  "/schedule",
+  '/schedule',
   maintenanceEnvController.getMaintenanceEnvSchedule,
 );
 maintenanceEnvRouter.get(
-  "",
+  '',
   webController.getWebContent,
 );
 

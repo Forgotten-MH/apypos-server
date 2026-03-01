@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 
 export const progress = (req: Request, res: Response) => {
   //Initial Load
@@ -8,8 +8,8 @@ export const progress = (req: Request, res: Response) => {
     currency_ammount: 5,
     discount_currency_ammount: 5,
     island_reward_times: 5,
-    message_leaving: "message_leaving",
-    message_waiting: "message_waiting",
+    message_leaving: 'message_leaving',
+    message_waiting: 'message_waiting',
     mst_nyanken_id: 2022298312, //nyanken quests
     nyanken_icon_id: 0, //unk ids (looking at the files this might be 0 there are 5 icons but no ids other than 0000)
     prob_effect_value: 5,
@@ -53,7 +53,7 @@ export const islandInfoGet = (req: Request, res: Response) => {
                       endAwakeCount: 0,
                       endAwakeRemain: 0,
                       end_remain: 0,
-                      equipment_id: "WD_AXE103",
+                      equipment_id: 'WD_AXE103',
                       evolve_start_time: 0,
                       favorite: 0,
                       is_awake: 0,
@@ -102,8 +102,8 @@ export const historyGet = (req: Request, res: Response) => {
     currency_ammount: 0,
     discount_currency_ammount: 0,
     island_reward_times: 0,
-    message_leaving: "message_leaving",
-    message_waiting: "message_waiting",
+    message_leaving: 'message_leaving',
+    message_waiting: 'message_waiting',
     mst_nyanken_id: 9116,
     nyanken_icon_id: 0,
     prob_effect_value: 0,
@@ -139,7 +139,7 @@ export const QuestList = (req: Request, res: Response) => {
         reward_times: 0,
         mst_banner_id: 9116,
         mst_nyanken_id: 9116,
-        name: "name",
+        name: 'name',
         open: 0,
         play_limit: 0,
         play_now: 0,

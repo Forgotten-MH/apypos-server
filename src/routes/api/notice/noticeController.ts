@@ -1,7 +1,7 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
-import Present from "../../../model/presents";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import User from '../../../model/user';
+import Present from '../../../model/presents';
 
 export const get = async(req: Request, res: Response) => {
    const { session_id } = req.body;
@@ -41,7 +41,7 @@ console.log('Count of unreceived presents:', presentCount);  // Incomplete
             //Shows crown over event selected
             {
               end_remain: 36000,
-              message: "Notice/Get event_campaign_list",
+              message: 'Notice/Get event_campaign_list',
               mst_quest_campaign_type_id: 1,
               start_remain: 0,
               value: 1,
@@ -56,7 +56,7 @@ console.log('Count of unreceived presents:', presentCount);  // Incomplete
           forest_campaigns: [
             {
               end_remain: 3600,
-              message: "test",
+              message: 'test',
               mst_forest_campaign_type_id: 1,
               start_remain: 0,
               value: 234,
@@ -72,7 +72,7 @@ console.log('Count of unreceived presents:', presentCount);  // Incomplete
           campaigns: [
             {
               end_remain: 36000, // 9 hours left
-              message: "Notice/Get island_campaign",
+              message: 'Notice/Get island_campaign',
               mst_quest_campaign_type_id: 2,
               start_remain: 0,
               value: 5,
@@ -260,7 +260,7 @@ console.log('Count of unreceived presents:', presentCount);  // Incomplete
     },
     treasureBanner: {
       type: 2,
-      url: "",
+      url: '',
     },
     unreadCount: 0,
     new_mail: 0,

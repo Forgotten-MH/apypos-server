@@ -1,20 +1,20 @@
 import {
   getBlockHashsFromQuestHash,
   getQuestNameFromQuestHash,
-} from "./questService";
-import * as fs from "fs/promises";
-const path = ".\\Projects\\Boromir\\src\\json\\questDB\\event.json"
+} from './questService';
+import * as fs from 'fs/promises';
+const path = '.\\Projects\\Boromir\\src\\json\\questDB\\event.json'
 const questSheets = require(path);
-let originalLen = questSheets.rQuestSheet.mQuestDataList.length
+const originalLen = questSheets.rQuestSheet.mQuestDataList.length
 function condenseAutoDeleteArrays(obj: any) {
   if (Array.isArray(obj)) {
     obj.forEach(condenseAutoDeleteArrays);
-  } else if (typeof obj === "object" && obj !== null) {
+  } else if (typeof obj === 'object' && obj !== null) {
     for (const key of Object.keys(obj)) {
       const val = obj[key];
 
       // Normalize mAutoDelete value
-      const autoDeleteFalse = val?.mAutoDelete === false || val?.mAutoDelete === "false";
+      const autoDeleteFalse = val?.mAutoDelete === false || val?.mAutoDelete === 'false';
 
       // Pattern 1: classref_.mpArray
       const classrefArray = val?.classref_?.mpArray;
@@ -23,7 +23,7 @@ function condenseAutoDeleteArrays(obj: any) {
 
       if (
         val &&
-        typeof val === "object" &&
+        typeof val === 'object' &&
         autoDeleteFalse &&
         (Array.isArray(classrefArray) || Array.isArray(arrayArray))
       ) {
@@ -38,8 +38,8 @@ function condenseAutoDeleteArrays(obj: any) {
 condenseAutoDeleteArrays(questSheets);
 
 async function enrichAndPersist() {
-  let errors = [];
-  let allBlocks = [];
+  const errors = [];
+  const allBlocks = [];
   for (const obj of questSheets.rQuestSheet.mQuestDataList) {
     try {
       
@@ -59,7 +59,7 @@ async function enrichAndPersist() {
      
     } catch (err) {
       console.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
-      obj.mDefineId = "";
+      obj.mDefineId = '';
     }
   }
   questSheets.rQuestSheet.mQuestDataList.map((obj) => {
@@ -74,25 +74,25 @@ async function enrichAndPersist() {
 )
   try {
     
-    const extendedPath = path.replace(/\.json$/, ".extended.json");
+    const extendedPath = path.replace(/\.json$/, '.extended.json');
 
     await fs.writeFile(
       extendedPath,
       JSON.stringify(questSheets, null, 2),
-      "utf-8"
+      'utf-8'
     );
-    console.log("Extended file saved to:", extendedPath);
-    console.log("Errors:", errors);
+    console.log('Extended file saved to:', extendedPath);
+    console.log('Errors:', errors);
   } catch (err) {
-    console.error("Error writing extended file:", err);
+    console.error('Error writing extended file:', err);
   }
 console.log(allBlocks)
-const extendedPath = path.replace(/\.json$/, ".blocks.json");
+const extendedPath = path.replace(/\.json$/, '.blocks.json');
 
     await fs.writeFile(
       extendedPath,
       JSON.stringify(allBlocks, null, 2),
-      "utf-8"
+      'utf-8'
     );
 }
 

@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 
 const ActivityID = {
   LOGIN: 1,
@@ -23,8 +23,8 @@ export const activityGet = (req: Request, res: Response) => {
       created: Date.now(),
       mst_activity_id: 1,
       mst_activity_type_id: 1,
-      text: "狩猟団に入団しよう!",
-      user_id: "83SP6Q95",
+      text: '狩猟団に入団しよう!',
+      user_id: '83SP6Q95',
     },
   ];
   const data = {

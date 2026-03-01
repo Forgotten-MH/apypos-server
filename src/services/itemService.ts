@@ -153,21 +153,21 @@ function buildExtendedItemList(rewardEntries) {
     const { type, id, amount = 1, value = 1, key } = entry;
 
     switch (type) {
-      case "material":
-      case "equipment":
-      case "growth_item":
-      case "limited":
-      case "matatabi":
-      case "otomo":
-      case "partner":
-      case "payment":
-      case "pcoin":
-      case "point":
-      case "power":
-      case "stamp_set":
-      case "collection":
+      case 'material':
+      case 'equipment':
+      case 'growth_item':
+      case 'limited':
+      case 'matatabi':
+      case 'otomo':
+      case 'partner':
+      case 'payment':
+      case 'pcoin':
+      case 'point':
+      case 'power':
+      case 'stamp_set':
+      case 'collection':
         // pluralize type for key matching
-        const listKey = type + (type.endsWith("s") ? "" : "s");
+        const listKey = type + (type.endsWith('s') ? '' : 's');
         if (Array.isArray(item_list[listKey])) {
           item_list[listKey].push({
             type,
@@ -178,21 +178,21 @@ function buildExtendedItemList(rewardEntries) {
         }
         break;
 
-      case "monument_hr":
+      case 'monument_hr':
         item_list.monument.hr += value;
         break;
 
-      case "monument_mlv":
+      case 'monument_mlv':
         if (key && item_list.monument.mlv.hasOwnProperty(key)) {
           item_list.monument.mlv[key] += value;
         }
         break;
 
-      case "monument_augite":
+      case 'monument_augite':
         item_list.monument.augite.push({ id, amount, value });
         break;
 
-      case "zenny":
+      case 'zenny':
         item_list.zenny += value;
         break;
 

@@ -1,20 +1,20 @@
-import { Response, Request } from "express";
-import { EncryptionService } from "./encryptionService";
-import { TimeService } from "../timeService";
-import * as crypto from "crypto";
-import { DEBUG } from "../../config";
+import { Response, Request } from 'express';
+import { EncryptionService } from './encryptionService';
+import { TimeService } from '../timeService';
+import * as crypto from 'crypto';
+import { DEBUG } from '../../config';
 
 const encryptionService = new EncryptionService();
 
 interface SessionInfo {
-  session_token: string;
-  created_at: number;
-  last_accessed: number;
-  user_agent?: string;
-  account_id?: string;
-  game_id?: string;
-  ip_address?: string;
-  device_fingerprint?: string;
+  session_token: string
+  created_at: number
+  last_accessed: number
+  user_agent?: string
+  account_id?: string
+  game_id?: string
+  ip_address?: string
+  device_fingerprint?: string
 }
 
 const sessionStore: Map<string, SessionInfo> = new Map();
@@ -109,7 +109,7 @@ export function encryptAndSend(
   req: Request,
   error_code: number = 0, //TODO create a error code ENUM from EAPI_jpn.gmd in GUI_msg.arc
   error_category: number = 0, //1 seems to retry automatically  2: error 3:would you like to retry question
-  error_detail: string = "",
+  error_detail: string = '',
   status: number = 200,
 
 ) {
@@ -197,9 +197,9 @@ export function encryptAndSend(
     error_code: error_code,
     error_category: error_category,
     error_detail: error_detail,
-    app_ver_android: "09.03.06",
-    app_ver_ios: "09.03.06",
-    app_ver: "09.03.06",
+    app_ver_android: '09.03.06',
+    app_ver_ios: '09.03.06',
+    app_ver: '09.03.06',
     res_ver: 282, //controlls banner version url /download/android/v0282/stdDL/download.list Official Value: 282
     banner_ver: 91, //if set to 0 /api/banner/dllist/get is not called if you increment it to 1 it will be called then not called again untill incremented to 2 (Possible incremental update?) Official Value: 91
     session_id: session_token,
@@ -215,12 +215,12 @@ export function encryptAndSend(
   // console.log("now_time:",responseData.now_time)
   // console.log("relogin_time:",responseData.relogin_time)
   if (DEBUG) {
-    console.log("Response Body:\n", JSON.stringify(responseData, null, "\t"));
+    console.log('Response Body:\n', JSON.stringify(responseData, null, '\t'));
   }
 
   res
     .status(status)
-    .header("Content-Type", "application/octet-stream")
+    .header('Content-Type', 'application/octet-stream')
     .send(encryptedData);
 }
 
@@ -238,7 +238,7 @@ export function invalidateSession(sessionKey: string): boolean {
   return sessionStore.delete(sessionKey);
 }
 
-export function getAllActiveSessions(): Array<{key: string, info: SessionInfo}> {
+export function getAllActiveSessions(): Array<{key: string; info: SessionInfo}> {
   return Array.from(sessionStore.entries()).map(([key, info]) => ({key, info}));
 }
 
@@ -248,7 +248,7 @@ export function getSessionCount(): number {
 
 export function clearAllSessions(): void {
   sessionStore.clear();
-  console.log("All sessions cleared");
+  console.log('All sessions cleared');
 }
 
 export function findSessionsByUser(identifier: string, type: 'account' | 'game' | 'session'): SessionInfo[] {
@@ -268,12 +268,12 @@ export function findSessionsByUser(identifier: string, type: 'account' | 'game' 
 }
 
 export function getSessionStats(): {
-  total: number;
-  byType: { [key: string]: number };
-  oldest: number;
-  newest: number;
-  lastCleanup: number;
-  cleanupInterval: number;
+  total: number
+  byType: { [key: string]: number }
+  oldest: number
+  newest: number
+  lastCleanup: number
+  cleanupInterval: number
 } {
   const stats = {
     total: sessionStore.size,
@@ -295,10 +295,10 @@ export function getSessionStats(): {
 }
 
 export function getPerformanceStats(): {
-  sessionCount: number;
-  lastCleanupTime: number;
-  timeSinceLastCleanup: number;
-  shouldCleanup: boolean;
+  sessionCount: number
+  lastCleanupTime: number
+  timeSinceLastCleanup: number
+  shouldCleanup: boolean
 } {
   const now = Date.now();
   return {

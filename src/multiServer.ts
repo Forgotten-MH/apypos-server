@@ -5,89 +5,89 @@ import {
   createActivityPacket,
   parseHeader,
   createHeader,
-} from "./multiUtils";
+} from './multiUtils';
 
 //Client Sends...
 const recv = [
-  "host_change_request",
+  'host_change_request',
   //"leave",
   //"create",
   //  "join",
-  "lock",
-  "unlock",
-  "kick",
-  "entry",
-  "cancel",
-  "data",
+  'lock',
+  'unlock',
+  'kick',
+  'entry',
+  'cancel',
+  'data',
 ];
 //Server Sends...
 const events = [
   //   "entry",
-  "data",
-  "notice",
+  'data',
+  'notice',
   //   "create_ok",
   //   "create_ng",
   //   "join",
   //   "join_ok",
   //   "join_ng",
-  "entry",
-  "entry_ok",
-  "entry_ng",
-  "cancel",
-  "cancel_ok",
-  "cancel_ng",
-  "match",
-  "match_ok",
-  "terminate",
-  "terminate_ok",
-  "lock",
-  "lock_ok",
-  "lock_ng",
-  "unlock",
-  "unlock_ok",
+  'entry',
+  'entry_ok',
+  'entry_ng',
+  'cancel',
+  'cancel_ok',
+  'cancel_ng',
+  'match',
+  'match_ok',
+  'terminate',
+  'terminate_ok',
+  'lock',
+  'lock_ok',
+  'lock_ng',
+  'unlock',
+  'unlock_ok',
   //   "leave",
   //   "leave_ok",
-  "host_change",
+  'host_change',
 ];
 
 export function onConnect(socket) {
-  console.log("Client connected:", socket.id);
+  console.log('Client connected:', socket.id);
 
   socket.setMaxListeners(50); // or however many you need
 
-  socket.on("heartbeat", (date) => {
+  socket.on('heartbeat', (date) => {
     setTimeout(() => {
-      console.log("sending heartbeat emit");
-      socket.emit("heartbeat", Date.now());
+      console.log('sending heartbeat emit');
+      socket.emit('heartbeat', Date.now());
     });
   });
-  socket.on("create", (data) => {
+  socket.on('create', (data) => {
     const { header, payload } = parseHeader(data);
     // Extract ASCII string (24 bytes)
-    const user_id = payload.slice(0, 24).toString("ascii");
-    console.log("user_id:", user_id);
+    const user_id = payload.slice(0, 24).toString('ascii');
+    console.log('user_id:', user_id);
 
     // Extract uint32 at offset 24 (4 bytes)
     const unkUint32Val = payload.readUInt32LE(24);
-    console.log("Uint32 value before change:", unkUint32Val);
+    console.log('Uint32 value before change:', unkUint32Val);
 
     // Change the uint32 value at offset 24 to 0
     payload.writeUInt32LE(0, 24);
 
     // Verify the change
     const uint32ValAfter = payload.readUInt32LE(24);
-    console.log("Uint32 value after change:", uint32ValAfter);
+    console.log('Uint32 value after change:', uint32ValAfter);
 
     console.log(
       `sending create Buffer at ${new Date().toISOString()}:\n` +
-        data.toString("hex")
+        data.toString('hex')
     );
     //Guessing...
-    socket.emit("create_ok", Buffer.concat([createHeader(header), payload]));
+    socket.emit('create_ok', Buffer.concat([createHeader(header), payload]));
 
     //socket.emit("create_ng", data);
   });
-  socket.on("join", (data) => {
+  socket.on('join', (data) => {
     const { header, payload } = parseHeader(data);
 
    
@@ -109,19 +109,19 @@ export function onConnect(socket) {
     //   ])
     // );
     //socket.emit("join_ng", data);
-        socket.emit("join", data);
+        socket.emit('join', data);
 
   });
 
-  socket.on("leave", (data) => {
+  socket.on('leave', (data) => {
     console.log(
       `sending leave_ok Buffer at ${new Date().toISOString()}:\n` +
-        data.toString("hex")
+        data.toString('hex')
     );
-    socket.emit("leave_ok", data);
+    socket.emit('leave_ok', data);
     //socket.emit("create_ng", data);
   });
-  socket.on("data", (data) => {
+  socket.on('data', (data) => {
     const { header, payload } = parseHeader(data);
 
     switch (header.flag1) {
@@ -130,16 +130,16 @@ export function onConnect(socket) {
         break;
       case 0x07:
         console.log(
-          "onReceiveInfo recieved room:",
+          'onReceiveInfo recieved room:',
           header.roomNumber,
-          "playerId",
+          'playerId',
           header.playerId
         );
-        console.log("type:", payload.readUInt16BE(0));
+        console.log('type:', payload.readUInt16BE(0));
         switch (payload.readUInt16BE(0)) {
           case 2:
             socket.emit(
-              "data",
+              'data',
               Buffer.concat([
                 createHeader({
                   roomNumber: 0x17d78400,
@@ -227,28 +227,28 @@ export function onConnect(socket) {
         break;
       case 0x09:
         console.log(
-          "client sent chat",
+          'client sent chat',
           header.roomNumber,
-          "playerId",
+          'playerId',
           header.playerId
         );
-        const user = payload.toString("ascii", 0, payload.indexOf(0, 0));
+        const user = payload.toString('ascii', 0, payload.indexOf(0, 0));
         const message = payload.toString(
-          "ascii",
+          'ascii',
           payload.indexOf(0x2f),
           payload.indexOf(0, payload.indexOf(0x2f))
         );
-        const command = message.split(" ")[0];
+        const command = message.split(' ')[0];
         switch (command) {
-          case "/chat":
+          case '/chat':
             socket.emit(
-              "data",
-              createChatPacket(header.roomNumber, message.split(" ")[1])
+              'data',
+              createChatPacket(header.roomNumber, message.split(' ')[1])
             );
             break;
-          case "/maintenance":
+          case '/maintenance':
             socket.emit(
-              "data",
+              'data',
               createMaintenancePacket({ durationSecondsTill: 4000 })
             );
             break;
@@ -261,13 +261,13 @@ export function onConnect(socket) {
     }
   });
   // Handle "disconnect" event
-  socket.on("disconnect", (reason) => {
+  socket.on('disconnect', (reason) => {
     // clearInterval(heartbeatInterval);
     console.log(`Client disconnected: ${socket.id}, Reason: ${reason}`);
   });
 
   // Handle "error" event (optional, handled by default)
-  socket.on("error", (error) => {
+  socket.on('error', (error) => {
     console.error(`Error for client ${socket.id}:`, error.message);
   });
 }

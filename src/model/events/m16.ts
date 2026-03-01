@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { getDurationFromValue } from "./utils";
+import mongoose from 'mongoose';
+import { getDurationFromValue } from './utils';
 const M16EventSchema = new mongoose.Schema(
   {
     appear_remain: {
@@ -29,5 +29,5 @@ const M16EventSchema = new mongoose.Schema(
 );
 
 
-const M16Events = mongoose.model("M16Events", M16EventSchema);
+const M16Events = mongoose.model('M16Events', M16EventSchema);
 export default M16Events;

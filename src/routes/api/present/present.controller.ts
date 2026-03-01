@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
-import Present from "../../../model/presents";
-import { Box, BoxService } from "../../../services/boxService";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import User from '../../../model/user';
+import Present from '../../../model/presents';
+import { Box, BoxService } from '../../../services/boxService';
 
 export const presentSync = async (req: Request, res: Response) => {
   const { session_id } = req.body;
@@ -30,10 +30,10 @@ export const presentReceive = async (req: Request, res: Response) => {
   type BoxKey = keyof Box;
   presents.map(async(present) => {
     for (const [key, value] of Object.entries(present.toObject().content)) {
-      console.log("CONTENT KEY",key)
+      console.log('CONTENT KEY',key)
       if (Array.isArray(value)) {
         value.forEach((item) => {
-          console.log("ADDED ITEM TO BOX",key,item)
+          console.log('ADDED ITEM TO BOX',key,item)
           BoxService.addItem(userDoc.box, key as BoxKey, item);
         });
       }

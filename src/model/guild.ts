@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
 const GuildMemberSchema = new Schema({
@@ -30,7 +30,7 @@ const GuildChatMessageSchema = new Schema({
 const GuildSchema = new Schema({
   gid: { type: String, required: true, unique: true },
   name: { type: String, required: true },
-  search_id: { type: String, default: "" },
+  search_id: { type: String, default: '' },
   auto_recruit: { type: Number, default: 0 },
   recruit: { type: Number, default: 0 },
   explusion_rule: { type: Number, default: 0 },
@@ -39,8 +39,8 @@ const GuildSchema = new Schema({
   yarikomi: { type: Number, default: 0 },
   mood: { type: Number, default: 0 },
   timezone: { type: Number, default: 0 },
-  comment: { type: String, default: "" },
-  free_comment: { type: String, default: "" },
+  comment: { type: String, default: '' },
+  free_comment: { type: String, default: '' },
   rank: { type: Number, default: 0 },
   exp: { type: Number, default: 0 },
   joined: { type: Number, default: 0 },
@@ -61,6 +61,6 @@ const GuildSchema = new Schema({
 GuildSchema.index({ search_id: 1 });
 GuildSchema.index({ name: 1 });
 
-const Guild = model("Guild", GuildSchema);
+const Guild = model('Guild', GuildSchema);
 export default Guild;
 

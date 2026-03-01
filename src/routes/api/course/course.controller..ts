@@ -1,18 +1,18 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 
 export const premiumList = (req: Request, res: Response) => {
   const data = {
     premium_course_list: [
       {
         day: 1,
-        explanation: "explanation",
+        explanation: 'explanation',
         is_enable: 1,
         mst_course_premium_id: 1,
         price: 20,
         remain: 3600,
         term: 1,
-        title: "title",
+        title: 'title',
         reward_list: [
           {
             idx: 1,
@@ -26,7 +26,7 @@ export const premiumList = (req: Request, res: Response) => {
                   endAwakeCount: 5,
                   endAwakeRemain: 10,
                   end_remain: 15,
-                  equipment_id: "AD_BODY006",
+                  equipment_id: 'AD_BODY006',
                   evolve_start_time: 1609459200,
                   favorite: 1,
                   is_awake: 0,
@@ -55,7 +55,7 @@ export const premiumList = (req: Request, res: Response) => {
                       endAwakeCount: 0,
                       endAwakeRemain: 0,
                       end_remain: 0,
-                      equipment_id: "",
+                      equipment_id: '',
                       evolve_start_time: 0,
                       favorite: 0,
                       is_awake: 0,

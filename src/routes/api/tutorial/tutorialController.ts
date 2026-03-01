@@ -1,8 +1,8 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
-import { updatePartNoteState } from "../story/storyController";
-import { Box, BoxService } from "../../../services/boxService";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import User from '../../../model/user';
+import { updatePartNoteState } from '../story/storyController';
+import { Box, BoxService } from '../../../services/boxService';
 // tutorialFlags
 // 110 = is characterCreate
 // 210 = isFirstTimeDownload
@@ -16,7 +16,7 @@ import { Box, BoxService } from "../../../services/boxService";
 
 export const getTutorialFlag = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
-  let doc = await User.findOne(filter);
+  const doc = await User.findOne(filter);
   if (!doc) {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
   }
@@ -95,7 +95,7 @@ export const nyankenList = async (req: Request, res: Response) => {
         reward_times: 0,
         mst_banner_id: 9116,
         mst_nyanken_id: 2022298312,
-        name: "test",
+        name: 'test',
         open: 0,
         play_limit: 0,
         play_now: 0,
@@ -113,7 +113,7 @@ export const nyankenList = async (req: Request, res: Response) => {
 
 export const nyankenGo = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
-  let update = { tutorial_step: 6010 };
+  const update = { tutorial_step: 6010 };
 
   const doc = await User.findOneAndUpdate(filter, update, {
     new: true,
@@ -135,7 +135,7 @@ export const nyankenGo = async (req: Request, res: Response) => {
 
 export const nyankenResult = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
-  let update = { tutorial_step: 7010 };
+  const update = { tutorial_step: 7010 };
 
   const doc = await User.findOneAndUpdate(filter, update, {
     new: true,
@@ -151,7 +151,7 @@ export const nyankenResult = async (req: Request, res: Response) => {
     endAwakeCount: 0,
     endAwakeRemain: 0,
     end_remain: 0,
-    equipment_id: "WD_AXE103",
+    equipment_id: 'WD_AXE103',
     evolve_start_time: 0,
     favorite: 0,
     is_awake: 1,
@@ -161,7 +161,7 @@ export const nyankenResult = async (req: Request, res: Response) => {
     slv: 0,
     start_remain: 0,
   };
-  BoxService.addItem(doc.box, "equipments", rewardEquip);
+  BoxService.addItem(doc.box, 'equipments', rewardEquip);
   const data = {
     effect_id: 42,
     is_island: 0, //triggers /api/nyanken/islandInfoGet
@@ -195,12 +195,12 @@ export const TutorialFlagSet = async (req: Request, res: Response) => {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
   }
 
-  let newFlags = doc.tutorial_flags;
+  const newFlags = doc.tutorial_flags;
   req.body.flags.forEach((flag) => {
     newFlags.push(flag);
   });
 
-  let update = { tutorial_flags: newFlags };
+  const update = { tutorial_flags: newFlags };
   doc = await User.findOneAndUpdate(filter, update, {
     new: true,
   });
@@ -347,7 +347,7 @@ export const TutorialQuestStart = async (req: Request, res: Response) => {
         // }
       ],
       instance_id: 0,
-      mission_message: "start",
+      mission_message: 'start',
       mst_quest_id: req.body.mst_quest_id ? req.body.mst_quest_id : 1778018296,
       multi_leave_check_time: 0,
       point_info: {
@@ -369,7 +369,7 @@ export const TutorialQuestStart = async (req: Request, res: Response) => {
       ],
     },
   };
-  console.log("Quest Request:", data.instance_data.mst_quest_id);
+  console.log('Quest Request:', data.instance_data.mst_quest_id);
 
   encryptAndSend(data, res, req);
 };
@@ -452,14 +452,14 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
   }
   //TODO make random
   const rewards = [
-    { reward_type: "normal", type: "material", amount: 1, id: 1714092880 },
-    { reward_type: "normal", type: "material", amount: 1, id: 1642667129 },
-    { reward_type: "normal", type: "material", amount: 1, id: 1726002341 },
-    { reward_type: "normal", type: "material", amount: 1, id: 1714092880 },
-    { reward_type: "add", type: "material", amount: 1, id: 1726002341 },
-    { reward_type: "add", type: "material", amount: 1, id: 1714092880 },
-    { reward_type: "add", type: "material", amount: 1, id: 1642667129 },
-    { reward_type: "add", type: "material", amount: 1, id: 1714092880 },
+    { reward_type: 'normal', type: 'material', amount: 1, id: 1714092880 },
+    { reward_type: 'normal', type: 'material', amount: 1, id: 1642667129 },
+    { reward_type: 'normal', type: 'material', amount: 1, id: 1726002341 },
+    { reward_type: 'normal', type: 'material', amount: 1, id: 1714092880 },
+    { reward_type: 'add', type: 'material', amount: 1, id: 1726002341 },
+    { reward_type: 'add', type: 'material', amount: 1, id: 1714092880 },
+    { reward_type: 'add', type: 'material', amount: 1, id: 1642667129 },
+    { reward_type: 'add', type: 'material', amount: 1, id: 1714092880 },
   ];
 
   const data = {
@@ -467,7 +467,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
       {
         get_exp: 20,
         mst_otomo_id: 2092467563,
-        otomo_id: "OT_OTOMO_CHAR_ID_001",
+        otomo_id: 'OT_OTOMO_CHAR_ID_001',
       },
     ],
     tutorial_rewards: {
@@ -481,8 +481,8 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
   rewards.forEach((obj, index) => {
     const idField = `mst_${obj.type}_id`;
     let key = obj.type;
-    if (key === "material") key = "materials";
-    if (obj.reward_type === "normal") {
+    if (key === 'material') key = 'materials';
+    if (obj.reward_type === 'normal') {
       if (!data.tutorial_rewards.tutorial_normal_reward.item_list[key]) {
         data.tutorial_rewards.tutorial_normal_reward.item_list[key] = [];
       }
@@ -491,7 +491,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
         [idField]: obj.id,
       });
     }
-    if (obj.reward_type === "add") {
+    if (obj.reward_type === 'add') {
       data.tutorial_rewards.tutorial_normal_add.push({
         idx: index + 1,
         value: 1,

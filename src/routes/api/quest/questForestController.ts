@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 
 export const forestRestart = (req: Request, res: Response) => {
   const data = {
@@ -77,7 +77,7 @@ export const forestInfoGet = (req: Request, res: Response) => {
   const data = {
     boost_consume_fuel_magnification: 1,
     boost_point_magnification: 1,
-    event_name: "forest Info Get",
+    event_name: 'forest Info Get',
     forest_item_list: [{ amount: 0, item_id: 0, place_id: 0 }],
     mst_event_info_id: 3424126991,
     now_fuel: 6,

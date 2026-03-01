@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import User from '../../../model/user';
 
 function generateToken(length) {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let token = "";
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let token = '';
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
     token += characters[randomIndex];
@@ -21,7 +21,7 @@ export const migrationReady = async (req: Request, res: Response) => {
   const migration_pass = req.body.migration_pass;
   const migration_id = generateToken(8);
   const filter = { login_id: login_id, secret_id: secret_id };
-  let update = {
+  const update = {
     mst_himitsu_question_id: mst_himitsu_question_id,
     himitsu_answer: himitsu_answer,
     migration_pass: migration_pass,
@@ -47,7 +47,7 @@ export const migrationAuth = async (req: Request, res: Response) => {
   const uu_id = req.body.uu_id; //0F5D39CF3EA1F0A0_
 
   const filter = { migration_id: migration_id, migration_pass: migration_pass };
-  let update = { uu_id: uu_id, secret_id: secret_id };
+  const update = { uu_id: uu_id, secret_id: secret_id };
 
   const doc = await User.findOneAndUpdate(filter, update, {
     new: true,
@@ -130,7 +130,7 @@ export const registerAccount = async (req: Request, res: Response) => {
 
 export const loginAccount = async (req: Request, res: Response) => {
   //1. Does user exist?
-  let filter = { uu_id: req.body.uu_id };
+  const filter = { uu_id: req.body.uu_id };
   let doc = await User.findOne(filter);
   if (!doc) {
     return encryptAndSend({}, res, req, 4004); //Login failed. Would you like to create another account?
@@ -139,7 +139,7 @@ export const loginAccount = async (req: Request, res: Response) => {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
   }
   //3. Create Session
-  let update = { current_session: req.body.session_id };
+  const update = { current_session: req.body.session_id };
   doc = await User.findOneAndUpdate(filter, update, {
     new: true,
   });
@@ -147,10 +147,10 @@ export const loginAccount = async (req: Request, res: Response) => {
   let login = {
     auto_course_remain_time: 3600,
     event_login_bonus_info: {
-      banner_path: "coev_04480",
+      banner_path: 'coev_04480',
       day: 1,
-      disp_name: "event_login_bonus_info",
-      end: "2026/12/30 00:05:00",
+      disp_name: 'event_login_bonus_info',
+      end: '2026/12/30 00:05:00',
       login_bonus_reward_list: [
         // {
         //   idx: 1,
@@ -180,8 +180,8 @@ export const loginAccount = async (req: Request, res: Response) => {
         //   },
         // },
       ],
-      message: "Message FOR EVENT",
-      start: "2020/12/30 00:05:00",
+      message: 'Message FOR EVENT',
+      start: '2020/12/30 00:05:00',
     },
     game_id: doc.game_id,
     gender: doc.model_info.gender,
@@ -244,7 +244,7 @@ export const loginAccount = async (req: Request, res: Response) => {
   if (return_login_bonus_info_active) {
     const return_login_bonus_info = {
       day: 1,
-      end: "2026/12/30 00:05:00",
+      end: '2026/12/30 00:05:00',
       login_bonus_reward_list: [
         {
           idx: 1,
@@ -261,7 +261,7 @@ export const loginAccount = async (req: Request, res: Response) => {
                 endAwakeCount: 0,
                 endAwakeRemain: 0,
                 end_remain: 0,
-                equipment_id: "",
+                equipment_id: '',
                 evolve_start_time: 0,
                 favorite: 0,
                 is_awake: 0,
@@ -290,7 +290,7 @@ export const loginAccount = async (req: Request, res: Response) => {
                     endAwakeCount: 0,
                     endAwakeRemain: 0,
                     end_remain: 0,
-                    equipment_id: "",
+                    equipment_id: '',
                     evolve_start_time: 0,
                     favorite: 0,
                     is_awake: 0,
@@ -381,17 +381,17 @@ export const loginAccount = async (req: Request, res: Response) => {
           },
         },
       ],
-      start: "2020/12/30 00:05:00",
+      start: '2020/12/30 00:05:00',
     };
     login = { ...return_login_bonus_info, ...login };
   }
   const premium_login_bonus_info_active = false;
   if (premium_login_bonus_info_active) {
     const premium_login_bonus_info = {
-      banner_path: "coev_04490",
+      banner_path: 'coev_04490',
       day: 1,
-      disp_name: "premium_login_bonus_info",
-      end: "2025/12/30 00:05:00",
+      disp_name: 'premium_login_bonus_info',
+      end: '2025/12/30 00:05:00',
       latest_end_unix: 1837836662,
       latest_mst_logbo_premium_id: 1,
       login_bonus_reward_list: [
@@ -410,7 +410,7 @@ export const loginAccount = async (req: Request, res: Response) => {
                 endAwakeCount: 0,
                 endAwakeRemain: 0,
                 end_remain: 0,
-                equipment_id: "",
+                equipment_id: '',
                 evolve_start_time: 0,
                 favorite: 0,
                 is_awake: 0,
@@ -439,7 +439,7 @@ export const loginAccount = async (req: Request, res: Response) => {
                     endAwakeCount: 0,
                     endAwakeRemain: 0,
                     end_remain: 0,
-                    equipment_id: "",
+                    equipment_id: '',
                     evolve_start_time: 0,
                     favorite: 0,
                     is_awake: 0,
@@ -530,8 +530,8 @@ export const loginAccount = async (req: Request, res: Response) => {
           },
         },
       ],
-      message: "premium_login_bonus_info message",
-      start: "2020/12/30 00:05:00",
+      message: 'premium_login_bonus_info message',
+      start: '2020/12/30 00:05:00',
       term: 1,
     };
     login = { ...premium_login_bonus_info, ...login };
@@ -540,7 +540,7 @@ export const loginAccount = async (req: Request, res: Response) => {
   if (monthly_login_bonus_info_active) {
     const monthly_login_bonus_info = {
       day: 1,
-      end: "2026/12/30 00:05:00",
+      end: '2026/12/30 00:05:00',
       login_bonus_reward_list: [
         {
           idx: 1,
@@ -554,7 +554,7 @@ export const loginAccount = async (req: Request, res: Response) => {
                 endAwakeCount: 5,
                 endAwakeRemain: 10,
                 end_remain: 15,
-                equipment_id: "AD_BODY006",
+                equipment_id: 'AD_BODY006',
                 evolve_start_time: 1609459200,
                 favorite: 1,
                 is_awake: 0,
@@ -583,7 +583,7 @@ export const loginAccount = async (req: Request, res: Response) => {
                     endAwakeCount: 0,
                     endAwakeRemain: 0,
                     end_remain: 0,
-                    equipment_id: "",
+                    equipment_id: '',
                     evolve_start_time: 0,
                     favorite: 0,
                     is_awake: 0,
@@ -674,7 +674,7 @@ export const loginAccount = async (req: Request, res: Response) => {
           },
         },
       ],
-      start: "2020/12/30 00:05:00",
+      start: '2020/12/30 00:05:00',
     };
     login = { ...monthly_login_bonus_info, ...login };
   }
@@ -696,7 +696,7 @@ export const loginAccount = async (req: Request, res: Response) => {
               endAwakeCount: 0,
               endAwakeRemain: 0,
               end_remain: 0,
-              equipment_id: "",
+              equipment_id: '',
               evolve_start_time: 0,
               favorite: 0,
               is_awake: 0,
@@ -725,7 +725,7 @@ export const loginAccount = async (req: Request, res: Response) => {
                   endAwakeCount: 0,
                   endAwakeRemain: 0,
                   end_remain: 0,
-                  equipment_id: "",
+                  equipment_id: '',
                   evolve_start_time: 0,
                   favorite: 0,
                   is_awake: 0,
@@ -829,7 +829,7 @@ export const loginAccount = async (req: Request, res: Response) => {
               endAwakeCount: 0,
               endAwakeRemain: 0,
               end_remain: 0,
-              equipment_id: "",
+              equipment_id: '',
               evolve_start_time: 0,
               favorite: 0,
               is_awake: 0,

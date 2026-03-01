@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import User from '../../../model/user';
 const updateNodeList = (oceanList, mst_ocean_id, mst_part_id, newNode) => {
   const ocean = oceanList.find((ocean) => ocean.mst_ocean_id === mst_ocean_id);
 
@@ -12,12 +12,12 @@ const updateNodeList = (oceanList, mst_ocean_id, mst_part_id, newNode) => {
     if (part) {
       // Add the new node to the node_list
       part.node_list.push(newNode);
-      console.log("Node added successfully.");
+      console.log('Node added successfully.');
     } else {
-      console.log("Part not found.");
+      console.log('Part not found.');
     }
   } else {
-    console.log("Ocean not found.");
+    console.log('Ocean not found.');
   }
 };
 
@@ -45,29 +45,29 @@ const updateNodeState = (
       if (node) {
         // Update the state of the node
         node.state = newState;
-        console.log("Node state updated successfully.");
+        console.log('Node state updated successfully.');
       } else {
-        console.log("Node not found.");
+        console.log('Node not found.');
       }
     } else {
-      console.log("Part not found.");
+      console.log('Part not found.');
     }
   } else {
-    console.log("Ocean not found.");
+    console.log('Ocean not found.');
   }
 };
 
 const updateMonument = (monument, augiteObj, hr, atk, def, hp, sp) => {
-  console.log("old monumnet", monument);
+  console.log('old monumnet', monument);
 
   monument.augite.push(augiteObj);
-  console.log("augite added successfully to box.");
+  console.log('augite added successfully to box.');
   monument.hr = monument.hr + hr;
   monument.mlv.atk = monument.mlv.atk + atk;
   monument.mlv.def = monument.mlv.def + def;
   monument.mlv.hp = monument.mlv.hp + hp;
   monument.mlv.sp = monument.mlv.sp + sp;
-  console.log("new monumnet", monument);
+  console.log('new monumnet', monument);
 };
 
 export const updatePartNoteState = (
@@ -92,15 +92,15 @@ export const updatePartNoteState = (
       if (note) {
         // Update the state of the node
         note.state = newState;
-        console.log("note state updated successfully.");
+        console.log('note state updated successfully.');
       } else {
-        console.log("note not found.");
+        console.log('note not found.');
       }
     } else {
-      console.log("Part not found.");
+      console.log('Part not found.');
     }
   } else {
-    console.log("Ocean not found.");
+    console.log('Ocean not found.');
   }
 };
 
@@ -139,7 +139,7 @@ export const end = async (req: Request, res: Response) => {
     data.open_list.open_node.push({ mst_node_id: 2278830943 });
     data.mst_part_id = 3815380063;
     const filter = { current_session: req.body.session_id };
-    let doc = await User.findOne(filter);
+    const doc = await User.findOne(filter);
     const newNode = {
       is_collection_node: 1,
       mst_node_id: 2278830943,
@@ -202,7 +202,7 @@ export const end = async (req: Request, res: Response) => {
 
     data.mst_part_id = mst_part_id;
     const filter = { current_session: req.body.session_id };
-    let doc = await User.findOne(filter);
+    const doc = await User.findOne(filter);
 
     if (!doc) {
       return encryptAndSend({}, res, req, 2004); //Not authenticated

@@ -1,10 +1,10 @@
-import mongoose from "mongoose";
-import { getDurationFromValue } from "./utils";
+import mongoose from 'mongoose';
+import { getDurationFromValue } from './utils';
 
 const TicketEventSchema = new mongoose.Schema(
   {
     banner_id: { type: Number, required: true },
-    buy_end_str: { type: String, default: "" },
+    buy_end_str: { type: String, default: '' },
     buy_end_remain: {
       type: Date,
       get: getDurationFromValue,
@@ -14,7 +14,7 @@ const TicketEventSchema = new mongoose.Schema(
       get: getDurationFromValue,
     },
     clear_time: { type: Number, default: 0 },
-    end_str: { type: String, default: "" },
+    end_str: { type: String, default: '' },
     end_remain: {
       type: Date,
       get: getDurationFromValue,
@@ -33,5 +33,5 @@ const TicketEventSchema = new mongoose.Schema(
   { toJSON: { getters: true }, toObject: { getters: true } }
 );
 
-const TicketEvents = mongoose.model("TicketEvents", TicketEventSchema);
+const TicketEvents = mongoose.model('TicketEvents', TicketEventSchema);
 export default TicketEvents;

@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../../services/crypto/encryptionHelpers";
-import User from "../../../../model/user";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers';
+import User from '../../../../model/user';
 
 export const otomoteamGet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
 
-  let doc = await User.findOne(filter);
+  const doc = await User.findOne(filter);
   const data = {
     capacity: doc.otomoteam.capacity,
     otomo_teams: doc.otomoteam.otomo_team,
@@ -17,7 +17,7 @@ export const otomoteamGet = async (req: Request, res: Response) => {
 export const otomoteamSet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
 
-  let doc = await User.findOne(filter);
+  const doc = await User.findOne(filter);
 
   if (req.body.otomo_teams.length > 0) {
   const newTeam = req.body.otomo_teams[0];
@@ -25,13 +25,13 @@ export const otomoteamSet = async (req: Request, res: Response) => {
     const arrayIndex = doc.otomoteam.otomo_team.findIndex(
       (team) => team.index === newTeam.index
     );
-    console.log("Found index:", arrayIndex);
+    console.log('Found index:', arrayIndex);
 
     if (arrayIndex !== -1) {
-      console.log("Existing otomo!");
+      console.log('Existing otomo!');
       doc.otomoteam.otomo_team[arrayIndex] = newTeam;
     } else {
-      console.log("New otomo!");
+      console.log('New otomo!');
       doc.otomoteam.otomo_team.push(newTeam);
     }
 
@@ -53,7 +53,7 @@ export const otomoteamSelect = async (req: Request, res: Response) => {
   let doc = await User.findOne(filter);
   doc.otomoteam.selected_index = req.body.index;
 
-  let update = { otomoteam: doc.otomoteam };
+  const update = { otomoteam: doc.otomoteam };
   doc = await User.findOneAndUpdate(filter, update, {
     new: true,
   });

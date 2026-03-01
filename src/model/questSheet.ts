@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
 const BossSchema = new mongoose.Schema(
   {
@@ -71,5 +71,5 @@ const RewardDataSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const QuestSheet = mongoose.model("QuestSheet", QuestDataSchema);
+const QuestSheet = mongoose.model('QuestSheet', QuestDataSchema);
 export default QuestSheet;

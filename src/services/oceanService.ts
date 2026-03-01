@@ -1,13 +1,13 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 function parseCSV(csvContent) {
-  const lines = csvContent.trim().split("\n");
-  const headers = lines.shift().split(",");
+  const lines = csvContent.trim().split('\n');
+  const headers = lines.shift().split(',');
   const data = {};
 
   for (const line of lines) {
-    const values = line.split(",");
+    const values = line.split(',');
     const row = Object.fromEntries(headers.map((h, i) => [h, values[i]]));
 
     const oceanHash = row.mOceanHash;
@@ -50,12 +50,12 @@ function parseCSV(csvContent) {
 }
 
 function parsePartCSV(csvContent, oceanData) {
-  const lines = csvContent.trim().split("\n");
-  const headers = lines.shift().split(",");
+  const lines = csvContent.trim().split('\n');
+  const headers = lines.shift().split(',');
   const partNodeMap = {};
 
   for (const line of lines) {
-    const values = line.split(",");
+    const values = line.split(',');
     const row = Object.fromEntries(headers.map((h, i) => [h, values[i]]));
 
     const partHash = Number(row.mPartHash);
@@ -98,14 +98,14 @@ function parseDramaCSV(
   partNodeMap,
   oceanData
 ) {
-  const dramaLines = dramaCsv.trim().split("\n");
-  const dramaHeaders = dramaLines.shift().split(",");
+  const dramaLines = dramaCsv.trim().split('\n');
+  const dramaHeaders = dramaLines.shift().split(',');
 
-  const storyLines = storyData.trim().split("\n");
-  const storyHeaders = storyLines.shift().split(",");
+  const storyLines = storyData.trim().split('\n');
+  const storyHeaders = storyLines.shift().split(',');
 
   for (const line of dramaLines) {
-    const values = line.split(",");
+    const values = line.split(',');
     const row = Object.fromEntries(dramaHeaders.map((h, i) => [h, values[i]]));
 
     const partHash = Number(row.mPartHash);
@@ -119,7 +119,7 @@ function parseDramaCSV(
           const node = part.node_list.find((n) => n.mst_node_id === nodeHash);
           if (node) {
             for (const line of storyLines) {
-              const values = line.split(",");
+              const values = line.split(',');
               const row = Object.fromEntries(
                 storyHeaders.map((h, i) => [h, values[i]])
               );
@@ -134,11 +134,11 @@ function parseDramaCSV(
       }
     }
   }
-  const noteLines = noteData.trim().split("\n");
-  const noteHeaders = noteData.trim().split(",");
+  const noteLines = noteData.trim().split('\n');
+  const noteHeaders = noteData.trim().split(',');
 
   for (const line of noteLines) {
-    const values = line.split(",");
+    const values = line.split(',');
     const row = Object.fromEntries(noteHeaders.map((h, i) => [h, values[i]]));
     const note_id = Number(row.mNoteID);
     const note_part_id = Number(row.mPartID);
@@ -153,19 +153,19 @@ function parseDramaCSV(
     }
   }
 
-  const noteQuestLines = nodeQuestData.trim().split("\n");
-  const noteQuestHeaders = noteQuestLines.shift().split(",");
-  const questLines = questData.trim().split("\n");
-  const questHeaders = questLines.shift().split(",");
+  const noteQuestLines = nodeQuestData.trim().split('\n');
+  const noteQuestHeaders = noteQuestLines.shift().split(',');
+  const questLines = questData.trim().split('\n');
+  const questHeaders = questLines.shift().split(',');
 
-  const questSubtargetSetLines = questSubtargetSet.trim().split("\n");
-  const questSubtargetSetHeaders = questSubtargetSetLines.shift().split(",");
+  const questSubtargetSetLines = questSubtargetSet.trim().split('\n');
+  const questSubtargetSetHeaders = questSubtargetSetLines.shift().split(',');
   
 
   // Preprocess nodeQuestData into a Map (mNodeHash -> [mQuestHash])
   const nodeQuestMap = new Map();
   for (const line of noteQuestLines) {
-    const values = line.split(",");
+    const values = line.split(',');
     const row = Object.fromEntries(
       noteQuestHeaders.map((h, i) => [h, values[i]])
     );
@@ -184,7 +184,7 @@ function parseDramaCSV(
   // Preprocess questData into a Map (mQuestID -> mDayNight)
   const questMap = new Map();
   for (const line of questLines) {
-    const values = line.split(",");
+    const values = line.split(',');
     const row = Object.fromEntries(questHeaders.map((h, i) => [h, values[i]]));
 
     const questID = Number(row.mQuestID);
@@ -196,7 +196,7 @@ function parseDramaCSV(
    // Preprocess questData into a Map (mQuestID -> mDayNight)
    const questSubtargetSetMap = new Map();
    for (const line of questSubtargetSetLines) {
-     const values = line.split(",");
+     const values = line.split(',');
      const row = Object.fromEntries(questSubtargetSetHeaders.map((h, i) => [h, values[i]]));
  
      const questID = Number(row.mQuestID);
@@ -227,8 +227,8 @@ function parseDramaCSV(
                   node.day_quest_list.push({
                     quest_name: name,
                     clear_time: 0,
-                    is_collection_quest: isCollectionQuest=="true"?1:0,
-                    is_key_quest: isKeyQuest=="true"?1:0,
+                    is_collection_quest: isCollectionQuest=='true'?1:0,
+                    is_key_quest: isKeyQuest=='true'?1:0,
                     mst_quest_id: questHash,
                     quest_subtargets: subtarget?[
                       {
@@ -243,8 +243,8 @@ function parseDramaCSV(
                   node.night_quest_list.push({
                     quest_name: name,
                     clear_time: 0,
-                    is_collection_quest: isCollectionQuest=="true"?1:0,
-                    is_key_quest: isKeyQuest=="true"?1:0,
+                    is_collection_quest: isCollectionQuest=='true'?1:0,
+                    is_key_quest: isKeyQuest=='true'?1:0,
                     mst_quest_id: questHash,
                     quest_subtargets: subtarget?[
                       {
@@ -264,69 +264,69 @@ function parseDramaCSV(
   }
 }
 
-fs.readFile("./src/csv/oceans/1-oceans.csv", "utf8", (err, oceanData) => {
+fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
   if (err) {
-    console.error("Error reading ocean file:", err);
+    console.error('Error reading ocean file:', err);
     return;
   }
   let parsedOceanData = parseCSV(oceanData);
 
-  fs.readFile("./src/csv/oceans/parts/1-parts.csv", "utf8", (err, partData) => {
+  fs.readFile('./src/csv/oceans/parts/1-parts.csv', 'utf8', (err, partData) => {
     if (err) {
-      console.error("Error reading part file:", err);
+      console.error('Error reading part file:', err);
       return;
     }
 
     fs.readFile(
-      "./src/csv/oceans/parts/2-dramas.csv",
-      "utf8",
+      './src/csv/oceans/parts/2-dramas.csv',
+      'utf8',
       (err, dramaData) => {
         if (err) {
-          console.error("Error reading drama file:", err);
+          console.error('Error reading drama file:', err);
           return;
         }
 
         fs.readFile(
-          "./src/csv/oceans/parts/3-story.csv",
-          "utf8",
+          './src/csv/oceans/parts/3-story.csv',
+          'utf8',
           (err, storyData) => {
             if (err) {
-              console.error("Error reading story file:", err);
+              console.error('Error reading story file:', err);
               return;
             }
             fs.readFile(
-              "./src/csv/oceans/parts/4-notes.csv",
-              "utf8",
+              './src/csv/oceans/parts/4-notes.csv',
+              'utf8',
               (err, noteData) => {
                 if (err) {
-                  console.error("Error reading notes file:", err);
+                  console.error('Error reading notes file:', err);
                   return;
                 }
                 fs.readFile(
-                  "./src/csv/oceans/parts/nodes/2-node-quests.csv",
-                  "utf8",
+                  './src/csv/oceans/parts/nodes/2-node-quests.csv',
+                  'utf8',
                   (err, noteQuestData) => {
                     if (err) {
-                      console.error("Error reading story file:", err);
+                      console.error('Error reading story file:', err);
                       return;
                     }
 
                     fs.readFile(
-                      "./src/csv/questData.csv",
-                      "utf8",
+                      './src/csv/questData.csv',
+                      'utf8',
                       (err, questData) => {
                         if (err) {
-                          console.error("Error reading questData file:", err);
+                          console.error('Error reading questData file:', err);
                           return;
                         }
 
                         fs.readFile(
-                          "./src/csv/questSubtargetSet.csv",
-                          "utf8",
+                          './src/csv/questSubtargetSet.csv',
+                          'utf8',
                           (err, questSubtargetSet) => {
                             if (err) {
                               console.error(
-                                "Error reading questSubtargetSet file:",
+                                'Error reading questSubtargetSet file:',
                                 err
                               );
                               return;
@@ -355,12 +355,12 @@ fs.readFile("./src/csv/oceans/1-oceans.csv", "utf8", (err, oceanData) => {
                             parsedOceanData = parsedOceanData.reverse();
 
                             fs.writeFile(
-                              "myjsonfile.json",
+                              'myjsonfile.json',
                               JSON.stringify(parsedOceanData),
-                              "utf8",
+                              'utf8',
                               (err) => {
                                 if (err) throw err;
-                                console.log("complete");
+                                console.log('complete');
                               }
                             );
                           }

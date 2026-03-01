@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 
 export const karidamaInfo = (req: Request, res: Response) => {
   const data = {
@@ -7,7 +7,7 @@ export const karidamaInfo = (req: Request, res: Response) => {
       {
         end_remain: 36000,
         mst_karidama_shop_id: 1,
-        name: "karidama_shop",
+        name: 'karidama_shop',
         start_remain: 0,
       },
     ],
@@ -19,7 +19,7 @@ export const karidamaList = (req: Request, res: Response) => {
   const data = {
     karidama_shop_items: [
       {
-        detail: "detail",
+        detail: 'detail',
         disp_item_contents: {
           payments: [
             {
@@ -41,7 +41,7 @@ export const karidamaList = (req: Request, res: Response) => {
         item_limit: 0,
         item_limit_max: 2,
         mst_shop_item_id: 0,
-        name: "name",
+        name: 'name',
         price: 0,
         shop_limit: 1,
         shop_limit_max: 4,
@@ -51,7 +51,7 @@ export const karidamaList = (req: Request, res: Response) => {
     ],
     type_list: [
       {
-        name: "test name",
+        name: 'test name',
         type: 0,
       },
     ],
@@ -65,14 +65,14 @@ export const info = (req: Request, res: Response) => {
       end_remain: 36000,
       mst_event_point_id: 3190222199,
       mst_shop_id: 1,
-      name: "test1",
+      name: 'test1',
       start_remain: 0,
     },
     low_upper_shop_info: {
       end_remain: 36000,
       mst_event_point_id: 3190222199,
       mst_shop_id: 2,
-      name: "test2",
+      name: 'test2',
       start_remain: 0,
     },
     shop_infos: [
@@ -80,7 +80,7 @@ export const info = (req: Request, res: Response) => {
         end_remain: 36000,
         mst_event_point_id: 3190222199,
         mst_shop_id: 3,
-        name: "test3",
+        name: 'test3',
         start_remain: 0,
       },
     ],
@@ -92,7 +92,7 @@ export const list = (req: Request, res: Response) => {
   const data = {
     high_upper_shop_items: [
       {
-        detail: "detail",
+        detail: 'detail',
         disp_item_contents: {
           materials: [
             {
@@ -114,7 +114,7 @@ export const list = (req: Request, res: Response) => {
         item_limit: 1,
         item_limit_max: 1,
         mst_shop_item_id: 3840285272,
-        name: "name",
+        name: 'name',
         price: 1,
         shop_limit: 1,
         shop_limit_max: 1,
@@ -123,7 +123,7 @@ export const list = (req: Request, res: Response) => {
     ],
     low_upper_shop_items: [
       {
-        detail: "detail",
+        detail: 'detail',
         disp_item_contents: {
           materials: [
             {
@@ -145,7 +145,7 @@ export const list = (req: Request, res: Response) => {
         item_limit: 1,
         item_limit_max: 1,
         mst_shop_item_id: 3840285272,
-        name: "name",
+        name: 'name',
         price: 1,
         shop_limit: 1,
         shop_limit_max: 1,
@@ -154,7 +154,7 @@ export const list = (req: Request, res: Response) => {
     ],
     shop_items: [
       {
-        detail: "detail",
+        detail: 'detail',
         disp_item_contents: {
           materials: [
             {
@@ -176,7 +176,7 @@ export const list = (req: Request, res: Response) => {
         item_limit: 1,
         item_limit_max: 1,
         mst_shop_item_id: 3840285272,
-        name: "name",
+        name: 'name',
         price: 1,
         shop_limit: 1,
         shop_limit_max: 1,

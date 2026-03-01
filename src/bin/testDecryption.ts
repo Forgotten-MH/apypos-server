@@ -1,21 +1,21 @@
-import crypto from "crypto";
-import fs from "fs";
+import crypto from 'crypto';
+import fs from 'fs';
 
-const key = "FFFFFFFF00000000FFFFFFFF000000006E7900002D5700004F3F2D5600000000";
-const cacheKey = "K@HW`wQ=O_fAHSoy/bV"
+const key = 'FFFFFFFF00000000FFFFFFFF000000006E7900002D5700004F3F2D5600000000';
+const cacheKey = 'K@HW`wQ=O_fAHSoy/bV'
 
 
-const fileBuffer = fs.readFileSync(".\\Caches\\cache");
+const fileBuffer = fs.readFileSync('.\\Caches\\cache');
 
 // Convert binary to hex string
-const hexData = fileBuffer.toString("hex");
-const encryptedData = Buffer.from(hexData, "hex");
+const hexData = fileBuffer.toString('hex');
+const encryptedData = Buffer.from(hexData, 'hex');
 
 function decrypt(data: Buffer): Buffer {
-  const keyBuf = Buffer.from(cacheKey, "ascii"); // Use raw ASCII bytes
+  const keyBuf = Buffer.from(cacheKey, 'ascii'); // Use raw ASCII bytes
 
   const decipher = crypto.createDecipheriv(
-    "bf-ecb",
+    'bf-ecb',
     keyBuf,
     null,
   );
@@ -31,5 +31,5 @@ function decrypt(data: Buffer): Buffer {
 }
 const decryptedBuffer = decrypt(encryptedData);
 
-fs.writeFileSync(".\\Caches\\decrypted.bin", decryptedBuffer);
+fs.writeFileSync('.\\Caches\\decrypted.bin', decryptedBuffer);
 console.log(decryptedBuffer);

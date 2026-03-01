@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 const QUEST_STATE = { //0 =? 1 = New 2= ? 3= Clear (S A B C based on clear_time)
   UNKNOWN:0,  //possible non value

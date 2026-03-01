@@ -1,6 +1,6 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../../services/crypto/encryptionHelpers";
-import User from "../../../../model/user";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers';
+import User from '../../../../model/user';
 
 export const equipSetGet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
@@ -15,7 +15,7 @@ export const equipSetGet = async (req: Request, res: Response) => {
 
 export const equipSetSet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
-  let doc = await User.findOne(filter);
+  const doc = await User.findOne(filter);
   if (req.body.equip_sets.length > 0) {
     doc.equipset.equip_sets = req.body.equip_sets;
     doc.equipset.selected_equip_set_index = req.body.selected_equip_set_index;
@@ -30,7 +30,7 @@ export const equipSetSet = async (req: Request, res: Response) => {
 
 export const equipSetSocialGet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
-  let doc = await User.findOne(filter);
+  const doc = await User.findOne(filter);
   const data = {
     social_equip_sets: doc.social_equip_sets,
   };
@@ -38,7 +38,7 @@ export const equipSetSocialGet = async (req: Request, res: Response) => {
 };
 export const equipSetSocialSet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
-  let doc = await User.findOne(filter);
+  const doc = await User.findOne(filter);
   if (req.body.social_equip_sets.length > 0) {
     doc.social_equip_sets = req.body.social_equip_sets;
 

@@ -1,7 +1,7 @@
-import path from "path";
+import path from 'path';
 
 const event_nodes = require(
-  path.resolve(__dirname, "../../json/event_nodes.json")
+  path.resolve(__dirname, '../../json/event_nodes.json')
 );
 export const getDurationFromValue = (value) => {
   if (!value) return null; // Handle cases where the date is not set

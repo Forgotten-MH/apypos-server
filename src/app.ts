@@ -1,10 +1,10 @@
-import express from "express";
-import routes from "./routes/routes";
-import expressWinston from "express-winston";
-import { logger } from "./middleware/logger";
-import winston from "winston";
-import { decryptAndParse } from "./services/crypto/encryptionHelpers";
-import { DEBUG } from "./config";
+import express from 'express';
+import routes from './routes/routes';
+import expressWinston from 'express-winston';
+import { logger } from './middleware/logger';
+import winston from 'winston';
+import { decryptAndParse } from './services/crypto/encryptionHelpers';
+import { DEBUG } from './config';
 
 function sanitize(obj: any): any {
   if (Array.isArray(obj)) {
@@ -25,34 +25,34 @@ function sanitize(obj: any): any {
 const app = express();
 // Middleware to capture raw data from 'application/octet-stream' content type
 app.use((req, res, next) => {
-  if (req.is("application/octet-stream")) {
-    let data = [];
+  if (req.is('application/octet-stream')) {
+    const data = [];
 
-    req.on("data", (chunk) => {
+    req.on('data', (chunk) => {
       data.push(chunk);
     });
 
-    req.on("end", () => {
+    req.on('end', () => {
       const rawBody = Buffer.concat(data);
       const decryptedBody = decryptAndParse(rawBody);
       req.body = decryptedBody;
       if (DEBUG) {
-        console.log("--------------------------------------------------------------------")
-        console.log("Request Body:\n", JSON.stringify(req.body,null,"\t"));
+        console.log('--------------------------------------------------------------------')
+        console.log('Request Body:\n', JSON.stringify(req.body,null,'\t'));
       }
 
       next();
     });
 
-    req.on("error", (err) => {
-      console.error("Error processing raw request:", err);
+    req.on('error', (err) => {
+      console.error('Error processing raw request:', err);
       next(err);
     });
   }
   else {
     if (DEBUG) {
-      console.log("--------------------------------------------------------------------")
-      console.log("Request Body:\n", JSON.stringify(req.body,null,"\t"));
+      console.log('--------------------------------------------------------------------')
+      console.log('Request Body:\n', JSON.stringify(req.body,null,'\t'));
     }
     next();
   }
@@ -87,7 +87,7 @@ app.use((req, res, next) => {
 });
 
 // Setup routes
-app.use("/", routes);
+app.use('/', routes);
 app.use('/', express.static(__dirname + '/public'));
 // Error logger middleware
 app.use(

@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { getDurationFromValue } from "./utils";
+import mongoose from 'mongoose';
+import { getDurationFromValue } from './utils';
 const AssaultEventSchema =  new mongoose.Schema(
   {
     appear_remain: {
@@ -23,7 +23,7 @@ const AssaultEventSchema =  new mongoose.Schema(
     middle_node_banner_id: { type: Number, required: true },
     mst_event_node_id: { type: Number, required: true },
     recommended_flag: { type: Number, default: 0 },
-    schedule_category: { type: String, default: "" },
+    schedule_category: { type: String, default: '' },
     schedule_type: { type: Number, default: 1 },
     state: { type: Number, required: true },
   },
@@ -32,6 +32,6 @@ const AssaultEventSchema =  new mongoose.Schema(
 
 
 
-const AssualtEvents = mongoose.model("AssualtEvents", AssaultEventSchema);
+const AssualtEvents = mongoose.model('AssualtEvents', AssaultEventSchema);
 export default AssualtEvents;
 

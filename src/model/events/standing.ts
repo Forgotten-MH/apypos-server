@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { getDurationFromValue } from "./utils";
+import mongoose from 'mongoose';
+import { getDurationFromValue } from './utils';
 const StandingEventSchema = new mongoose.Schema(
   {
     recommended_flag: { type: Number, default: 0 },
@@ -10,7 +10,7 @@ const StandingEventSchema = new mongoose.Schema(
     },
     middle_node_banner_id: { type: Number, required: true },
     mst_event_node_id: { type: Number, required: true },
-    schedule_category: { type: String, default: "" },
+    schedule_category: { type: String, default: '' },
     start_remain: {
       type: Date,
       get: getDurationFromValue,
@@ -21,5 +21,5 @@ const StandingEventSchema = new mongoose.Schema(
 );
 
 
-const StandingEvents = mongoose.model("StandingEvents", StandingEventSchema);
+const StandingEvents = mongoose.model('StandingEvents', StandingEventSchema);
 export default StandingEvents;

@@ -1,6 +1,6 @@
-import { app } from "./app";
-import { makeDownloadList } from "./services/initResourceDownloadList";
-import mongoose from "mongoose";
+import { app } from './app';
+import { makeDownloadList } from './services/initResourceDownloadList';
+import mongoose from 'mongoose';
 import {
   IP,
   PORT,
@@ -10,48 +10,48 @@ import {
   DB_IP,
   DB_PORT,
   DEBUG,
-} from "./config";
-const normalTutorialQuestSheets = require("./json/questDB/normal.extended.complete.json");
-const trainingQuestSheets = require("./json/questDB/training.extended.complete.json");
-const scoreQuestSheets = require("./json/questDB/score.extended.complete.json");
-const eternalQuestSheets = require("./json/questDB/eternal.extended.complete.json");
-const ticketQuestSheets = require("./json/questDB/ticket.extended.complete.json");
-const eventQuestSheets = require("./json/questDB/event.extended.blank.json");
-const ticketEvents = require("./json/ticket_events.json");
-const coevEvents = require("./json/coev_events.json");
+} from './config';
+const normalTutorialQuestSheets = require('./json/questDB/normal.extended.complete.json');
+const trainingQuestSheets = require('./json/questDB/training.extended.complete.json');
+const scoreQuestSheets = require('./json/questDB/score.extended.complete.json');
+const eternalQuestSheets = require('./json/questDB/eternal.extended.complete.json');
+const ticketQuestSheets = require('./json/questDB/ticket.extended.complete.json');
+const eventQuestSheets = require('./json/questDB/event.extended.blank.json');
+const ticketEvents = require('./json/ticket_events.json');
+const coevEvents = require('./json/coev_events.json');
 
-const easyEvents = require("./json/easy_events.json");
-const normEvents = require("./json/norm_events.json");
-const hardEvents = require("./json/hard_events.json");
-const forbEvents = require("./json/forb_events.json");
+const easyEvents = require('./json/easy_events.json');
+const normEvents = require('./json/norm_events.json');
+const hardEvents = require('./json/hard_events.json');
+const forbEvents = require('./json/forb_events.json');
 
-import { readFileSync } from "fs";
-const Server = require("socket.io");
+import { readFileSync } from 'fs';
+const Server = require('socket.io');
 // import { Server } from "socket.io"; wont work TypeError: (0 , socket_io_1.Server) is not a function
-import Event from "./model/events";
-import QuestSheet from "./model/questSheet";
+import Event from './model/events';
+import QuestSheet from './model/questSheet';
 
-import { onConnect } from "./multiServer";
-import AssualtEvents from "./model/events/assualts";
-import TicketEvents from "./model/events/tickets";
-import ScoreEvents from "./model/events/score";
+import { onConnect } from './multiServer';
+import AssualtEvents from './model/events/assualts';
+import TicketEvents from './model/events/tickets';
+import ScoreEvents from './model/events/score';
 
 let createServer;
 const credentials = false
   ? {
-      key: readFileSync("../keys/private.key"),
-      cert: readFileSync("../keys/certificate.crt"),
-      ca: readFileSync("../keys/certificate.crt"), // Optional, for full certificate chain
+      key: readFileSync('../keys/private.key'),
+      cert: readFileSync('../keys/certificate.crt'),
+      ca: readFileSync('../keys/certificate.crt'), // Optional, for full certificate chain
     }
   : {};
 if (PORT === 443) {
   // For HTTPS, load the https module and SSL credentials
-  const https = require("https");
+  const https = require('https');
 
   createServer = https.createServer;
 } else {
   // For HTTP, load the http module
-  const http = require("http");
+  const http = require('http');
   createServer = http.createServer;
 }
 
@@ -60,15 +60,15 @@ mongoose
     dbName: DB_NAME,
   })
   .then(() => {
-    console.log("Connected to MongoDB...");
+    console.log('Connected to MongoDB...');
 
     const downloadCategories = [
-      "openingDL",
-      "tutorialDL",
-      "trainingDL",
-      "v0282/stdDL",
+      'openingDL',
+      'tutorialDL',
+      'trainingDL',
+      'v0282/stdDL',
     ];
-    const platforms = ["android", "ios"];
+    const platforms = ['android', 'ios'];
 
     try {
       platforms.forEach((platform) => {
@@ -78,7 +78,7 @@ mongoose
       });
     } catch (error) {
       console.error(
-        "Failed to create FPK download lists. Please ensure the FPK files are located in './src/public/res/' and the server is properly configured.",
+        'Failed to create FPK download lists. Please ensure the FPK files are located in \'./src/public/res/\' and the server is properly configured.',
         error
       );
     }
@@ -86,8 +86,8 @@ mongoose
       app.use((req, res, next) => {
         console.log(`Request method: ${req.method}`);
         console.log(`Request URL: ${req.url}`);
-        console.log("Request Headers:", req.headers);
-        console.log("Request Body:", req.body);
+        console.log('Request Headers:', req.headers);
+        console.log('Request Body:', req.body);
         next();
       });
     }
@@ -115,7 +115,7 @@ mongoose
           // If it's a buffer, log as hex for inspection
           console.log(
             `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
-              args[0].toString("hex")
+              args[0].toString('hex')
           );
         } else {
           console.log(
@@ -128,7 +128,7 @@ mongoose
       next();
     });
 
-    io.on("connection", onConnect);
+    io.on('connection', onConnect);
 
     server.listen(PORT, () => {
       Event.countDocuments({})
@@ -137,9 +137,9 @@ mongoose
           if (count == 0) {
             const eventDefault = new Event();
             eventDefault.save();
-            console.log("✅ Event Data imported successfully.");
+            console.log('✅ Event Data imported successfully.');
           } else {
-            console.log("⚠️ Event Data is not empty. Skipping import.");
+            console.log('⚠️ Event Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
@@ -186,9 +186,9 @@ mongoose
               });
             });
 
-            console.log("✅ Assualt Event Data imported successfully.");
+            console.log('✅ Assualt Event Data imported successfully.');
           } else {
-            console.log("⚠️ Assualt Event Data is not empty. Skipping import.");
+            console.log('⚠️ Assualt Event Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
@@ -206,9 +206,9 @@ mongoose
               });
             });
 
-            console.log("✅ Score Event Data imported successfully.");
+            console.log('✅ Score Event Data imported successfully.');
           } else {
-            console.log("⚠️ Score Event Data is not empty. Skipping import.");
+            console.log('⚠️ Score Event Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
@@ -229,9 +229,9 @@ mongoose
               });
             });
 
-            console.log("✅ Ticket Event Data imported successfully.");
+            console.log('✅ Ticket Event Data imported successfully.');
           } else {
-            console.log("⚠️ Ticket Event Data is not empty. Skipping import.");
+            console.log('⚠️ Ticket Event Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
@@ -250,9 +250,9 @@ mongoose
             QuestSheet.create(ticketQuestSheets.rQuestSheet.mQuestDataList);
             QuestSheet.create(eventQuestSheets.rQuestSheet.mQuestDataList);
 
-            console.log("✅ Quest Data imported successfully.");
+            console.log('✅ Quest Data imported successfully.');
           } else {
-            console.log("⚠️ Quest Data is not empty. Skipping import.");
+            console.log('⚠️ Quest Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
@@ -268,7 +268,7 @@ mongoose
   })
   .catch((err) =>
     console.error(
-      "Coudn't Start Apypos Server: Couldn't connect to MongoDB....",
+      'Coudn\'t Start Apypos Server: Couldn\'t connect to MongoDB....',
       err
     )
   );

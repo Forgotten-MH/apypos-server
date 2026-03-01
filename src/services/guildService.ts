@@ -1,6 +1,6 @@
-import Guild from "../model/guild";
-import User from "../model/user";
-import { generateUniqueId } from "./crypto/encryptionHelpers";
+import Guild from '../model/guild';
+import User from '../model/user';
+import { generateUniqueId } from './crypto/encryptionHelpers';
 
 
 export const generateGuildId = async (): Promise<string> => {
@@ -39,15 +39,15 @@ export const createGuild = async (
   uid: string,
   name: string,
   options: {
-    auto_recruit?: number;
-    chat_freq?: number;
-    explusion_rule?: number;
-    free_comment?: string;
-    login_freq?: number;
-    mood?: number;
-    recruit?: number;
-    timezone?: number;
-    yarikomi?: number;
+    auto_recruit?: number
+    chat_freq?: number
+    explusion_rule?: number
+    free_comment?: string
+    login_freq?: number
+    mood?: number
+    recruit?: number
+    timezone?: number
+    yarikomi?: number
   }
 ) => {
   const gid = await generateGuildId();
@@ -61,7 +61,7 @@ export const createGuild = async (
     auto_recruit: options.auto_recruit || 0,
     chat_freq: options.chat_freq || 0,
     explusion_rule: options.explusion_rule || 0,
-    free_comment: options.free_comment || "",
+    free_comment: options.free_comment || '',
     login_freq: options.login_freq || 0,
     mood: options.mood || 0,
     recruit: options.recruit || 0,
@@ -90,11 +90,11 @@ export const createGuild = async (
     { uu_id: uid },
     {
       $set: {
-        "guild_info.gid": gid,
-        "guild_info.is_guild": 1,
-        "guild_info.member_type": 0,
-        "guild_info.name": name,
-        "guild_info.rank": 1,
+        'guild_info.gid': gid,
+        'guild_info.is_guild': 1,
+        'guild_info.member_type': 0,
+        'guild_info.name': name,
+        'guild_info.rank': 1,
       },
     }
   );
@@ -109,7 +109,7 @@ export const getUserGuildInfo = async (uid: string) => {
   
   return {
     uid: user.uu_id,
-    gid: user.guild_info?.gid || "",
+    gid: user.guild_info?.gid || '',
     joined: user.guild_info?.is_guild || 0,
     login_freq: user.guild_info?.login_freq || 0,
     chat_freq: user.guild_info?.chat_freq || 0,
@@ -138,18 +138,18 @@ export const getGuildBySearchId = async (searchId: string) => {
 
 
 export const searchGuilds = async (filters: {
-  name?: string;
-  mood?: number;
-  login_freq?: number;
-  chat_freq?: number;
-  yarikomi?: number;
-  timezone?: number;
-  recruit?: number;
+  name?: string
+  mood?: number
+  login_freq?: number
+  chat_freq?: number
+  yarikomi?: number
+  timezone?: number
+  recruit?: number
 }) => {
   const query: any = {};
 
   if (filters.name) {
-    query.name = { $regex: filters.name, $options: "i" };
+    query.name = { $regex: filters.name, $options: 'i' };
   }
   if (filters.mood !== undefined) {
     query.mood = filters.mood;
@@ -193,16 +193,16 @@ export const getActiveGuilds = async (limit: number = 20) => {
 export const applyToGuild = async (uid: string, gid: string) => {
   const guild = await Guild.findOne({ gid });
   if (!guild) {
-    throw new Error("Guild not found");
+    throw new Error('Guild not found');
   }
 
   const user = await User.findOne({ uu_id: uid });
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 
   if (user.guild_info?.gid && user.guild_info?.is_guild === 1) {
-    throw new Error("You are already in another guild");
+    throw new Error('You are already in another guild');
   }
 
   const now = Math.floor(Date.now() / 1000);
@@ -227,11 +227,11 @@ export const applyToGuild = async (uid: string, gid: string) => {
       { uu_id: uid },
       {
         $set: {
-          "guild_info.gid": gid,
-          "guild_info.is_guild": 1,
-          "guild_info.member_type": 2,
-          "guild_info.name": guild.name,
-          "guild_info.rank": guild.rank,
+          'guild_info.gid': gid,
+          'guild_info.is_guild': 1,
+          'guild_info.member_type': 2,
+          'guild_info.name': guild.name,
+          'guild_info.rank': guild.rank,
         },
       }
     );
@@ -252,7 +252,7 @@ export const applyToGuild = async (uid: string, gid: string) => {
       { uu_id: uid },
       {
         $push: {
-          "guild_info.send": {
+          'guild_info.send': {
             _id: requestId,
             created: now,
             gid: gid,
@@ -269,16 +269,16 @@ export const applyToGuild = async (uid: string, gid: string) => {
 export const inviteUserToGuild = async (gid: string, uid: string) => {
   const guild = await Guild.findOne({ gid });
   if (!guild) {
-    throw new Error("Guild not found");
+    throw new Error('Guild not found');
   }
 
   const user = await User.findOne({ uu_id: uid });
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 
   if (user.guild_info?.gid && user.guild_info?.is_guild === 1) {
-    throw new Error("You are already in another guild");
+    throw new Error('You are already in another guild');
   }
 
   const now = Date.now();
@@ -296,7 +296,7 @@ export const inviteUserToGuild = async (gid: string, uid: string) => {
     { uu_id: uid },
     {
       $push: {
-        "guild_info.receive": {
+        'guild_info.receive': {
           _id: requestId,
           created: now,
           gid: gid,
@@ -326,16 +326,16 @@ export const getMemberType = (guild: any, uid: string): number => {
 export const joinGuild = async (uid: string, gid: string) => {
   const guild = await Guild.findOne({ gid });
   if (!guild) {
-    throw new Error("Guild not found");
+    throw new Error('Guild not found');
   }
 
   const user = await User.findOne({ uu_id: uid });
   if (!user) {
-    throw new Error("User not found");
+    throw new Error('User not found');
   }
 
   if (user.guild_info?.gid && user.guild_info?.is_guild === 1) {
-    throw new Error("You are already in another guild");
+    throw new Error('You are already in another guild');
   }
 
   const now = Math.floor(Date.now() / 1000);
@@ -352,11 +352,11 @@ export const joinGuild = async (uid: string, gid: string) => {
     { uu_id: uid },
     {
       $set: {
-        "guild_info.gid": gid,
-        "guild_info.is_guild": 1,
-        "guild_info.member_type": 1, // 1=Normal
-        "guild_info.name": guild.name,
-        "guild_info.rank": guild.rank,
+        'guild_info.gid': gid,
+        'guild_info.is_guild': 1,
+        'guild_info.member_type': 1, // 1=Normal
+        'guild_info.name': guild.name,
+        'guild_info.rank': guild.rank,
       },
     }
   );
@@ -368,12 +368,12 @@ export const joinGuild = async (uid: string, gid: string) => {
 export const leaveGuild = async (uid: string) => {
   const user = await User.findOne({ uu_id: uid });
   if (!user || !user.guild_info?.gid || user.guild_info?.is_guild === 0) {
-    throw new Error("You are not in any guild");
+    throw new Error('You are not in any guild');
   }
 
   const guild = await Guild.findOne({ gid: user.guild_info.gid });
   if (!guild) {
-    throw new Error("Guild not found");
+    throw new Error('Guild not found');
   }
 
   if (guild.member.leader.uid === uid) {
@@ -396,11 +396,11 @@ export const leaveGuild = async (uid: string) => {
         { uu_id: uid },
         {
           $set: {
-            "guild_info.gid": "",
-            "guild_info.is_guild": 0,
-            "guild_info.member_type": -1,
-            "guild_info.name": "",
-            "guild_info.rank": 0,
+            'guild_info.gid': '',
+            'guild_info.is_guild': 0,
+            'guild_info.member_type': -1,
+            'guild_info.name': '',
+            'guild_info.rank': 0,
           },
         }
       );
@@ -425,11 +425,11 @@ export const leaveGuild = async (uid: string) => {
     { uu_id: uid },
     {
       $set: {
-        "guild_info.gid": "",
-        "guild_info.is_guild": 0,
-        "guild_info.member_type": -1,
-        "guild_info.name": "",
-        "guild_info.rank": 0,
+        'guild_info.gid': '',
+        'guild_info.is_guild': 0,
+        'guild_info.member_type': -1,
+        'guild_info.name': '',
+        'guild_info.rank': 0,
       },
     }
   );
@@ -440,7 +440,7 @@ export const leaveGuild = async (uid: string) => {
 export const updateGuild = async (gid: string, updates: any) => {
   const guild = await Guild.findOne({ gid });
   if (!guild) {
-    throw new Error("Guild not found");
+    throw new Error('Guild not found');
   }
 
   Object.assign(guild, updates);
@@ -450,10 +450,10 @@ export const updateGuild = async (gid: string, updates: any) => {
   if (updates.name || updates.rank) {
     const updateData: any = {};
     if (updates.name) {
-      updateData["guild_info.name"] = updates.name;
+      updateData['guild_info.name'] = updates.name;
     }
     if (updates.rank !== undefined) {
-      updateData["guild_info.rank"] = updates.rank;
+      updateData['guild_info.rank'] = updates.rank;
     }
 
     await User.updateOne({ uu_id: guild.member.leader.uid }, { $set: updateData });
@@ -489,12 +489,12 @@ export const sendChatMessage = async (
 ) => {
   const user = await User.findOne({ uu_id: uid });
   if (!user || user.guild_info?.gid !== gid || user.guild_info?.is_guild === 0) {
-    throw new Error("");
+    throw new Error('');
   }
 
   const guild = await Guild.findOne({ gid });
   if (!guild) {
-    throw new Error("");
+    throw new Error('');
   }
 
   const chatMessage = {
@@ -521,12 +521,12 @@ export const sendChatMessage = async (
 export const getChatMessages = async (uid: string) => {
   const user = await User.findOne({ uu_id: uid });
   if (!user || !user.guild_info?.gid || user.guild_info?.is_guild === 0) {
-    throw new Error("You are not in any guild");
+    throw new Error('You are not in any guild');
   }
 
   const guild = await Guild.findOne({ gid: user.guild_info.gid });
   if (!guild) {
-    throw new Error("Guild not found");
+    throw new Error('Guild not found');
   }
 
   const messages = [...guild.chat_messages].reverse();

@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 
 export const purchaseList = (req: Request, res: Response) => {
   const data = {
@@ -12,17 +12,17 @@ export const purchaseList = (req: Request, res: Response) => {
         start:0
       }
     ],
-    key:"test",
+    key:'test',
     offer_products:[
       {
         additional_point:1,
         additional_state:1,
         amount:1,
-        banner:"banner",
-        explain:"explain",
-        id:"1",
+        banner:'banner',
+        explain:'explain',
+        id:'1',
         is_started:1,
-        name:"name",
+        name:'name',
         remain:36000,
         start:0,
         state:1
@@ -35,9 +35,9 @@ export const purchaseList = (req: Request, res: Response) => {
         amount:1,
         banner:1,
         explain:1,
-        id:"1",
-        increase_extra_date:"1",
-        increase_extra_upper:"1",
+        id:'1',
+        increase_extra_date:'1',
+        increase_extra_upper:'1',
         increase_state:1,
         original_amount:1,
         state:1
