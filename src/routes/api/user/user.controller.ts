@@ -60,9 +60,7 @@ export const get = async (req: Request, res: Response) => {
           main: doc.box?.otomos?.find(
             (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0],
           ),
-          sub: doc.box?.otomos?.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1],
-          ),
+          sub: doc.box?.otomos?.find((otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]),
         },
         parameter: {
           attack: doc.box?.monument?.mlv?.atk,
@@ -387,9 +385,7 @@ export const titleSet = async (req: Request, res: Response) => {
           main: doc.box?.otomos?.find(
             (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0],
           ),
-          sub: doc.box?.otomos?.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1],
-          ),
+          sub: doc.box?.otomos?.find((otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]),
         },
         parameter: {
           attack: 1,

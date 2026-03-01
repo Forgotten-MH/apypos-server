@@ -6,13 +6,7 @@ const friendRouter = Router();
 
 friendRouter.post('/capacity/info', capacityInfo);
 // friendRouter.post("/acceptRequest", );
-friendRouter.post(
-  '/listRequests',
-  notImplementedController.blankResponseEncrypted,
-);
-friendRouter.post(
-  '/listFriends',
-  notImplementedController.blankResponseEncrypted,
-);
+friendRouter.post('/listRequests', notImplementedController.blankResponseEncrypted);
+friendRouter.post('/listFriends', notImplementedController.blankResponseEncrypted);
 
 export default friendRouter;

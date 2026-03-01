@@ -1,10 +1,5 @@
 import { Socket } from 'socket.io';
-import {
-  createMaintenancePacket,
-  createChatPacket,
-  parseHeader,
-  createHeader,
-} from './multiUtils';
+import { createMaintenancePacket, createChatPacket, parseHeader, createHeader } from './multiUtils';
 import { createLogger } from './middleware/logger';
 const log = createLogger('multiServer');
 
@@ -40,10 +35,7 @@ export function onConnect(socket: Socket) {
     const uint32ValAfter = payload.readUInt32LE(24);
     log.info('Uint32 value after change:', uint32ValAfter);
 
-    log.info(
-      `sending create Buffer at ${new Date().toISOString()}:\n` +
-        data.toString('hex'),
-    );
+    log.info(`sending create Buffer at ${new Date().toISOString()}:\n` + data.toString('hex'));
     //Guessing...
     socket.emit('create_ok', Buffer.concat([createHeader(header), payload]));
 
@@ -72,10 +64,7 @@ export function onConnect(socket: Socket) {
   });
 
   socket.on('leave', (data) => {
-    log.info(
-      `sending leave_ok Buffer at ${new Date().toISOString()}:\n` +
-        data.toString('hex'),
-    );
+    log.info(`sending leave_ok Buffer at ${new Date().toISOString()}:\n` + data.toString('hex'));
     socket.emit('leave_ok', data);
     //socket.emit("create_ng", data);
   });
@@ -87,12 +76,7 @@ export function onConnect(socket: Socket) {
         //Ignore
         break;
       case 0x07:
-        log.info(
-          'onReceiveInfo recieved room:',
-          header.roomNumber,
-          'playerId',
-          header.playerId,
-        );
+        log.info('onReceiveInfo recieved room:', header.roomNumber, 'playerId', header.playerId);
         log.info('type:', payload.readUInt16BE(0));
         switch (payload.readUInt16BE(0)) {
           case 2:
@@ -184,12 +168,7 @@ export function onConnect(socket: Socket) {
         }
         break;
       case 0x09: {
-        log.info(
-          'client sent chat',
-          header.roomNumber,
-          'playerId',
-          header.playerId,
-        );
+        log.info('client sent chat', header.roomNumber, 'playerId', header.playerId);
         const _user = payload.toString('ascii', 0, payload.indexOf(0, 0));
         const message = payload.toString(
           'ascii',
@@ -199,16 +178,10 @@ export function onConnect(socket: Socket) {
         const command = message.split(' ')[0];
         switch (command) {
           case '/chat':
-            socket.emit(
-              'data',
-              createChatPacket(header.roomNumber, message.split(' ')[1]),
-            );
+            socket.emit('data', createChatPacket(header.roomNumber, message.split(' ')[1]));
             break;
           case '/maintenance':
-            socket.emit(
-              'data',
-              createMaintenancePacket({ durationSecondsTill: 4000 }),
-            );
+            socket.emit('data', createMaintenancePacket({ durationSecondsTill: 4000 }));
             break;
           default:
             break;

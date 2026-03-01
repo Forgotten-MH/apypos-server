@@ -42,31 +42,13 @@ export const getDlList = async (req: Request, res: Response) => {
     switch (req.body.device_id) {
       case 2:
         await readFilesFromDir(
-          path.join(
-            __dirname,
-            '..',
-            '..',
-            '..',
-            'public',
-            'res',
-            'banner',
-            'android',
-          ),
+          path.join(__dirname, '..', '..', '..', 'public', 'res', 'banner', 'android'),
           data,
         );
         break;
       case 3:
         await readFilesFromDir(
-          path.join(
-            __dirname,
-            '..',
-            '..',
-            '..',
-            'public',
-            'res',
-            'banner',
-            'ios',
-          ),
+          path.join(__dirname, '..', '..', '..', 'public', 'res', 'banner', 'ios'),
           data,
         );
         break;

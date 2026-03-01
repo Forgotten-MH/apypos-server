@@ -1,15 +1,7 @@
 import { app } from './app';
 import { makeDownloadList } from './services/initResourceDownloadList';
 import mongoose from 'mongoose';
-import {
-  IP,
-  PORT,
-  DB_USER,
-  DB_NAME,
-  DB_PASSWORD,
-  DB_IP,
-  DB_PORT,
-} from './config';
+import { IP, PORT, DB_USER, DB_NAME, DB_PASSWORD, DB_IP, DB_PORT } from './config';
 import { createLogger } from './middleware/logger';
 
 const log = createLogger('server');
@@ -58,12 +50,7 @@ mongoose
     log.info('Connected to MongoDB...');
     await restoreSessions();
 
-    const downloadCategories = [
-      'openingDL',
-      'tutorialDL',
-      'trainingDL',
-      'v0282/stdDL',
-    ];
+    const downloadCategories = ['openingDL', 'tutorialDL', 'trainingDL', 'v0282/stdDL'];
     const platforms = ['android', 'ios'];
 
     try {
@@ -86,9 +73,7 @@ mongoose
       next();
     });
 
-    const server = useHttps
-      ? https.createServer(credentials, app)
-      : http.createServer(app);
+    const server = useHttps ? https.createServer(credentials, app) : http.createServer(app);
 
     const io = new Server(server, {
       allowEIO3: true,
@@ -102,14 +87,10 @@ mongoose
       socket.onAny((eventName, arg) => {
         if (Buffer.isBuffer(arg)) {
           log.debug(
-            `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
-              arg.toString('hex'),
+            `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` + arg.toString('hex'),
           );
         } else {
-          log.debug(
-            `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
-              arg,
-          );
+          log.debug(`Received ${eventName} Buffer at ${new Date().toISOString()}:\n` + arg);
         }
       });
 
@@ -229,24 +210,12 @@ mongoose
         .then((count) => {
           log.info(`Number of Quests: ${count}`);
           if (count === 0) {
-            void QuestSheet.insertMany(
-              normalTutorialQuestSheets.rQuestSheet.mQuestDataList,
-            );
-            void QuestSheet.insertMany(
-              trainingQuestSheets.rQuestSheet.mQuestDataList,
-            );
-            void QuestSheet.insertMany(
-              scoreQuestSheets.rQuestSheet.mQuestDataList,
-            );
-            void QuestSheet.insertMany(
-              eternalQuestSheets.rQuestSheet.mQuestDataList,
-            );
-            void QuestSheet.insertMany(
-              ticketQuestSheets.rQuestSheet.mQuestDataList,
-            );
-            void QuestSheet.insertMany(
-              eventQuestSheets.rQuestSheet.mQuestDataList,
-            );
+            void QuestSheet.insertMany(normalTutorialQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(trainingQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(scoreQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(eternalQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(ticketQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(eventQuestSheets.rQuestSheet.mQuestDataList);
 
             log.info('✅ Quest Data imported successfully.');
           } else {
@@ -262,9 +231,4 @@ mongoose
       log.info(`Apypos Server Internal Test v0.0.12 started on ${IP}:${PORT}`);
     });
   })
-  .catch((err) =>
-    log.error(
-      "Coudn't Start Apypos Server: Couldn't connect to MongoDB....",
-      err,
-    ),
-  );
+  .catch((err) => log.error("Coudn't Start Apypos Server: Couldn't connect to MongoDB....", err));

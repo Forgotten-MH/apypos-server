@@ -14,12 +14,7 @@ vi.mock('../../../middleware/logger', () => ({
 
 import User from '../../../model/user';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import {
-  registerAccount,
-  loginAccount,
-  migrationReady,
-  migrationAuth,
-} from './account.controller';
+import { registerAccount, loginAccount, migrationReady, migrationAuth } from './account.controller';
 
 function mockReqRes(body: Record<string, unknown> = {}) {
   const req = { body, ip: '127.0.0.1', get: vi.fn() } as unknown as Request;
@@ -148,14 +143,7 @@ describe('account.controller', () => {
 
       await loginAccount(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith(
-        {},
-        res,
-        req,
-        1,
-        2,
-        'Login failed',
-      );
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Login failed');
     });
   });
 

@@ -277,11 +277,7 @@ function parseDramaCSV(
       for (const [nodeHash, questHashList] of nodeQuestMap) {
         const node = nodeMap.get(nodeHash);
         if (node) {
-          for (const {
-            questHash,
-            isCollectionQuest,
-            isKeyQuest,
-          } of questHashList) {
+          for (const { questHash, isCollectionQuest, isKeyQuest } of questHashList) {
             const questInfo = questMap.get(questHash);
             if (!questInfo) continue;
             const { time: questTimeType, name } = questInfo;
@@ -348,101 +344,75 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
       return;
     }
 
-    fs.readFile(
-      './src/csv/oceans/parts/2-dramas.csv',
-      'utf8',
-      (err, dramaData) => {
+    fs.readFile('./src/csv/oceans/parts/2-dramas.csv', 'utf8', (err, dramaData) => {
+      if (err) {
+        log.error('Error reading drama file:', err);
+        return;
+      }
+
+      fs.readFile('./src/csv/oceans/parts/3-story.csv', 'utf8', (err, storyData) => {
         if (err) {
-          log.error('Error reading drama file:', err);
+          log.error('Error reading story file:', err);
           return;
         }
+        fs.readFile('./src/csv/oceans/parts/4-notes.csv', 'utf8', (err, noteData) => {
+          if (err) {
+            log.error('Error reading notes file:', err);
+            return;
+          }
+          fs.readFile(
+            './src/csv/oceans/parts/nodes/2-node-quests.csv',
+            'utf8',
+            (err, noteQuestData) => {
+              if (err) {
+                log.error('Error reading story file:', err);
+                return;
+              }
 
-        fs.readFile(
-          './src/csv/oceans/parts/3-story.csv',
-          'utf8',
-          (err, storyData) => {
-            if (err) {
-              log.error('Error reading story file:', err);
-              return;
-            }
-            fs.readFile(
-              './src/csv/oceans/parts/4-notes.csv',
-              'utf8',
-              (err, noteData) => {
+              fs.readFile('./src/csv/questData.csv', 'utf8', (err, questData) => {
                 if (err) {
-                  log.error('Error reading notes file:', err);
+                  log.error('Error reading questData file:', err);
                   return;
                 }
-                fs.readFile(
-                  './src/csv/oceans/parts/nodes/2-node-quests.csv',
-                  'utf8',
-                  (err, noteQuestData) => {
-                    if (err) {
-                      log.error('Error reading story file:', err);
-                      return;
-                    }
 
-                    fs.readFile(
-                      './src/csv/questData.csv',
-                      'utf8',
-                      (err, questData) => {
-                        if (err) {
-                          log.error('Error reading questData file:', err);
-                          return;
-                        }
+                fs.readFile('./src/csv/questSubtargetSet.csv', 'utf8', (err, questSubtargetSet) => {
+                  if (err) {
+                    log.error('Error reading questSubtargetSet file:', err);
+                    return;
+                  }
 
-                        fs.readFile(
-                          './src/csv/questSubtargetSet.csv',
-                          'utf8',
-                          (err, questSubtargetSet) => {
-                            if (err) {
-                              log.error(
-                                'Error reading questSubtargetSet file:',
-                                err,
-                              );
-                              return;
-                            }
+                  const partNodeMap = parsePartCSV(partData, parsedOceanData);
 
-                            const partNodeMap = parsePartCSV(
-                              partData,
-                              parsedOceanData,
-                            );
+                  parseDramaCSV(
+                    dramaData,
+                    storyData,
+                    noteData,
+                    noteQuestData,
+                    questData,
+                    questSubtargetSet,
+                    partNodeMap,
+                    parsedOceanData,
+                  );
+                  //lazyfix reverse
+                  log.debug(JSON.stringify(parsedOceanData, null, 2));
 
-                            parseDramaCSV(
-                              dramaData,
-                              storyData,
-                              noteData,
-                              noteQuestData,
-                              questData,
-                              questSubtargetSet,
-                              partNodeMap,
-                              parsedOceanData,
-                            );
-                            //lazyfix reverse
-                            log.debug(JSON.stringify(parsedOceanData, null, 2));
+                  parsedOceanData = parsedOceanData.reverse();
 
-                            parsedOceanData = parsedOceanData.reverse();
-
-                            fs.writeFile(
-                              'myjsonfile.json',
-                              JSON.stringify(parsedOceanData),
-                              'utf8',
-                              (err) => {
-                                if (err) throw err;
-                                log.info('complete');
-                              },
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-            );
-          },
-        );
-      },
-    );
+                  fs.writeFile(
+                    'myjsonfile.json',
+                    JSON.stringify(parsedOceanData),
+                    'utf8',
+                    (err) => {
+                      if (err) throw err;
+                      log.info('complete');
+                    },
+                  );
+                });
+              });
+            },
+          );
+        });
+      });
+    });
   });
 });

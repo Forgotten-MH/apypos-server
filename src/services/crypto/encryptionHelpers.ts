@@ -29,15 +29,13 @@ const timeService = new TimeService();
 let lastCleanupTime = Date.now();
 
 function persistSession(key: string, session: SessionInfo) {
-  Session.updateOne({ key }, { key, ...session }, { upsert: true }).catch(
-    (err) => log.error('Failed to persist session:', err),
+  Session.updateOne({ key }, { key, ...session }, { upsert: true }).catch((err) =>
+    log.error('Failed to persist session:', err),
   );
 }
 
 function removePersistedSession(key: string) {
-  Session.deleteOne({ key }).catch((err) =>
-    log.error('Failed to remove persisted session:', err),
-  );
+  Session.deleteOne({ key }).catch((err) => log.error('Failed to remove persisted session:', err));
 }
 
 export async function restoreSessions(): Promise<number> {
@@ -84,8 +82,7 @@ function smartCleanupExpiredSessions() {
   const now = Date.now();
 
   const shouldCleanup =
-    now - lastCleanupTime > CLEANUP_INTERVAL ||
-    sessionStore.size > MAX_SESSIONS_BEFORE_CLEANUP;
+    now - lastCleanupTime > CLEANUP_INTERVAL || sessionStore.size > MAX_SESSIONS_BEFORE_CLEANUP;
 
   if (!shouldCleanup) {
     return;
@@ -111,26 +108,19 @@ function smartCleanupExpiredSessions() {
   lastCleanupTime = now;
 
   if (cleanedCount > 0) {
-    log.info(
-      `Cleaned up ${cleanedCount} expired sessions, remaining: ${sessionStore.size}`,
-    );
+    log.info(`Cleaned up ${cleanedCount} expired sessions, remaining: ${sessionStore.size}`);
   }
 }
 
 function quickCleanupCheck() {
   const now = Date.now();
 
-  if (
-    sessionStore.size > MAX_SESSIONS_BEFORE_CLEANUP ||
-    now - lastCleanupTime > CLEANUP_INTERVAL
-  ) {
+  if (sessionStore.size > MAX_SESSIONS_BEFORE_CLEANUP || now - lastCleanupTime > CLEANUP_INTERVAL) {
     smartCleanupExpiredSessions();
   }
 }
 
-function findSessionByToken(
-  sessionToken: string,
-): { key: string; session: SessionInfo } | null {
+function findSessionByToken(sessionToken: string): { key: string; session: SessionInfo } | null {
   for (const [key, session] of sessionStore.entries()) {
     if (session.session_token === sessionToken) {
       return { key, session };
@@ -173,14 +163,10 @@ export function encryptAndSend(
 
     const existingSession = sessionStore.get(sessionKey);
 
-    if (
-      existingSession &&
-      now - existingSession.last_accessed <= SESSION_TIMEOUT
-    ) {
+    if (existingSession && now - existingSession.last_accessed <= SESSION_TIMEOUT) {
       sessionInfo = existingSession;
       sessionInfo.last_accessed = now;
-      sessionInfo.ip_address =
-        req.ip || req.socket.remoteAddress || 'unknown';
+      sessionInfo.ip_address = req.ip || req.socket.remoteAddress || 'unknown';
       sessionStore.set(sessionKey, sessionInfo);
     } else {
       const session_token = generateSessionToken();
@@ -201,15 +187,11 @@ export function encryptAndSend(
   } else if (clientSessionToken) {
     const existingSession = findSessionByToken(clientSessionToken);
 
-    if (
-      existingSession &&
-      now - existingSession.session.last_accessed <= SESSION_TIMEOUT
-    ) {
+    if (existingSession && now - existingSession.session.last_accessed <= SESSION_TIMEOUT) {
       sessionKey = existingSession.key;
       sessionInfo = existingSession.session;
       sessionInfo.last_accessed = now;
-      sessionInfo.ip_address =
-        req.ip || req.socket.remoteAddress || 'unknown';
+      sessionInfo.ip_address = req.ip || req.socket.remoteAddress || 'unknown';
       sessionStore.set(sessionKey, sessionInfo);
     } else {
       sessionKey = `client_${clientSessionToken}`;
@@ -265,16 +247,17 @@ export function encryptAndSend(
     now_time: timeService.getNowTime(),
     relogin_time: timeService.getRelogTime(),
   };
-  console.log(`\n>>> RESPONSE ${req.method} ${req.originalUrl}:`, JSON.stringify(responseData), '<<<\n');
+  console.log(
+    `\n>>> RESPONSE ${req.method} ${req.originalUrl}:`,
+    JSON.stringify(responseData),
+    '<<<\n',
+  );
   const encryptedData = encryptionService.encrypt(JSON.stringify(responseData));
   // console.log("now_time:",responseData.now_time)
   // console.log("relogin_time:",responseData.relogin_time)
   log.debug('Response Body:\n%s', JSON.stringify(responseData, null, '\t'));
 
-  res
-    .status(status)
-    .header('Content-Type', 'application/octet-stream')
-    .send(encryptedData);
+  res.status(status).header('Content-Type', 'application/octet-stream').send(encryptedData);
 }
 
 export function decryptAndParse(data: Buffer) {
@@ -310,9 +293,7 @@ export function getSessionCount(): number {
 
 export function clearAllSessions(): void {
   sessionStore.clear();
-  Session.deleteMany({}).catch((err) =>
-    log.error('Failed to clear persisted sessions:', err),
-  );
+  Session.deleteMany({}).catch((err) => log.error('Failed to clear persisted sessions:', err));
   log.info('All sessions cleared');
 }
 
@@ -321,8 +302,7 @@ export function findSessionsByUser(
   type: 'account' | 'game' | 'session',
 ): SessionInfo[] {
   const sessions: SessionInfo[] = [];
-  const prefix =
-    type === 'account' ? 'account_' : type === 'game' ? 'game_' : 'session_';
+  const prefix = type === 'account' ? 'account_' : type === 'game' ? 'game_' : 'session_';
   const searchKey = `${prefix}${identifier}`;
 
   for (const [key, session] of sessionStore.entries()) {
@@ -377,15 +357,11 @@ export function getPerformanceStats(): {
     lastCleanupTime: lastCleanupTime,
     timeSinceLastCleanup: now - lastCleanupTime,
     shouldCleanup:
-      sessionStore.size > MAX_SESSIONS_BEFORE_CLEANUP ||
-      now - lastCleanupTime > CLEANUP_INTERVAL,
+      sessionStore.size > MAX_SESSIONS_BEFORE_CLEANUP || now - lastCleanupTime > CLEANUP_INTERVAL,
   };
 }
 
-export function verifySessionToken(
-  userId: string,
-  sessionToken: string,
-): boolean {
+export function verifySessionToken(userId: string, sessionToken: string): boolean {
   const sessionKey = generateUserBasedSessionKey(userId);
   const session = sessionStore.get(sessionKey);
   return session?.session_token === sessionToken;

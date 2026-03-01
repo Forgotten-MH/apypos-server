@@ -147,12 +147,7 @@ function formatNumber(num: string) {
 export const getQuestNameFromQuestHash = async (questHash: string) => {
   const questCsvFilePath = './src/csv/quests.csv';
   log.debug('Quest Hash Inserted:', questHash);
-  return await lookupValueFromFile(
-    questCsvFilePath,
-    'Hash',
-    'mName',
-    questHash,
-  );
+  return await lookupValueFromFile(questCsvFilePath, 'Hash', 'mName', questHash);
 };
 export const getBlockHashsFromQuestHash = async (
   questHash: string,

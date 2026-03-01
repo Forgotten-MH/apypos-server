@@ -31,15 +31,8 @@ export class BoxService {
     box.zeny = (box.zeny || 0) + amount;
   }
 
-  static updateMonumentLevel(
-    box: Box,
-    stat: 'atk' | 'def' | 'hp' | 'sp',
-    amount: number,
-  ): void {
-    if (
-      !box.monument?.mlv ||
-      !Object.prototype.hasOwnProperty.call(box.monument.mlv, stat)
-    ) {
+  static updateMonumentLevel(box: Box, stat: 'atk' | 'def' | 'hp' | 'sp', amount: number): void {
+    if (!box.monument?.mlv || !Object.prototype.hasOwnProperty.call(box.monument.mlv, stat)) {
       throw new Error(`Invalid monument stat: ${String(stat)}`);
     }
     box.monument.mlv[stat] += amount;

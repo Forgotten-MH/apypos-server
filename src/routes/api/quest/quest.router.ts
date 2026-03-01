@@ -65,9 +65,6 @@ questRouter.post('/training/end', questTrainingController.trainingEnd);
 
 //questRouter.post("/reward/m16/point", );
 
-questRouter.post(
-  '/katamari/content/get',
-  notImplemented.blankResponseEncrypted,
-);
+questRouter.post('/katamari/content/get', notImplemented.blankResponseEncrypted);
 
 export default questRouter;

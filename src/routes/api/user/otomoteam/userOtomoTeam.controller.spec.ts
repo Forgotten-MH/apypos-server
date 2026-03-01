@@ -14,11 +14,7 @@ vi.mock('../../../../middleware/logger', () => ({
 
 import User from '../../../../model/user';
 import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers';
-import {
-  otomoteamGet,
-  otomoteamSet,
-  otomoteamSelect,
-} from './userOtomoTeam.controller';
+import { otomoteamGet, otomoteamSet, otomoteamSelect } from './userOtomoTeam.controller';
 
 function mockReqRes(body: Record<string, unknown> = {}) {
   const req = { body, ip: '127.0.0.1', get: vi.fn() } as unknown as Request;
@@ -74,14 +70,7 @@ describe('userOtomoTeam.controller', () => {
 
       await otomoteamGet(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith(
-        {},
-        res,
-        req,
-        1,
-        2,
-        'Get otomo team failed',
-      );
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Get otomo team failed');
     });
   });
 

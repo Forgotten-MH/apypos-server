@@ -18,10 +18,7 @@ function decrypt(data: Buffer): Buffer {
 
   decipher.setAutoPadding(false);
 
-  const decryptedBuffer = Buffer.concat([
-    decipher.update(data),
-    decipher.final(),
-  ]);
+  const decryptedBuffer = Buffer.concat([decipher.update(data), decipher.final()]);
 
   return decryptedBuffer; // or "utf8" if it should be readable text
 }

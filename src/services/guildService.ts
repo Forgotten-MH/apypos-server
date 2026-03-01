@@ -140,8 +140,7 @@ export const searchGuilds = async (filters: {
   timezone?: number;
   recruit?: number;
 }) => {
-  const query: Record<string, number | { $regex: string; $options: string }> =
-    {};
+  const query: Record<string, number | { $regex: string; $options: string }> = {};
 
   if (filters.name) {
     query.name = { $regex: filters.name, $options: 'i' };
@@ -206,9 +205,7 @@ export const applyToGuild = async (uid: string, gid: string) => {
   const isNotFull = guild.joined < MAX_GUILD_MEMBERS;
 
   if (isAutoRecruit && isNotFull) {
-    log.info(
-      `[Guild Auto Recruit] User ${uid} automatically joined guild ${gid}`,
-    );
+    log.info(`[Guild Auto Recruit] User ${uid} automatically joined guild ${gid}`);
 
     guild.member.normal.push({
       created: now,
@@ -413,15 +410,11 @@ export const leaveGuild = async (uid: string) => {
       return { success: true, disbanded: true };
     }
   } else {
-    const normalMember = guild.member.normal.find(
-      (m: { uid: string }) => m.uid === uid,
-    );
+    const normalMember = guild.member.normal.find((m: { uid: string }) => m.uid === uid);
     if (normalMember) {
       guild.member.normal.pull(normalMember);
     }
-    const subMember = guild.member.sub.find(
-      (m: { uid: string }) => m.uid === uid,
-    );
+    const subMember = guild.member.sub.find((m: { uid: string }) => m.uid === uid);
     if (subMember) {
       guild.member.sub.pull(subMember);
     }
@@ -471,10 +464,7 @@ export const updateGuild = async (
       updateData['guild_info.rank'] = updates.rank;
     }
 
-    await User.updateOne(
-      { uu_id: guild.member.leader.uid },
-      { $set: updateData },
-    );
+    await User.updateOne({ uu_id: guild.member.leader.uid }, { $set: updateData });
 
     for (const sub of guild.member.sub) {
       await User.updateOne({ uu_id: sub.uid }, { $set: updateData });
@@ -504,11 +494,7 @@ export const sendChatMessage = async (
   characterName: string,
 ) => {
   const user = await User.findOne({ uu_id: uid });
-  if (
-    !user ||
-    user.guild_info?.gid !== gid ||
-    user.guild_info?.is_guild === 0
-  ) {
+  if (!user || user.guild_info?.gid !== gid || user.guild_info?.is_guild === 0) {
     throw new Error('');
   }
 

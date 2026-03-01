@@ -208,8 +208,7 @@ function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
       case 'stamp_set':
       case 'collection': {
         // pluralize type for key matching
-        const listKey = (type +
-          (type.endsWith('s') ? '' : 's')) as keyof ItemList;
+        const listKey = (type + (type.endsWith('s') ? '' : 's')) as keyof ItemList;
         const list = item_list[listKey as keyof ItemList];
         if (Array.isArray(list)) {
           (list as RewardItem[]).push({
@@ -227,10 +226,7 @@ function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
         break;
 
       case 'monument_mlv':
-        if (
-          key &&
-          Object.prototype.hasOwnProperty.call(item_list.monument.mlv, key)
-        ) {
+        if (key && Object.prototype.hasOwnProperty.call(item_list.monument.mlv, key)) {
           item_list.monument.mlv[key] += value;
         }
         break;

@@ -45,9 +45,7 @@ const updateNodeList = (
   const ocean = oceanList.find((ocean) => ocean.mst_ocean_id === mst_ocean_id);
 
   if (ocean) {
-    const part = ocean.part_list.find(
-      (part: Part) => part.mst_part_id === mst_part_id,
-    );
+    const part = ocean.part_list.find((part: Part) => part.mst_part_id === mst_part_id);
 
     if (part) {
       part.node_list.push(newNode);
@@ -68,20 +66,14 @@ const updateNodeState = (
   mst_story_id: number,
   newState: number,
 ) => {
-  const ocean = oceanList.find(
-    (ocean: Ocean) => ocean.mst_ocean_id === mst_ocean_id,
-  );
+  const ocean = oceanList.find((ocean: Ocean) => ocean.mst_ocean_id === mst_ocean_id);
 
   if (ocean) {
-    const part = ocean.part_list.find(
-      (part: Part) => part.mst_part_id === mst_part_id,
-    );
+    const part = ocean.part_list.find((part: Part) => part.mst_part_id === mst_part_id);
 
     if (part) {
       const node = part.node_list.find(
-        (node: Node) =>
-          node.mst_node_id === mst_node_id &&
-          node.mst_story_id === mst_story_id,
+        (node: Node) => node.mst_node_id === mst_node_id && node.mst_story_id === mst_story_id,
       );
 
       if (node) {
@@ -127,14 +119,10 @@ export const updatePartNoteState = (
   mst_note_content_id: number,
   newState: number,
 ) => {
-  const ocean = oceanList.find(
-    (ocean: Ocean) => ocean.mst_ocean_id === mst_ocean_id,
-  );
+  const ocean = oceanList.find((ocean: Ocean) => ocean.mst_ocean_id === mst_ocean_id);
 
   if (ocean) {
-    const part = ocean.part_list.find(
-      (part: Part) => part.mst_part_id === mst_part_id,
-    );
+    const part = ocean.part_list.find((part: Part) => part.mst_part_id === mst_part_id);
 
     if (part) {
       const note = part.exploration_note.note_contents.find(
@@ -198,14 +186,7 @@ export const end = async (req: Request, res: Response) => {
     }
 
     updateNodeList(doc.ocean_list, mst_ocean_id, mst_part_id, newNode);
-    updateNodeState(
-      doc.ocean_list,
-      mst_ocean_id,
-      mst_part_id,
-      mst_node_id,
-      mst_story_id,
-      0,
-    );
+    updateNodeState(doc.ocean_list, mst_ocean_id, mst_part_id, mst_node_id, mst_story_id, 0);
     log.debug(doc.ocean_list);
     const update = { ocean_list: doc.ocean_list };
 
@@ -256,13 +237,7 @@ export const end = async (req: Request, res: Response) => {
 
     updateMonument(doc.box!.monument!, augiteObj, hr, atk, def, hp, sp);
 
-    updatePartNoteState(
-      doc.ocean_list,
-      mst_ocean_id,
-      mst_part_id,
-      mst_note_content_id,
-      3,
-    );
+    updatePartNoteState(doc.ocean_list, mst_ocean_id, mst_part_id, mst_note_content_id, 3);
     log.debug(doc.ocean_list);
     const update = { ocean_list: doc.ocean_list, box: doc.box };
 

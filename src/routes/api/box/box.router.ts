@@ -25,14 +25,8 @@ boxRouter.post('/equipment/awake', notImplemented.blankResponseEncrypted);
 // boxRouter.post("/equipment/get", );
 // boxRouter.post("/equipment/potentialup", );
 // boxRouter.post("/equipment/wskillup", );
-boxRouter.post(
-  '/equipment/potentialup/auto/set',
-  notImplemented.blankResponseEncrypted,
-);
-boxRouter.post(
-  '/equipment/favorite/set',
-  notImplemented.blankResponseEncrypted,
-);
+boxRouter.post('/equipment/potentialup/auto/set', notImplemented.blankResponseEncrypted);
+boxRouter.post('/equipment/favorite/set', notImplemented.blankResponseEncrypted);
 boxRouter.post('/equipment/sale', notImplemented.blankResponseEncrypted);
 boxRouter.post('/equipment/capacity/info', boxController.equipCapacityInfo);
 boxRouter.post('/equipment/capacity/expand', boxController.equipCapacityExpand);

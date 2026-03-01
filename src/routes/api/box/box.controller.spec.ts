@@ -15,14 +15,7 @@ vi.mock('../../../middleware/logger', () => ({
 
 import User from '../../../model/user';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
-import {
-  get,
-  otomoGet,
-  equipLevelup,
-  storageInfo,
-  sale,
-  favoriteSet,
-} from './box.controller';
+import { get, otomoGet, equipLevelup, storageInfo, sale, favoriteSet } from './box.controller';
 
 function mockReqRes(body: Record<string, unknown> = {}) {
   const req = { body, ip: '127.0.0.1', get: vi.fn() } as unknown as Request;
@@ -70,14 +63,7 @@ describe('box.controller', () => {
 
       await get(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith(
-        {},
-        res,
-        req,
-        1,
-        2,
-        'Get box failed',
-      );
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Get box failed');
     });
   });
 
@@ -106,22 +92,13 @@ describe('box.controller', () => {
 
       await otomoGet(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith(
-        {},
-        res,
-        req,
-        1,
-        2,
-        'Box not found',
-      );
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Box not found');
     });
   });
 
   describe('equipLevelup', () => {
     it('levels up equipment by the specified amount', async () => {
-      const mockEquipments = [
-        { equipment_id: 'EQP_001', elv: 3, mst_equipment_id: 123 },
-      ];
+      const mockEquipments = [{ equipment_id: 'EQP_001', elv: 3, mst_equipment_id: 123 }];
       vi.mocked(User.findOne).mockResolvedValue({
         id: 'user-1',
         box: { equipments: mockEquipments },
@@ -159,14 +136,7 @@ describe('box.controller', () => {
 
       await equipLevelup(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith(
-        {},
-        res,
-        req,
-        2001,
-        0,
-        'equipment not found',
-      );
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 2001, 0, 'equipment not found');
     });
   });
 

@@ -226,9 +226,7 @@ export const equipLevelup = async (req: Request, res: Response) => {
     const steps: number = Math.max(1, Number(req.body.num || 1));
 
     // Find equipment in user's box
-    const equipmentIndex = doc.box.equipments!.findIndex(
-      (eq) => eq.equipment_id === equipmentId,
-    );
+    const equipmentIndex = doc.box.equipments!.findIndex((eq) => eq.equipment_id === equipmentId);
 
     if (equipmentIndex === -1) {
       // Equipment not found
@@ -274,9 +272,7 @@ export const awake = async (req: Request, res: Response) => {
     }
 
     const { base_equipment_id } = req.body;
-    const equipment = doc.box.equipments!.find(
-      (eq) => eq.equipment_id === base_equipment_id,
-    );
+    const equipment = doc.box.equipments!.find((eq) => eq.equipment_id === base_equipment_id);
 
     const data = {
       equipment: equipment ?? {},
@@ -434,8 +430,7 @@ export const leveupAuto = async (req: Request, res: Response) => {
         );
 
         // Replace the item in the array
-        const augiteItem =
-          targetIndex !== -1 ? doc.box.monument.augite[targetIndex] : undefined;
+        const augiteItem = targetIndex !== -1 ? doc.box.monument.augite[targetIndex] : undefined;
         if (augiteItem) {
           augiteItem.amount = Math.max((augiteItem.amount ?? 0) - 10, 0);
         }

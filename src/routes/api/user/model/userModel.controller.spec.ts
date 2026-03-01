@@ -80,14 +80,7 @@ describe('userModel.controller', () => {
 
       await modelCreate(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith(
-        {},
-        res,
-        req,
-        1,
-        2,
-        'Model create failed',
-      );
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Model create failed');
     });
   });
 

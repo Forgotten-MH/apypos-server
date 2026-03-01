@@ -24,14 +24,8 @@ userRouter.post('/otomoteam/select', userOtomoTeamController.otomoteamSelect);
 //EquipSet
 userRouter.post('/equipset/get', userEquipSetController.equipSetGet);
 userRouter.post('/equipset/set', userEquipSetController.equipSetSet);
-userRouter.post(
-  '/equipset/social/get',
-  userEquipSetController.equipSetSocialGet,
-);
-userRouter.post(
-  '/equipset/social/set',
-  userEquipSetController.equipSetSocialSet,
-);
+userRouter.post('/equipset/social/get', userEquipSetController.equipSetSocialGet);
+userRouter.post('/equipset/social/set', userEquipSetController.equipSetSocialSet);
 
 //Nav
 userRouter.post('/navigation/all', userController.navigationAll);

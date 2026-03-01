@@ -4,10 +4,7 @@ import * as webController from '../web/webController';
 
 const maintenanceEnvRouter = Router();
 
-maintenanceEnvRouter.get(
-  '/schedule',
-  maintenanceEnvController.getMaintenanceEnvSchedule,
-);
+maintenanceEnvRouter.get('/schedule', maintenanceEnvController.getMaintenanceEnvSchedule);
 maintenanceEnvRouter.get('', webController.getWebContent);
 
 export default maintenanceEnvRouter;

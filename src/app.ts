@@ -39,6 +39,11 @@ app.use((req, res, next) => {
       try {
         const decryptedBody = decryptAndParse(rawBody);
         req.body = decryptedBody;
+        console.log(
+          `\n>>> DECRYPTED ${req.method} ${req.originalUrl}:`,
+          JSON.stringify(req.body),
+          '<<<\n',
+        );
         log.debug('Request Body:\n%s', JSON.stringify(req.body, null, '\t'));
       } catch (err) {
         log.error('Failed to decrypt request body:', err);
@@ -66,9 +71,7 @@ app.use(
       winston.format.timestamp({
         format: 'YYYY-MM-DD hh:mm:ss.SSS A',
       }),
-      winston.format.printf(
-        (info) => `[${info.timestamp}] ${info.level}: ${info.message} \n`,
-      ),
+      winston.format.printf((info) => `[${info.timestamp}] ${info.level}: ${info.message} \n`),
     ),
     meta: true,
     expressFormat: true,
@@ -92,14 +95,16 @@ app.use((req, res, next) => {
 // Setup routes
 app.use('/', routes);
 app.use('/', express.static(__dirname + '/public'));
+// Catch-all 404 handler to log unmatched routes
+app.use((req, res, next) => {
+  console.log(`\n>>> 404 UNMATCHED: ${req.method} ${req.originalUrl} <<<\n`);
+  next();
+});
 // Error logger middleware
 app.use(
   expressWinston.errorLogger({
     transports: logger.transports,
-    format: winston.format.combine(
-      winston.format.colorize(),
-      winston.format.json(),
-    ),
+    format: winston.format.combine(winston.format.colorize(), winston.format.json()),
   }),
 );
 

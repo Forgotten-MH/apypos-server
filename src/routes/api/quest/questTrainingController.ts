@@ -98,9 +98,7 @@ export const trainingEnd = async (req: Request, res: Response) => {
   }
   const cleared_quests = doc.cleared_quests;
 
-  const questIndex = cleared_quests.findIndex(
-    (q) => q.mst_quest_id === cleared_quest,
-  );
+  const questIndex = cleared_quests.findIndex((q) => q.mst_quest_id === cleared_quest);
 
   if (questIndex === -1) {
     log.debug('Inserted Quest as seen');
@@ -229,10 +227,7 @@ export const trainingStart = (req: Request, res: Response) => {
   };
   encryptAndSend(data, res, req);
 };
-const isTrainingCleared = (
-  cleared_quests: { mst_quest_id: number }[],
-  questID: number | null,
-) => {
+const isTrainingCleared = (cleared_quests: { mst_quest_id: number }[], questID: number | null) => {
   return cleared_quests.find((q) => q.mst_quest_id === questID) ? 1 : 0;
 };
 
@@ -247,10 +242,7 @@ export const trainingList = async (req: Request, res: Response) => {
     training_list: [
       {
         equip_type: 1,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00001'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00001')),
         mst_quest_id: calcMstId('TRAINING00001'),
         reward_item: {
           //4002688025
@@ -279,10 +271,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 11,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00002'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00002')),
         mst_quest_id: calcMstId('TRAINING00002'),
         reward_item: {
           //4002688025
@@ -311,10 +300,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 7,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00003'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00003')),
         mst_quest_id: calcMstId('TRAINING00003'),
         reward_item: {
           //4002688025
@@ -343,10 +329,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 0,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00004'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00004')),
         mst_quest_id: calcMstId('TRAINING00004'),
         reward_item: {
           //4002688025
@@ -375,10 +358,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 12,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00005'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00005')),
         mst_quest_id: calcMstId('TRAINING00005'),
         reward_item: {
           //4002688025
@@ -407,10 +387,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 2,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00006'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00006')),
         mst_quest_id: calcMstId('TRAINING00006'),
         reward_item: {
           //4002688025
@@ -439,10 +416,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 3,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00007'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00007')),
         mst_quest_id: calcMstId('TRAINING00007'),
         reward_item: {
           //4002688025
@@ -471,10 +445,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 9,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00008'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00008')),
         mst_quest_id: calcMstId('TRAINING00008'),
         reward_item: {
           //4002688025
@@ -503,10 +474,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 8,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00009'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00009')),
         mst_quest_id: calcMstId('TRAINING00009'),
         reward_item: {
           //4002688025
@@ -535,10 +503,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 14,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00010'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00010')),
         mst_quest_id: calcMstId('TRAINING00010'),
         reward_item: {
           //4002688025
@@ -567,10 +532,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 6,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00011'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00011')),
         mst_quest_id: calcMstId('TRAINING00011'),
         reward_item: {
           //4002688025
@@ -599,10 +561,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 4,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00012'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00012')),
         mst_quest_id: calcMstId('TRAINING00012'),
         reward_item: {
           //4002688025
@@ -631,10 +590,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 10,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00013'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00013')),
         mst_quest_id: calcMstId('TRAINING00013'),
         reward_item: {
           //4002688025
@@ -663,10 +619,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 13,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00014'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00014')),
         mst_quest_id: calcMstId('TRAINING00014'),
         reward_item: {
           //4002688025
@@ -695,10 +648,7 @@ export const trainingList = async (req: Request, res: Response) => {
       },
       {
         equip_type: 15,
-        is_clear: isTrainingCleared(
-          doc.cleared_quests,
-          calcMstId('TRAINING00015'),
-        ),
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00015')),
         mst_quest_id: calcMstId('TRAINING00015'),
         reward_item: {
           //4002688025

@@ -33,10 +33,7 @@ export function makeDownloadList(type: string, os: string) {
         const jam = crcjam(fileData).toString(16);
 
         let parsedPath = filePath.replace(/\\/g, '/');
-        parsedPath = parsedPath.replace(
-          path.posix.join('public', 'res', 'download', os),
-          '',
-        );
+        parsedPath = parsedPath.replace(path.posix.join('public', 'res', 'download', os), '');
         parsedPath = parsedPath.replace('/v0282', '');
 
         data.push({ filePath: parsedPath, crc: jam, fileSize });
@@ -51,20 +48,14 @@ export function makeDownloadList(type: string, os: string) {
     });
     log.debug(response);
 
-    fs.writeFile(
-      folderPath + os + '/' + type + '/download.list',
-      response,
-      (err) => {
-        if (err) {
-          log.error('Error creating the file:', err);
-        } else {
-          log.info('File created successfully.');
-        }
-      },
-    );
+    fs.writeFile(folderPath + os + '/' + type + '/download.list', response, (err) => {
+      if (err) {
+        log.error('Error creating the file:', err);
+      } else {
+        log.info('File created successfully.');
+      }
+    });
   } else {
-    log.info(
-      folderPath + os + '/' + type + '/download.list' + ' Already exists',
-    );
+    log.info(folderPath + os + '/' + type + '/download.list' + ' Already exists');
   }
 }

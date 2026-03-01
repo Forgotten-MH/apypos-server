@@ -79,14 +79,7 @@ describe('user.controller', () => {
 
       await rename(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith(
-        {},
-        res,
-        req,
-        1,
-        2,
-        'Rename failed',
-      );
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Rename failed');
     });
   });
 
@@ -216,9 +209,7 @@ describe('user.controller', () => {
 
       expect(encryptAndSend).toHaveBeenCalledWith(
         expect.objectContaining({
-          offer_products: expect.arrayContaining([
-            expect.objectContaining({ name: 'Offer Name' }),
-          ]),
+          offer_products: expect.arrayContaining([expect.objectContaining({ name: 'Offer Name' })]),
         }),
         res,
         req,

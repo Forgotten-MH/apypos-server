@@ -428,31 +428,17 @@ export const eventListAll = async (req: Request, res: Response) => {
     big_node_order_array: event.big_node_order_array,
     event_list: {
       assault: enrichEvent(
-        (await AssualtEvents.find().exec()).map((d) =>
-          d.toObject({ getters: true }),
-        ),
+        (await AssualtEvents.find().exec()).map((d) => d.toObject({ getters: true })),
       ),
-      m16: enrichEvent(
-        (await M16Events.find().exec()).map((d) =>
-          d.toObject({ getters: true }),
-        ),
-      ),
+      m16: enrichEvent((await M16Events.find().exec()).map((d) => d.toObject({ getters: true }))),
       score: enrichEvent(
-        (await ScoreEvents.find().exec()).map((d) =>
-          d.toObject({ getters: true }),
-        ),
+        (await ScoreEvents.find().exec()).map((d) => d.toObject({ getters: true })),
       ), //Collabration Events Type Takes SCORE prefixed events and quests
       standing: enrichEvent(
-        (await StandingEvents.find().exec()).map((d) =>
-          d.toObject({ getters: true }),
-        ),
+        (await StandingEvents.find().exec()).map((d) => d.toObject({ getters: true })),
       ),
       ticket: await TicketEvents.find({}).exec(), //Ticket prefixed quests
-      tour: enrichEvent(
-        (await TourEvents.find().exec()).map((d) =>
-          d.toObject({ getters: true }),
-        ),
-      ),
+      tour: enrichEvent((await TourEvents.find().exec()).map((d) => d.toObject({ getters: true }))),
     },
     next_day_start: event.next_day_start,
     next_latest_node_infos: event.next_latest_node_infos,
@@ -681,9 +667,7 @@ export const islandStart = async (req: Request, res: Response) => {
   }
   const cleared_quests = doc.cleared_quests;
 
-  const questExists = cleared_quests.some(
-    (q) => q.mst_quest_id === startedQuest,
-  );
+  const questExists = cleared_quests.some((q) => q.mst_quest_id === startedQuest);
 
   if (!questExists) {
     log.debug('Inserted Quest as seen');
@@ -770,9 +754,7 @@ export const islandEnd = async (req: Request, res: Response) => {
   }
   const cleared_quests = doc.cleared_quests;
 
-  const questIndex = cleared_quests.findIndex(
-    (q) => q.mst_quest_id === cleared_quest,
-  );
+  const questIndex = cleared_quests.findIndex((q) => q.mst_quest_id === cleared_quest);
 
   if (questIndex === -1) {
     log.debug('Inserted Quest as seen');
@@ -1230,18 +1212,9 @@ export async function enrichOceanData(
 ): Promise<Ocean[]> {
   // Load CSVs in parallel
   const [nodeQuestCsv, questDataCsv, questSubtargetCsv] = await Promise.all([
-    readFile(
-      path.resolve(
-        __dirname,
-        '../../../csv/oceans/parts/nodes/2-node-quests.csv',
-      ),
-      'utf8',
-    ),
+    readFile(path.resolve(__dirname, '../../../csv/oceans/parts/nodes/2-node-quests.csv'), 'utf8'),
     readFile(path.resolve(__dirname, '../../../csv/questData.csv'), 'utf8'),
-    readFile(
-      path.resolve(__dirname, '../../../csv/questSubtargetSet.csv'),
-      'utf8',
-    ),
+    readFile(path.resolve(__dirname, '../../../csv/questSubtargetSet.csv'), 'utf8'),
   ]);
 
   // Parse CSVs
@@ -1293,9 +1266,7 @@ export async function enrichOceanData(
           const quest = questMap.get(questID);
           if (!quest) continue;
 
-          const clearedQuest = cleared_quests.find(
-            (q) => q.mst_quest_id === questID,
-          );
+          const clearedQuest = cleared_quests.find((q) => q.mst_quest_id === questID);
 
           let state = 1; // default = NEW
           if (clearedQuest) {

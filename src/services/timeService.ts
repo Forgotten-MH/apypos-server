@@ -8,9 +8,7 @@ export class TimeService {
     this.now = new Date(); // Initialize 'now' once when the class is instantiated
 
     this.relog =
-      Math.floor(
-        new Date(this.now.getTime() + 24 * 60 * 60 * 1000).getTime() / 1000,
-      ) % 100000;
+      Math.floor(new Date(this.now.getTime() + 24 * 60 * 60 * 1000).getTime() / 1000) % 100000;
   }
   // Update the 'now' variable
   private updateNow(): void {
@@ -27,11 +25,7 @@ export class TimeService {
   }
   getTotalSecondsToday(): number {
     this.updateNow();
-    return (
-      this.now.getUTCHours() * 3600 +
-      this.now.getUTCMinutes() * 60 +
-      this.now.getUTCSeconds()
-    );
+    return this.now.getUTCHours() * 3600 + this.now.getUTCMinutes() * 60 + this.now.getUTCSeconds();
   }
   getDateTime(): Date {
     this.updateNow();

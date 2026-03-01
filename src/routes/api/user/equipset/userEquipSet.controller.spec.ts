@@ -71,14 +71,7 @@ describe('userEquipSet.controller', () => {
 
       await equipSetGet(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith(
-        {},
-        res,
-        req,
-        1,
-        2,
-        'Get equip set failed',
-      );
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Get equip set failed');
     });
   });
 

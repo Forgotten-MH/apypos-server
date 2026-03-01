@@ -429,9 +429,7 @@ export const stepUP = async (req: Request, res: Response) => {
   const data = {
     tutorial_step: update.tutorial_step,
   };
-  log.debug(
-    ` TutorialStepUp: Old: ${doc.tutorial_step} New: ${data.tutorial_step}`,
-  );
+  log.debug(` TutorialStepUp: Old: ${doc.tutorial_step} New: ${data.tutorial_step}`);
 
   encryptAndSend(data, res, req);
 };
