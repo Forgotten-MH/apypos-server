@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
+const log = createLogger('story');
 const updateNodeList = (oceanList, mst_ocean_id, mst_part_id, newNode) => {
   const ocean = oceanList.find((ocean) => ocean.mst_ocean_id === mst_ocean_id);
 
@@ -12,12 +14,12 @@ const updateNodeList = (oceanList, mst_ocean_id, mst_part_id, newNode) => {
     if (part) {
       // Add the new node to the node_list
       part.node_list.push(newNode);
-      console.log('Node added successfully.');
+      log.debug('Node added successfully.');
     } else {
-      console.log('Part not found.');
+      log.debug('Part not found.');
     }
   } else {
-    console.log('Ocean not found.');
+    log.debug('Ocean not found.');
   }
 };
 
@@ -45,29 +47,29 @@ const updateNodeState = (
       if (node) {
         // Update the state of the node
         node.state = newState;
-        console.log('Node state updated successfully.');
+        log.debug('Node state updated successfully.');
       } else {
-        console.log('Node not found.');
+        log.debug('Node not found.');
       }
     } else {
-      console.log('Part not found.');
+      log.debug('Part not found.');
     }
   } else {
-    console.log('Ocean not found.');
+    log.debug('Ocean not found.');
   }
 };
 
 const updateMonument = (monument, augiteObj, hr, atk, def, hp, sp) => {
-  console.log('old monumnet', monument);
+  log.debug('old monumnet', monument);
 
   monument.augite.push(augiteObj);
-  console.log('augite added successfully to box.');
+  log.debug('augite added successfully to box.');
   monument.hr = monument.hr + hr;
   monument.mlv.atk = monument.mlv.atk + atk;
   monument.mlv.def = monument.mlv.def + def;
   monument.mlv.hp = monument.mlv.hp + hp;
   monument.mlv.sp = monument.mlv.sp + sp;
-  console.log('new monumnet', monument);
+  log.debug('new monumnet', monument);
 };
 
 export const updatePartNoteState = (
@@ -92,15 +94,15 @@ export const updatePartNoteState = (
       if (note) {
         // Update the state of the node
         note.state = newState;
-        console.log('note state updated successfully.');
+        log.debug('note state updated successfully.');
       } else {
-        console.log('note not found.');
+        log.debug('note not found.');
       }
     } else {
-      console.log('Part not found.');
+      log.debug('Part not found.');
     }
   } else {
-    console.log('Ocean not found.');
+    log.debug('Ocean not found.');
   }
 };
 
@@ -160,7 +162,7 @@ export const end = async (req: Request, res: Response) => {
       mst_story_id,
       0
     );
-    console.log(doc.ocean_list);
+    log.debug(doc.ocean_list);
     const update = { ocean_list: doc.ocean_list };
 
     await User.findByIdAndUpdate(doc.id, update);
@@ -217,7 +219,7 @@ export const end = async (req: Request, res: Response) => {
       mst_note_content_id,
       3
     );
-    console.log(doc.ocean_list);
+    log.debug(doc.ocean_list);
     const update = { ocean_list: doc.ocean_list, box: doc.box };
 
     await User.findByIdAndUpdate(doc.id, update);

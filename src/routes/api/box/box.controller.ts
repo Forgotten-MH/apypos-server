@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import { calcMstId as _calcMstId } from '../../../services/defineService';
+const log = createLogger('box');
 
 export const get = async (req: Request, res: Response) => {
   try {
@@ -16,7 +18,7 @@ export const get = async (req: Request, res: Response) => {
     };
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in box get:', error);
+    log.error('Error in box get:', error);
     encryptAndSend({}, res, req, 1, 2, 'Get box failed');
   }
 };
@@ -91,7 +93,7 @@ export const otomoGet = async (req: Request, res: Response) => {
     };
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in otomoGet:', error);
+    log.error('Error in otomoGet:', error);
     encryptAndSend({}, res, req, 1, 2, 'Get otomo box failed');
   }
 };
@@ -248,7 +250,7 @@ export const equipLevelup = async (req: Request, res: Response) => {
 
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in equipLevelup:', error);
+    log.error('Error in equipLevelup:', error);
     encryptAndSend({}, res, req, 1, 2, 'Equipment level up failed');
   }
 };
@@ -273,7 +275,7 @@ export const awake = async (req: Request, res: Response) => {
     };
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in awake:', error);
+    log.error('Error in awake:', error);
     encryptAndSend({}, res, req, 1, 2, 'Equipment awake failed');
   }
 };
@@ -442,7 +444,7 @@ export const leveupAuto = async (req: Request, res: Response) => {
     };
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in leveupAuto:', error);
+    log.error('Error in leveupAuto:', error);
     encryptAndSend({}, res, req, 1, 2, 'Monument level up failed');
   }
 };

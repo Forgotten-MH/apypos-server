@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { createLogger } from '../../../middleware/logger';
 import { calcMstId } from '../../../services/defineService';
 import User from '../../../model/user';
 import Present from '../../../model/presents';
+const log = createLogger('questTraining');
 const getRewardItemByQuestId = (questId: number) => {
   switch (questId) {
     case calcMstId('TRAINING00001'):
@@ -101,10 +103,10 @@ export const trainingEnd = async (req: Request, res: Response) => {
   );
 
   if (questIndex === -1) {
-    console.log('Inserted Quest as seen');
+    log.debug('Inserted Quest as seen');
     cleared_quests.push({ mst_quest_id: cleared_quest, clear_time: clearTime });
   } else {
-    console.log('Updated clear_time for existing quest');
+    log.debug('Updated clear_time...');
     cleared_quests[questIndex].clear_time = clearTime;
   }
 

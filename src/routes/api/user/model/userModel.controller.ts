@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers';
 import User from '../../../../model/user';
+import { createLogger } from '../../../../middleware/logger';
+const log = createLogger('userModel');
 
 
 
@@ -22,7 +24,7 @@ export const modelCreate = async (req: Request, res: Response) => {
     model_info: doc.model_info,
     tutorial_step: doc.tutorial_step, // 210 activate video
   };
-  console.log(`TutorialStep : ${responseData.tutorial_step}`);
+  log.debug(`TutorialStep : ${responseData.tutorial_step}`);
 
   encryptAndSend(responseData, res, req);
 };

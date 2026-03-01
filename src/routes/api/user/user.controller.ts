@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import User from '../../../model/user';
+import { createLogger } from '../../../middleware/logger';
+const log = createLogger('user');
 
 export const rename = async (req: Request, res: Response) => {
   try {
@@ -22,7 +24,7 @@ export const rename = async (req: Request, res: Response) => {
     };
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in rename:', error);
+    log.error('Error in rename:', error);
     encryptAndSend({}, res, req, 1, 2, 'Rename failed');
   }
 };
@@ -107,7 +109,7 @@ export const get = async (req: Request, res: Response) => {
 
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in user get:', error);
+    log.error('Error in user get:', error);
     encryptAndSend({}, res, req, 1, 2, 'Get user failed');
   }
 };
@@ -131,7 +133,7 @@ export const commentSet = async (req: Request, res: Response) => {
 
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in commentSet:', error);
+    log.error('Error in commentSet:', error);
     encryptAndSend({}, res, req, 1, 2, 'Set comment failed');
   }
 };
@@ -399,7 +401,7 @@ export const titleSet = async (req: Request, res: Response) => {
     };
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in titleSet:', error);
+    log.error('Error in titleSet:', error);
     encryptAndSend({}, res, req, 1, 2, 'Set title failed');
   }
 };
@@ -429,7 +431,7 @@ export const partnerGet = async (req: Request, res: Response) => {
 
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in partnerGet:', error);
+    log.error('Error in partnerGet:', error);
     encryptAndSend({}, res, req, 1, 2, 'Get partner failed');
   }
 };

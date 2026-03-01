@@ -1,3 +1,6 @@
+import { createLogger } from '../middleware/logger';
+const log = createLogger('itemService');
+
 interface RewardEntry {
   type: string
   id?: number
@@ -236,7 +239,7 @@ function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
         break;
 
       default:
-        console.warn(`Unknown reward type: ${type}`);
+        log.warn(`Unknown reward type: ${type}`);
         break;
     }
   }

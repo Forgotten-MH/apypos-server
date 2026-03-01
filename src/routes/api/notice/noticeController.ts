@@ -1,7 +1,9 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import Present from '../../../model/presents';
+const log = createLogger('notice');
 
 export const get = async(req: Request, res: Response) => {
    const { session_id } = req.body;
@@ -15,7 +17,7 @@ export const get = async(req: Request, res: Response) => {
       received: { $ne: 1 }
     });
 
-console.log('Count of unreceived presents:', presentCount);  // Incomplete
+log.debug('Count of unreceived presents:', presentCount);  // Incomplete
   const data = {
     banner_list: {
       outer_banner_list: [

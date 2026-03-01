@@ -1,5 +1,7 @@
 import crypto from 'crypto';
 import fs from 'fs';
+import { createLogger } from '../middleware/logger';
+const log = createLogger('testDecryption');
 
 const cacheKey = 'K@HW`wQ=O_fAHSoy/bV'
 
@@ -31,4 +33,4 @@ function decrypt(data: Buffer): Buffer {
 const decryptedBuffer = decrypt(encryptedData);
 
 fs.writeFileSync('.\\Caches\\decrypted.bin', decryptedBuffer);
-console.log(decryptedBuffer);
+log.info(decryptedBuffer);

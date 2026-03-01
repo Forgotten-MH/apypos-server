@@ -9,8 +9,10 @@ import {
   DB_PASSWORD,
   DB_IP,
   DB_PORT,
-  DEBUG,
 } from './config';
+import { createLogger } from './middleware/logger';
+
+const log = createLogger('server');
 import normalTutorialQuestSheets from './json/questDB/normal.extended.complete.json';
 import trainingQuestSheets from './json/questDB/training.extended.complete.json';
 import scoreQuestSheets from './json/questDB/score.extended.complete.json';
@@ -52,7 +54,7 @@ mongoose
     dbName: DB_NAME,
   })
   .then(() => {
-    console.log('Connected to MongoDB...');
+    log.info('Connected to MongoDB...');
 
     const downloadCategories = [
       'openingDL',
@@ -69,20 +71,18 @@ mongoose
         });
       });
     } catch (error) {
-      console.error(
+      log.error(
         'Failed to create FPK download lists. Please ensure the FPK files are located in \'./src/public/res/\' and the server is properly configured.',
         error
       );
     }
-    if (DEBUG) {
-      app.use((req, res, next) => {
-        console.log(`Request method: ${req.method}`);
-        console.log(`Request URL: ${req.url}`);
-        console.log('Request Headers:', req.headers);
-        console.log('Request Body:', req.body);
-        next();
-      });
-    }
+    app.use((req, res, next) => {
+      log.debug(`Request method: ${req.method}`);
+      log.debug(`Request URL: ${req.url}`);
+      log.debug('Request Headers: %o', req.headers);
+      log.debug('Request Body: %o', req.body);
+      next();
+    });
 
     const server = useHttps
       ? https.createServer(credentials, app)
@@ -94,17 +94,17 @@ mongoose
     });
 
     io.use((socket, next) => {
-      console.log(`Incoming connection: ${socket.id}`);
-      console.log(` ${socket.data}`);
+      log.info(`Incoming connection: ${socket.id}`);
+      log.debug('Socket data: %o', socket.data);
 
       socket.onAny((eventName, arg) => {
         if (Buffer.isBuffer(arg)) {
-          console.log(
+          log.debug(
             `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
               arg.toString('hex')
           );
         } else {
-          console.log(
+          log.debug(
             `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
               arg
           );
@@ -119,21 +119,21 @@ mongoose
     server.listen(PORT, () => {
       Event.countDocuments({})
         .then((count) => {
-          console.log(`Number of Events: ${count}`);
+          log.info(`Number of Events: ${count}`);
           if (count == 0) {
             const eventDefault = new Event();
             eventDefault.save();
-            console.log('✅ Event Data imported successfully.');
+            log.info('Event Data imported successfully.');
           } else {
-            console.log('⚠️ Event Data is not empty. Skipping import.');
+            log.info('Event Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
-          console.error(err);
+          log.error('Error:', err);
         });
       AssualtEvents.countDocuments({})
         .then((count) => {
-          console.log(`Number of Assualt Events: ${count}`);
+          log.info(`Number of Assualt Events: ${count}`);
           if (count == 0) {
             easyEvents.map((easyEvent) => {
               AssualtEvents.create({
@@ -172,17 +172,17 @@ mongoose
               });
             });
 
-            console.log('✅ Assualt Event Data imported successfully.');
+            log.info('✅ Assualt Event Data imported successfully.');
           } else {
-            console.log('⚠️ Assualt Event Data is not empty. Skipping import.');
+            log.info('⚠️ Assualt Event Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
-          console.error(err);
+          log.error('Error:', err);
         });
       ScoreEvents.countDocuments({})
         .then((count) => {
-          console.log(`Number of Score Events: ${count}`);
+          log.info(`Number of Score Events: ${count}`);
           if (count == 0) {
             coevEvents.map((coevEvent) => {
               ScoreEvents.create({
@@ -192,17 +192,17 @@ mongoose
               });
             });
 
-            console.log('✅ Score Event Data imported successfully.');
+            log.info('✅ Score Event Data imported successfully.');
           } else {
-            console.log('⚠️ Score Event Data is not empty. Skipping import.');
+            log.info('⚠️ Score Event Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
-          console.error(err);
+          log.error('Error:', err);
         });
       TicketEvents.countDocuments({})
         .then((count) => {
-          console.log(`Number of Ticket Events: ${count}`);
+          log.info(`Number of Ticket Events: ${count}`);
           if (count == 0) {
             ticketEvents.map((ticketEvent) => {
               TicketEvents.create({
@@ -215,17 +215,17 @@ mongoose
               });
             });
 
-            console.log('✅ Ticket Event Data imported successfully.');
+            log.info('✅ Ticket Event Data imported successfully.');
           } else {
-            console.log('⚠️ Ticket Event Data is not empty. Skipping import.');
+            log.info('⚠️ Ticket Event Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
-          console.error(err);
+          log.error('Error:', err);
         });
       QuestSheet.countDocuments({})
         .then((count) => {
-          console.log(`Number of Quests: ${count}`);
+          log.info(`Number of Quests: ${count}`);
           if (count === 0) {
             QuestSheet.create(
               normalTutorialQuestSheets.rQuestSheet.mQuestDataList
@@ -236,24 +236,24 @@ mongoose
             QuestSheet.create(ticketQuestSheets.rQuestSheet.mQuestDataList);
             QuestSheet.create(eventQuestSheets.rQuestSheet.mQuestDataList);
 
-            console.log('✅ Quest Data imported successfully.');
+            log.info('✅ Quest Data imported successfully.');
           } else {
-            console.log('⚠️ Quest Data is not empty. Skipping import.');
+            log.info('⚠️ Quest Data is not empty. Skipping import.');
           }
         })
         .catch((err) => {
-          console.error(err);
+          log.error('Error:', err);
         });
 
       //TODO Instatiate entire ocean map here.
 
-      console.log(
+      log.info(
         `Apypos Server Internal Test v0.0.12 started on ${IP}:${PORT}`
       );
     });
   })
   .catch((err) =>
-    console.error(
+    log.error(
       'Coudn\'t Start Apypos Server: Couldn\'t connect to MongoDB....',
       err
     )

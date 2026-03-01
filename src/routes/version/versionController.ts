@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { IP, API_NOT_AVAILABLE_MAINTENANCE, PORT, WEB_URL, RES_URL } from '../../config';
+import { createLogger } from '../../middleware/logger';
+const log = createLogger('version');
 
 export const getVersionData = (req: Request, res: Response) => {
   const versionNumber = req.params[0];
@@ -7,7 +9,7 @@ export const getVersionData = (req: Request, res: Response) => {
   let version = {};
   switch (versionNumber) {
     case '01.00.00':
-      console.log(versionNumber);
+      log.debug(versionNumber);
       version = {
         res: `${RES_URL}res`,
         api: `${http}://${IP}/api`,

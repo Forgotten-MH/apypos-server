@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import User from '../../../model/user';
+import { createLogger } from '../../../middleware/logger';
+const log = createLogger('account');
 
 function generateToken(length) {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -123,7 +125,7 @@ export const registerAccount = async (req: Request, res: Response) => {
     user_id: newUser.user_id,
   };
 
-  console.log(`TutorialStepUp: ${responseData.tutorial_step}`);
+  log.info(`TutorialStepUp: ${responseData.tutorial_step}`);
 
   encryptAndSend(responseData, res, req);
 };
@@ -952,7 +954,7 @@ export const loginAccount = async (req: Request, res: Response) => {
     login = { ...login_bonus_info, ...login };
   }
 
-  console.log(`TutorialStepUp: ${login.tutorial_step}`);
+  log.info(`TutorialStepUp: ${login.tutorial_step}`);
 
   encryptAndSend(login, res, req);
 };

@@ -1,3 +1,6 @@
+import { createLogger } from './middleware/logger';
+const log = createLogger('multiUtils');
+
 export function createHeader({
   roomNumber,
   playerId,
@@ -53,7 +56,7 @@ ubyte array[pktlength];
 function createMaintenance({ durationSecondsTill }) {
   const pktId = 0x0a;
   const data = Buffer.alloc(4);
-    console.log('Maintenance Message Sent: ',durationSecondsTill)
+    log.debug('Maintenance Message Sent: ',durationSecondsTill)
 
   data.writeUInt32LE(durationSecondsTill, 0);
   return { data, pktId };
@@ -81,7 +84,7 @@ function createChat(message) {
   const data = Buffer.alloc(100);
   const messageStartIndex = 0x36;
   const name = 'Command User';
-  console.log('Message From: ',name,'-',message)
+  log.debug('Message From: ',name,'-',message)
   data.write(name, 0x00, 'ascii');
   data[0x00 + name.length] = 0x00; // null terminator
   data.write(message, messageStartIndex, 'ascii');
@@ -182,7 +185,7 @@ export function createInfoPacket() {
   const allowed = [0, 2, 3, 4, 5, 6, 7, 8, 9];
   const msgType = allowed[Math.floor(Math.random() * allowed.length)];
   const playerId = Math.floor(Math.random() * 4);
-  console.log('msg', msgType, 'pId', playerId);
+  log.debug('msg', msgType, 'pId', playerId);
   const { data, pktId } = createInfo(msgType); // 0 to 9 (0x0 to 0x09)
   const header = createHeader({
     roomNumber: 0x00000000,
@@ -295,7 +298,7 @@ export function parseHeader(buffer) {
 
   // Payload is everything after the header bytes
   const payload = buffer.slice(offset);
-  console.log({
+  log.debug({
       roomNumber,
       playerId,
       seq,

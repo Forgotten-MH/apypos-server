@@ -1,7 +1,9 @@
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { createLogger } from '../../../middleware/logger';
 import { promises as fs } from 'fs';
 import path from 'path';
 import crcjam from 'crc/crcjam';
+const log = createLogger('banner');
 
 const readFilesFromDir = async (dir, data) => {
   try {
@@ -22,7 +24,7 @@ const readFilesFromDir = async (dir, data) => {
       }
     }
   } catch (err) {
-    console.error('Error reading files from directory:', err);
+    log.error('Error reading files from directory:', err);
     throw err; // Optionally rethrow the error
   }
 };

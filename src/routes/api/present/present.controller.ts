@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import Present from '../../../model/presents';
 import { Box, BoxService } from '../../../services/boxService';
+const log = createLogger('present');
 
 export const presentSync = async (req: Request, res: Response) => {
   try {
@@ -20,7 +22,7 @@ export const presentSync = async (req: Request, res: Response) => {
       req
     );
   } catch (error) {
-    console.error('Error in presentSync:', error);
+    log.error('Error in presentSync:', error);
     encryptAndSend({}, res, req, 1, 2, 'Present sync failed');
   }
 };
@@ -42,10 +44,10 @@ export const presentReceive = async (req: Request, res: Response) => {
     type BoxKey = keyof Box;
     presents.map(async(present) => {
       for (const [key, value] of Object.entries(present.toObject().content)) {
-        console.log('CONTENT KEY',key)
+        log.debug('CONTENT KEY',key)
         if (Array.isArray(value)) {
           value.forEach((item) => {
-            console.log('ADDED ITEM TO BOX',key,item)
+            log.debug('ADDED ITEM TO BOX',key,item)
             BoxService.addItem(userDoc.box, key as BoxKey, item);
           });
         }
@@ -63,7 +65,7 @@ export const presentReceive = async (req: Request, res: Response) => {
     };
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in presentReceive:', error);
+    log.error('Error in presentReceive:', error);
     encryptAndSend({}, res, req, 1, 2, 'Present receive failed');
   }
 };

@@ -1,6 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import crcjam from 'crc/crcjam';
+import { createLogger } from '../middleware/logger';
+const log = createLogger('initResourceDownload');
 
 const folderPath = path.join(__dirname, '../public/res/download/');
 
@@ -24,7 +26,7 @@ export function makeDownloadList(type: string, os: string) {
 
     walkDir(folderPath + os + '/' + type, (filePath) => {
       if (path.extname(filePath) === '.fpk') {
-        console.log('Processing File:', filePath);
+        log.debug('Processing File:', filePath);
         const fileData = fs.readFileSync(filePath);
         const fileSize = fs.statSync(filePath).size;
 
@@ -47,21 +49,21 @@ export function makeDownloadList(type: string, os: string) {
         response += '\n';
       }
     });
-    console.log(response);
+    log.debug(response);
 
     fs.writeFile(
       folderPath + os + '/' + type + '/download.list',
       response,
       (err) => {
         if (err) {
-          console.error('Error creating the file:', err);
+          log.error('Error creating the file:', err);
         } else {
-          console.log('File created successfully.');
+          log.info('File created successfully.');
         }
       }
     );
   } else {
-    console.log(
+    log.info(
       folderPath + os + '/' + type + '/download.list' + ' Already exists'
     );
   }

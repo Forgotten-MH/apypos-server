@@ -2,7 +2,9 @@ import { Response, Request } from 'express';
 import { EncryptionService } from './encryptionService';
 import { TimeService } from '../timeService';
 import * as crypto from 'crypto';
-import { DEBUG } from '../../config';
+import { createLogger } from '../../middleware/logger';
+
+const log = createLogger('session');
 
 const encryptionService = new EncryptionService();
 
@@ -55,7 +57,7 @@ function smartCleanupExpiredSessions() {
     return;
   }
   
-  console.log(`[Cleanup] Starting cleanup, current sessions: ${sessionStore.size}`);
+  log.info(`Cleanup starting, current sessions: ${sessionStore.size}`);
   
   let cleanedCount = 0;
   const expiredKeys: string[] = [];
@@ -74,7 +76,7 @@ function smartCleanupExpiredSessions() {
   lastCleanupTime = now;
   
   if (cleanedCount > 0) {
-    console.log(`[Cleanup] Cleaned up ${cleanedCount} expired sessions, remaining: ${sessionStore.size}`);
+    log.info(`Cleaned up ${cleanedCount} expired sessions, remaining: ${sessionStore.size}`);
   }
 }
 
@@ -119,9 +121,7 @@ export function encryptAndSend(
   const userId = req.body?.user_id || req.query?.user_id;
   const clientSessionToken = req.body?.session_id;
   
-  if (DEBUG) {
-    console.log(`[Session Debug] User ID: ${userId}, Client Session: ${clientSessionToken}, IP: ${req.ip}`);
-  }
+  log.debug(`Session Debug - User ID: ${userId}, Client Session: ${clientSessionToken}, IP: ${req.ip}`);
 
   let sessionInfo: SessionInfo;
   let sessionKey: string;
@@ -214,9 +214,7 @@ export function encryptAndSend(
   const encryptedData = encryptionService.encrypt(JSON.stringify(responseData));
   // console.log("now_time:",responseData.now_time)
   // console.log("relogin_time:",responseData.relogin_time)
-  if (DEBUG) {
-    console.log('Response Body:\n', JSON.stringify(responseData, null, '\t'));
-  }
+  log.debug('Response Body:\n%s', JSON.stringify(responseData, null, '\t'));
 
   res
     .status(status)
@@ -248,7 +246,7 @@ export function getSessionCount(): number {
 
 export function clearAllSessions(): void {
   sessionStore.clear();
-  console.log('All sessions cleared');
+  log.info('All sessions cleared');
 }
 
 export function findSessionsByUser(identifier: string, type: 'account' | 'game' | 'session'): SessionInfo[] {

@@ -5,6 +5,8 @@ import {
 import * as fs from 'fs/promises';
 import { readFileSync } from 'fs';
 import * as path from 'path';
+import { createLogger } from '../middleware/logger';
+const log = createLogger('questList');
 
 const questType = process.argv[2] || 'event';
 const questPath = path.join(
@@ -67,15 +69,15 @@ async function enrichAndPersist() {
         allBlocks.push(block);
       });
     } catch (err) {
-      console.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
+      log.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
       obj.mBlocks = [];
     }
 
     try {
       obj.mDefineId = await getQuestNameFromQuestHash(obj.mQuestID);
-      console.log(obj.mDefineId);
+      log.info(obj.mDefineId);
     } catch (err) {
-      console.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
+      log.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
       obj.mDefineId = '';
     }
   }
@@ -95,7 +97,7 @@ async function enrichAndPersist() {
       }
     }
   );
-  console.log(originalLen, questSheets.rQuestSheet.mQuestDataList.length);
+  log.info(originalLen, questSheets.rQuestSheet.mQuestDataList.length);
   try {
     const extendedPath = questPath.replace(/\.json$/, '.extended.json');
 
@@ -104,12 +106,12 @@ async function enrichAndPersist() {
       JSON.stringify(questSheets, null, 2),
       'utf-8'
     );
-    console.log('Extended file saved to:', extendedPath);
-    console.log('Errors:', errors);
+    log.info('Extended file saved to:', extendedPath);
+    log.info('Errors:', errors);
   } catch (err) {
-    console.error('Error writing extended file:', err);
+    log.error('Error writing extended file:', err);
   }
-  console.log(allBlocks);
+  log.info(allBlocks);
   const extendedPath = questPath.replace(/\.json$/, '.blocks.json');
 
   await fs.writeFile(

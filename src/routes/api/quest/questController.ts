@@ -7,9 +7,11 @@
 import path from 'path';
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import Event from '../../../model/events';
 import AssualtEvents from '../../../model/events/assualts';
+const log = createLogger('quest');
 
 import full_island from '../../../json/full_enabled_state.json';
 
@@ -466,7 +468,7 @@ export const eventListAll = async (req: Request, res: Response) => {
   };
 
   encryptAndSend(data, res, req);
-  console.log(data.event_list.score)
+  log.debug('Score events: %o', data.event_list.score);
 };
 
 export const eternalAll = (req: Request, res: Response) => {
@@ -691,7 +693,7 @@ export const islandStart = async (req: Request, res: Response) => {
   );
 
   if (!questExists) {
-    console.log('Inserted Quest as seen');
+    log.debug('Inserted Quest as seen');
     cleared_quests.push({ mst_quest_id: startedQuest });
   }
 
@@ -768,7 +770,7 @@ export const islandEnd = async (req: Request, res: Response) => {
   const clearTime = req.body.clear_time;
   const filter = { current_session: req.body.session_id };
   const quest = await QuestSheet.findOne({ mQuestID: cleared_quest });
-  console.log('Rewards:', quest?.mRewardItemList);
+  log.debug('Rewards: %o', quest?.mRewardItemList);
   const doc = await User.findOne(filter);
   if (!doc) {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
@@ -780,10 +782,10 @@ export const islandEnd = async (req: Request, res: Response) => {
   );
 
   if (questIndex === -1) {
-    console.log('Inserted Quest as seen');
+    log.debug('Inserted Quest as seen');
     cleared_quests.push({ mst_quest_id: cleared_quest, clear_time: clearTime });
   } else {
-    console.log('Updated clear_time for existing quest');
+    log.debug('Updated clear_time...');
     cleared_quests[questIndex].clear_time = clearTime;
   }
 
@@ -1357,7 +1359,7 @@ export const islandMapAll = async (req: Request, res: Response) => {
     doc.tutorial_step == 0xffff ? full_island : doc.ocean_list.toObject(),
     doc.cleared_quests
   );
-  console.log('FINAL', final_ocean);
+  log.debug('FINAL ocean data: %o', final_ocean);
   const data = {
     ocean_list: final_ocean,
   };

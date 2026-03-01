@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
+import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import { updatePartNoteState } from '../story/storyController';
 import { Box, BoxService } from '../../../services/boxService';
+const log = createLogger('tutorial');
 // tutorialFlags
 // 110 = is characterCreate
 // 210 = isFirstTimeDownload
@@ -369,7 +371,7 @@ export const TutorialQuestStart = async (req: Request, res: Response) => {
       ],
     },
   };
-  console.log('Quest Request:', data.instance_data.mst_quest_id);
+  log.debug('Quest Request:', data.instance_data.mst_quest_id);
 
   encryptAndSend(data, res, req);
 };
@@ -426,7 +428,7 @@ export const stepUP = async (req: Request, res: Response) => {
   const data = {
     tutorial_step: update.tutorial_step,
   };
-  console.log(
+  log.debug(
     ` TutorialStepUp: Old: ${doc.tutorial_step} New: ${data.tutorial_step}`
   );
 

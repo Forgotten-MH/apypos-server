@@ -5,19 +5,21 @@ import {
   parseHeader,
   createHeader,
 } from './multiUtils';
+import { createLogger } from './middleware/logger';
+const log = createLogger('multiServer');
 
 //Client Sends: host_change_request, lock, unlock, kick, entry, cancel, data
 //Server Sends: data, notice, entry, entry_ok, entry_ng, cancel, cancel_ok, cancel_ng,
 //  match, match_ok, terminate, terminate_ok, lock, lock_ok, lock_ng, unlock, unlock_ok, host_change
 
 export function onConnect(socket: Socket) {
-  console.log('Client connected:', socket.id);
+  log.info('Client connected:', socket.id);
 
   socket.setMaxListeners(50); // or however many you need
 
   socket.on('heartbeat', (_date) => {
     setTimeout(() => {
-      console.log('sending heartbeat emit');
+      log.info('sending heartbeat emit');
       socket.emit('heartbeat', Date.now());
     });
   });
@@ -25,20 +27,20 @@ export function onConnect(socket: Socket) {
     const { header, payload } = parseHeader(data);
     // Extract ASCII string (24 bytes)
     const user_id = payload.slice(0, 24).toString('ascii');
-    console.log('user_id:', user_id);
+    log.info('user_id:', user_id);
 
     // Extract uint32 at offset 24 (4 bytes)
     const unkUint32Val = payload.readUInt32LE(24);
-    console.log('Uint32 value before change:', unkUint32Val);
+    log.info('Uint32 value before change:', unkUint32Val);
 
     // Change the uint32 value at offset 24 to 0
     payload.writeUInt32LE(0, 24);
 
     // Verify the change
     const uint32ValAfter = payload.readUInt32LE(24);
-    console.log('Uint32 value after change:', uint32ValAfter);
+    log.info('Uint32 value after change:', uint32ValAfter);
 
-    console.log(
+    log.info(
       `sending create Buffer at ${new Date().toISOString()}:\n` +
         data.toString('hex')
     );
@@ -71,7 +73,7 @@ export function onConnect(socket: Socket) {
   });
 
   socket.on('leave', (data) => {
-    console.log(
+    log.info(
       `sending leave_ok Buffer at ${new Date().toISOString()}:\n` +
         data.toString('hex')
     );
@@ -86,13 +88,13 @@ export function onConnect(socket: Socket) {
         //Ignore
         break;
       case 0x07:
-        console.log(
+        log.info(
           'onReceiveInfo recieved room:',
           header.roomNumber,
           'playerId',
           header.playerId
         );
-        console.log('type:', payload.readUInt16BE(0));
+        log.info('type:', payload.readUInt16BE(0));
         switch (payload.readUInt16BE(0)) {
           case 2:
             socket.emit(
@@ -183,7 +185,7 @@ export function onConnect(socket: Socket) {
         }
         break;
       case 0x09:
-        console.log(
+        log.info(
           'client sent chat',
           header.roomNumber,
           'playerId',
@@ -220,11 +222,11 @@ export function onConnect(socket: Socket) {
   // Handle "disconnect" event
   socket.on('disconnect', (reason) => {
     // clearInterval(heartbeatInterval);
-    console.log(`Client disconnected: ${socket.id}, Reason: ${reason}`);
+    log.info(`Client disconnected: ${socket.id}, Reason: ${reason}`);
   });
 
   // Handle "error" event (optional, handled by default)
   socket.on('error', (error) => {
-    console.error(`Error for client ${socket.id}:`, error.message);
+    log.error(`Error for client ${socket.id}:`, error.message);
   });
 }

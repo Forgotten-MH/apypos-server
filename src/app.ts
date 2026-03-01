@@ -2,9 +2,11 @@ import express from 'express';
 import routes from './routes/routes';
 import expressWinston from 'express-winston';
 import { logger } from './middleware/logger';
+import { createLogger } from './middleware/logger';
 import winston from 'winston';
 import { decryptAndParse } from './services/crypto/encryptionHelpers';
-import { DEBUG } from './config';
+
+const log = createLogger('app');
 
 function sanitize(obj: unknown): unknown {
   if (Array.isArray(obj)) {
@@ -36,24 +38,18 @@ app.use((req, res, next) => {
       const rawBody = Buffer.concat(data);
       const decryptedBody = decryptAndParse(rawBody);
       req.body = decryptedBody;
-      if (DEBUG) {
-        console.log('--------------------------------------------------------------------')
-        console.log('Request Body:\n', JSON.stringify(req.body,null,'\t'));
-      }
+      log.debug('Request Body:\n%s', JSON.stringify(req.body, null, '\t'));
 
       next();
     });
 
     req.on('error', (err) => {
-      console.error('Error processing raw request:', err);
+      log.error('Error processing raw request:', err);
       next(err);
     });
   }
   else {
-    if (DEBUG) {
-      console.log('--------------------------------------------------------------------')
-      console.log('Request Body:\n', JSON.stringify(req.body,null,'\t'));
-    }
+    log.debug('Request Body:\n%s', JSON.stringify(req.body, null, '\t'));
     next();
   }
 });

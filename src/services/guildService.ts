@@ -1,6 +1,8 @@
 import Guild from '../model/guild';
 import User from '../model/user';
 import { generateUniqueId } from './crypto/encryptionHelpers';
+import { createLogger } from '../middleware/logger';
+const log = createLogger('guildService');
 
 
 export const generateGuildId = async (): Promise<string> => {
@@ -212,7 +214,7 @@ export const applyToGuild = async (uid: string, gid: string) => {
   const isNotFull = guild.joined < MAX_GUILD_MEMBERS;
 
   if (isAutoRecruit && isNotFull) {
-    console.log(`[Guild Auto Recruit] User ${uid} automatically joined guild ${gid}`);
+    log.info(`[Guild Auto Recruit] User ${uid} automatically joined guild ${gid}`);
     
     guild.member.normal.push({
       created: now,

@@ -1,4 +1,6 @@
 import event_nodes from '../../json/event_nodes.json';
+import { createLogger } from '../../middleware/logger';
+const log = createLogger('eventUtils');
 export const getDurationFromValue = (value) => {
   if (!value) return null; // Handle cases where the date is not set
   const now = Date.now(); // Current timestamp in milliseconds
@@ -28,7 +30,7 @@ export function enrichEvent(eventList: EventEntry[]): EventEntry[] {
     );
 
     if (!node) {
-      console.warn(
+      log.warn(
         `No matching node found for event ID: ${event.mst_event_node_id}`
       );
       return event;

@@ -1,4 +1,6 @@
 import fs from 'fs';
+import { createLogger } from '../middleware/logger';
+const log = createLogger('oceanService');
 
 interface QuestListItem {
   quest_name: string
@@ -240,7 +242,7 @@ function parseDramaCSV(
             const { time: questTimeType, name } = questMap.get(questHash);
             const subtarget = questSubtargetSetMap.get(questHash);
             if (questTimeType !== undefined) {
-              console.log(node.mst_node_id, questHash, questTimeType);
+              log.debug(node.mst_node_id, questHash, questTimeType);
 
               switch (questTimeType) {
                 case 1:
@@ -286,14 +288,14 @@ function parseDramaCSV(
 
 fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
   if (err) {
-    console.error('Error reading ocean file:', err);
+    log.error('Error reading ocean file:', err);
     return;
   }
   let parsedOceanData = parseCSV(oceanData);
 
   fs.readFile('./src/csv/oceans/parts/1-parts.csv', 'utf8', (err, partData) => {
     if (err) {
-      console.error('Error reading part file:', err);
+      log.error('Error reading part file:', err);
       return;
     }
 
@@ -302,7 +304,7 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
       'utf8',
       (err, dramaData) => {
         if (err) {
-          console.error('Error reading drama file:', err);
+          log.error('Error reading drama file:', err);
           return;
         }
 
@@ -311,7 +313,7 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
           'utf8',
           (err, storyData) => {
             if (err) {
-              console.error('Error reading story file:', err);
+              log.error('Error reading story file:', err);
               return;
             }
             fs.readFile(
@@ -319,7 +321,7 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
               'utf8',
               (err, noteData) => {
                 if (err) {
-                  console.error('Error reading notes file:', err);
+                  log.error('Error reading notes file:', err);
                   return;
                 }
                 fs.readFile(
@@ -327,7 +329,7 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
                   'utf8',
                   (err, noteQuestData) => {
                     if (err) {
-                      console.error('Error reading story file:', err);
+                      log.error('Error reading story file:', err);
                       return;
                     }
 
@@ -336,7 +338,7 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
                       'utf8',
                       (err, questData) => {
                         if (err) {
-                          console.error('Error reading questData file:', err);
+                          log.error('Error reading questData file:', err);
                           return;
                         }
 
@@ -345,7 +347,7 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
                           'utf8',
                           (err, questSubtargetSet) => {
                             if (err) {
-                              console.error(
+                              log.error(
                                 'Error reading questSubtargetSet file:',
                                 err
                               );
@@ -368,7 +370,7 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
                               parsedOceanData
                             );
                             //lazyfix reverse
-                            console.log(
+                            log.debug(
                               JSON.stringify(parsedOceanData, null, 2)
                             );
 
@@ -380,7 +382,7 @@ fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
                               'utf8',
                               (err) => {
                                 if (err) throw err;
-                                console.log('complete');
+                                log.info('complete');
                               }
                             );
                           }

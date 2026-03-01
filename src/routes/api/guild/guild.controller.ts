@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import * as guildService from '../../../services/guildService';
 import User from '../../../model/user';
+import { createLogger } from '../../../middleware/logger';
+const log = createLogger('guild');
 
 interface EquipPiece {
   hash?: number
@@ -122,7 +124,7 @@ export const userGet = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in userGet:', error);
+    log.error('Error in userGet:', error);
     encryptAndSend({ user_guild: null }, res, req, 1, 2, 'Get user guild information failed');
   }
 };
@@ -160,7 +162,7 @@ export const userSetup = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in userSetup:', error);
+    log.error('Error in userSetup:', error);
     encryptAndSend({ user_guild: null }, res, req, 1, 2, 'Initialize user guild settings failed');
   }
 };
@@ -200,7 +202,7 @@ export const searchResult = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in searchResult:', error);
+    log.error('Error in searchResult:', error);
     encryptAndSend({ user_guild: null }, res, req, 1, 2, 'Search guild failed');
   }
 };
@@ -272,7 +274,7 @@ export const create = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in create:', error);
+    log.error('Error in create:', error);
     encryptAndSend({ guild: null }, res, req, 1, 2, 'Create guild failed');
   }
 };
@@ -334,7 +336,7 @@ export const getUserGuild = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in getUserGuild:', error);
+    log.error('Error in getUserGuild:', error);
     encryptAndSend({ guild: null }, res, req, 1, 2, 'Get guild information failed');
   }
 };
@@ -381,7 +383,7 @@ export const bingoGet = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in bingoGet:', error);
+    log.error('Error in bingoGet:', error);
     encryptAndSend({ bingoDetail: null, holdInfo: null }, res, req, 1, 2, 'Get Bingo information failed');
   }
 };
@@ -397,7 +399,7 @@ export const searchId = async (req: Request, res: Response) => {
     
     const searchId = req.body.id;
 
-    console.log('Request Body:', req.body);
+    log.debug('Request Body:', req.body);
 
     const guild = await guildService.getGuildBySearchId(searchId);
     
@@ -442,7 +444,7 @@ export const searchId = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in searchId:', error);
+    log.error('Error in searchId:', error);
     encryptAndSend({ guild: null }, res, req, 1, 2, 'Search guild failed');
   }
 };
@@ -528,7 +530,7 @@ export const apply = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in apply:', error);
+    log.error('Error in apply:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to apply to join guild';
     encryptAndSend({ guild: null, user_guild: null }, res, req, 1, 2, errorMessage);
   }
@@ -589,7 +591,7 @@ export const search = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in search:', error);
+    log.error('Error in search:', error);
     encryptAndSend({ guild: [] }, res, req, 1, 2, 'Search guilds failed');
   }
 };
@@ -632,7 +634,7 @@ export const chatSend = async (req: Request, res: Response) => {
 
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in chatSend:', error);
+    log.error('Error in chatSend:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to send chat message';
     encryptAndSend({}, res, req, 1, 2, errorMessage);
   }
@@ -717,7 +719,7 @@ export const chatGet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
 
   } catch (error) {
-    console.error('Error in chatGet:', error);
+    log.error('Error in chatGet:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to get chat messages';
     encryptAndSend({
       chatLog: {
@@ -756,7 +758,7 @@ export const mailList = async (req: Request, res: Response) => {
     
     encryptAndSend(data, res, req);
   } catch (error) {
-    console.error('Error in mailList:', error);
+    log.error('Error in mailList:', error);
     encryptAndSend({ mails: [] }, res, req, 1, 2, 'Failed to get mail list');
   }
 };
@@ -949,7 +951,7 @@ export const memberList = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
 
   } catch (error) {
-    console.error('Error in memberList:', error);
+    log.error('Error in memberList:', error);
     const errorMessage = error instanceof Error ? error.message : 'Get member list failed';
     encryptAndSend({
       __v: 0,

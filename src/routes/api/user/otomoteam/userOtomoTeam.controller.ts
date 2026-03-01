@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers';
 import User from '../../../../model/user';
+import { createLogger } from '../../../../middleware/logger';
+const log = createLogger('otomoTeam');
 
 export const otomoteamGet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
@@ -25,13 +27,13 @@ export const otomoteamSet = async (req: Request, res: Response) => {
     const arrayIndex = doc.otomoteam.otomo_team.findIndex(
       (team) => team.index === newTeam.index
     );
-    console.log('Found index:', arrayIndex);
+    log.debug('Found index:', arrayIndex);
 
     if (arrayIndex !== -1) {
-      console.log('Existing otomo!');
+      log.debug('Existing otomo!');
       doc.otomoteam.otomo_team[arrayIndex] = newTeam;
     } else {
-      console.log('New otomo!');
+      log.debug('New otomo!');
       doc.otomoteam.otomo_team.push(newTeam);
     }
 
