@@ -258,7 +258,9 @@ export function encryptAndSend(
 
 export function decryptAndParse(data: Buffer) {
   const decryptedData = encryptionService.decrypt(data);
-  const parsedData = JSON.parse(decryptedData);
+  // Strip Blowfish ECB padding (null bytes and other non-printable chars after JSON)
+  const cleanedData = decryptedData.replace(/\0+$/, '').trim();
+  const parsedData = JSON.parse(cleanedData);
   return parsedData;
 }
 
