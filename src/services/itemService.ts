@@ -209,7 +209,7 @@ function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
       case 'collection': {
         // pluralize type for key matching
         const listKey = (type + (type.endsWith('s') ? '' : 's')) as keyof ItemList;
-        const list = item_list[listKey as keyof ItemList];
+        const list = item_list[listKey];
         if (Array.isArray(list)) {
           (list as RewardItem[]).push({
             type,

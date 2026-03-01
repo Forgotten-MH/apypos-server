@@ -3,7 +3,7 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import Present from '../../../model/presents';
-import { BoxService } from '../../../services/boxService';
+import { addItem } from '../../../services/boxService';
 const log = createLogger('present');
 
 export const presentSync = async (req: Request, res: Response) => {
@@ -49,7 +49,7 @@ export const presentReceive = async (req: Request, res: Response) => {
           if (Array.isArray(value)) {
             value.forEach((item) => {
               log.debug('ADDED ITEM TO BOX', key, item);
-              BoxService.addItem(userDoc.box!, key as BoxKey, item);
+              addItem(userDoc.box!, key as BoxKey, item);
             });
           }
         }

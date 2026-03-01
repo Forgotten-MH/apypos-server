@@ -67,7 +67,7 @@ function parseCSV(csvContent: string) {
       };
     }
 
-    data[oceanHash]!.part_list.push({
+    data[oceanHash].part_list.push({
       mst_part_id: Number(partHash),
       campaign: [
         // {
@@ -115,7 +115,7 @@ function parsePartCSV(csvContent: string, oceanData: OceanData[]) {
     if (!partNodeMap[partHash]) {
       partNodeMap[partHash] = {};
     }
-    partNodeMap[partHash]![nodeOrder] = nodeHash;
+    partNodeMap[partHash][nodeOrder] = nodeHash;
 
     for (const ocean of oceanData) {
       const part = ocean.part_list.find((p) => p.mst_part_id === partHash);

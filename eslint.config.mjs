@@ -7,7 +7,7 @@ export default tseslint.config(
     ignores: ['dist/', 'scripts/', 'frida/', 'node_modules/'],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.strictTypeChecked,
   eslintConfigPrettier,
   {
     languageOptions: {
@@ -30,6 +30,33 @@ export default tseslint.config(
         'error',
         { checksVoidReturn: { arguments: false } },
       ],
+      // Express req.body is typed as `any` — fixing properly requires a validation library
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/restrict-template-expressions': [
+        'error',
+        { allowNumber: true, allowBoolean: true, allowNullish: true },
+      ],
+      '@typescript-eslint/restrict-plus-operands': [
+        'error',
+        { allowNumberAndString: true, allowAny: true },
+      ],
+      // `return encryptAndSend(...)` is an intentional early-return pattern throughout controllers
+      '@typescript-eslint/no-confusing-void-expression': 'off',
+      // Mongoose runtime types don't always match TS static types
+      '@typescript-eslint/no-unnecessary-condition': 'off',
+      // Used intentionally after length/existence checks and with noUncheckedIndexedAccess
+      '@typescript-eslint/no-non-null-assertion': 'off',
+    },
+  },
+  // Relax rules for test files
+  {
+    files: ['**/*.spec.ts'],
+    rules: {
+      '@typescript-eslint/unbound-method': 'off',
     },
   },
 );

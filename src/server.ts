@@ -111,7 +111,7 @@ mongoose
             log.info('Event Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           log.error('Error:', err);
         });
       void AssualtEvents.countDocuments({})
@@ -160,7 +160,7 @@ mongoose
             log.info('⚠️ Assualt Event Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           log.error('Error:', err);
         });
       void ScoreEvents.countDocuments({})
@@ -180,7 +180,7 @@ mongoose
             log.info('⚠️ Score Event Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           log.error('Error:', err);
         });
       void TicketEvents.countDocuments({})
@@ -203,7 +203,7 @@ mongoose
             log.info('⚠️ Ticket Event Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           log.error('Error:', err);
         });
       void QuestSheet.countDocuments({})
@@ -222,7 +222,7 @@ mongoose
             log.info('⚠️ Quest Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
+        .catch((err: unknown) => {
           log.error('Error:', err);
         });
 
@@ -231,4 +231,6 @@ mongoose
       log.info(`Apypos Server Internal Test v0.0.12 started on ${IP}:${PORT}`);
     });
   })
-  .catch((err) => log.error("Coudn't Start Apypos Server: Couldn't connect to MongoDB....", err));
+  .catch((err: unknown) =>
+    log.error("Coudn't Start Apypos Server: Couldn't connect to MongoDB....", err),
+  );

@@ -156,10 +156,10 @@ describe('user.controller', () => {
   });
 
   describe('navigationNews', () => {
-    it('returns empty navigations list', async () => {
+    it('returns empty navigations list', () => {
       const { req, res } = mockReqRes({});
 
-      await navigationNews(req, res);
+      navigationNews(req, res);
 
       expect(encryptAndSend).toHaveBeenCalledWith(
         expect.objectContaining({ navigations: [] }),
@@ -170,10 +170,10 @@ describe('user.controller', () => {
   });
 
   describe('achievementNews', () => {
-    it('returns empty achievement lists', async () => {
+    it('returns empty achievement lists', () => {
       const { req, res } = mockReqRes({});
 
-      await achievementNews(req, res);
+      achievementNews(req, res);
 
       expect(encryptAndSend).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -188,10 +188,10 @@ describe('user.controller', () => {
   });
 
   describe('achievementAll', () => {
-    it('returns empty achievements', async () => {
+    it('returns empty achievements', () => {
       const { req, res } = mockReqRes({});
 
-      await achievementAll(req, res);
+      achievementAll(req, res);
 
       expect(encryptAndSend).toHaveBeenCalledWith(
         expect.objectContaining({ achievements: [] }),
@@ -202,10 +202,10 @@ describe('user.controller', () => {
   });
 
   describe('OfferCheck', () => {
-    it('returns offer products', async () => {
+    it('returns offer products', () => {
       const { req, res } = mockReqRes({});
 
-      await OfferCheck(req, res);
+      OfferCheck(req, res);
 
       expect(encryptAndSend).toHaveBeenCalledWith(
         expect.objectContaining({

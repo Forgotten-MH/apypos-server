@@ -29,13 +29,15 @@ const timeService = new TimeService();
 let lastCleanupTime = Date.now();
 
 function persistSession(key: string, session: SessionInfo) {
-  Session.updateOne({ key }, { key, ...session }, { upsert: true }).catch((err) =>
+  Session.updateOne({ key }, { key, ...session }, { upsert: true }).catch((err: unknown) =>
     log.error('Failed to persist session:', err),
   );
 }
 
 function removePersistedSession(key: string) {
-  Session.deleteOne({ key }).catch((err) => log.error('Failed to remove persisted session:', err));
+  Session.deleteOne({ key }).catch((err: unknown) =>
+    log.error('Failed to remove persisted session:', err),
+  );
 }
 
 export async function restoreSessions(): Promise<number> {
@@ -293,7 +295,9 @@ export function getSessionCount(): number {
 
 export function clearAllSessions(): void {
   sessionStore.clear();
-  Session.deleteMany({}).catch((err) => log.error('Failed to clear persisted sessions:', err));
+  Session.deleteMany({}).catch((err: unknown) =>
+    log.error('Failed to clear persisted sessions:', err),
+  );
   log.info('All sessions cleared');
 }
 
@@ -368,5 +372,5 @@ export function verifySessionToken(userId: string, sessionToken: string): boolea
 }
 
 export function generateUniqueId(): string {
-  return crypto.randomUUID().toString();
+  return crypto.randomUUID();
 }

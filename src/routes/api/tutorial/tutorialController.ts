@@ -4,7 +4,7 @@ import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
 import { updatePartNoteState } from '../story/storyController';
 import type { Box } from '../../../types/game';
-import { BoxService } from '../../../services/boxService';
+import { addItem } from '../../../services/boxService';
 const log = createLogger('tutorial');
 // tutorialFlags
 // 110 = is characterCreate
@@ -29,7 +29,7 @@ export const getTutorialFlag = async (req: Request, res: Response) => {
   encryptAndSend(data, res, req);
 };
 
-export const nyankenList = async (req: Request, res: Response) => {
+export const nyankenList = (req: Request, res: Response) => {
   const data = {
     questDataList: [
       {
@@ -164,7 +164,7 @@ export const nyankenResult = async (req: Request, res: Response) => {
     slv: 0,
     start_remain: 0,
   };
-  BoxService.addItem(doc.box!, 'equipments', rewardEquip);
+  addItem(doc.box!, 'equipments', rewardEquip);
   const data = {
     effect_id: 42,
     is_island: 0, //triggers /api/nyanken/islandInfoGet
@@ -217,7 +217,7 @@ export const TutorialFlagSet = async (req: Request, res: Response) => {
   encryptAndSend(data, res, req);
 };
 
-export const TutorialQuestStart = async (req: Request, res: Response) => {
+export const TutorialQuestStart = (req: Request, res: Response) => {
   const data = {
     // For item drops to work
     //block_list[1].block_instance_list needs a object with matching instance id to block_list[1].instance_id and serial_no to drop list and also pop_list
@@ -507,7 +507,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
     }
     //Add to box
     type BoxKey = keyof Box;
-    BoxService.addItem(doc!.box!, key as BoxKey, {
+    addItem(doc!.box!, key as BoxKey, {
       amount: obj.amount,
       [idField]: obj.id,
     });

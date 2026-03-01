@@ -238,7 +238,7 @@ export const equipLevelup = async (req: Request, res: Response) => {
     if (!equipment) {
       return encryptAndSend({}, res, req, 2001, 0, 'equipment not found');
     }
-    const currentLevel = Number(equipment.elv || 0);
+    const currentLevel = equipment.elv || 0;
     const newLevel = currentLevel + steps;
     equipment.elv = newLevel;
 
@@ -287,7 +287,7 @@ export const awake = async (req: Request, res: Response) => {
   }
 };
 
-export const potentialupAutoSet = async (req: Request, res: Response) => {
+export const potentialupAutoSet = (req: Request, res: Response) => {
   try {
     const { eqp_obj_infos: _eqp_obj_infos } = req.body;
     //todo make real data
@@ -356,7 +356,7 @@ export const potentialupAutoSet = async (req: Request, res: Response) => {
   }
 };
 
-export const sale = async (req: Request, res: Response) => {
+export const sale = (req: Request, res: Response) => {
   try {
     const { eqp_obj_ids: _eqp_obj_ids } = req.body;
     //todo real data
@@ -377,7 +377,7 @@ export const sale = async (req: Request, res: Response) => {
   }
 };
 
-export const favoriteSet = async (req: Request, res: Response) => {
+export const favoriteSet = (req: Request, res: Response) => {
   try {
     const { is_favorite, eqp_obj_id } = req.body;
     //todo real data

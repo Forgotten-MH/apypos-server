@@ -46,7 +46,7 @@ describe('questService', () => {
 
       await expect(
         lookupValueFromFile('test.csv', 'NonExistent', 'mName', '12345'),
-      ).rejects.toMatch(/Invalid column name/);
+      ).rejects.toThrow(/Invalid column name/);
     });
 
     it('rejects when file read fails', async () => {
@@ -58,7 +58,7 @@ describe('questService', () => {
         );
       });
 
-      await expect(lookupValueFromFile('missing.csv', 'Hash', 'mName', '12345')).rejects.toMatch(
+      await expect(lookupValueFromFile('missing.csv', 'Hash', 'mName', '12345')).rejects.toThrow(
         /Error reading file/,
       );
     });

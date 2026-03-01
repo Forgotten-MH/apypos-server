@@ -11,20 +11,20 @@ export function lookupValueFromFile(
   return new Promise((resolve, reject) => {
     fs.readFile(csvFilePath, 'utf-8', (err, data) => {
       if (err) {
-        return reject(`Error reading file: ${err.message}`);
+        return reject(new Error(`Error reading file: ${err.message}`));
       }
 
       try {
         const rows = data.split('\n').map((row) => row.trim());
         const headerRow = rows[0];
-        if (!headerRow) return reject('Empty CSV file');
+        if (!headerRow) return reject(new Error('Empty CSV file'));
         const headers = headerRow.split(',');
 
         const keyIndex = headers.indexOf(keyColumn);
         const valueIndex = headers.indexOf(valueColumn);
 
         if (keyIndex === -1 || valueIndex === -1) {
-          return reject(`Invalid column name: ${keyColumn} or ${valueColumn}`);
+          return reject(new Error(`Invalid column name: ${keyColumn} or ${valueColumn}`));
         }
 
         for (let i = 1; i < rows.length; i++) {
@@ -36,7 +36,9 @@ export function lookupValueFromFile(
         resolve(null);
       } catch (parseError: unknown) {
         reject(
-          `Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+          new Error(
+            `Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+          ),
         );
       }
     });
@@ -63,20 +65,20 @@ function lookupValuesByPattern(
   return new Promise((resolve, reject) => {
     fs.readFile(csvFilePath, 'utf-8', (err, data) => {
       if (err) {
-        return reject(`Error reading file: ${err.message}`);
+        return reject(new Error(`Error reading file: ${err.message}`));
       }
 
       try {
         const rows = data.split('\n').map((row) => row.trim());
         const headerRow = rows[0];
-        if (!headerRow) return reject('Empty CSV file');
+        if (!headerRow) return reject(new Error('Empty CSV file'));
         const headers = headerRow.split(',');
 
         const keyIndex = headers.indexOf(keyColumn);
         const valueIndex = headers.indexOf(valueColumn);
 
         if (keyIndex === -1 || valueIndex === -1) {
-          return reject(`Invalid column name: ${keyColumn} or ${valueColumn}`);
+          return reject(new Error(`Invalid column name: ${keyColumn} or ${valueColumn}`));
         }
 
         const results = [];
@@ -110,7 +112,9 @@ function lookupValuesByPattern(
         resolve(results);
       } catch (parseError: unknown) {
         reject(
-          `Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+          new Error(
+            `Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+          ),
         );
       }
     });
@@ -119,7 +123,9 @@ function lookupValuesByPattern(
 
 function parseString(
   input: string,
-): { prefix: string; level: string; name: string } | { prefix: string; level: string; combinedName: string } {
+):
+  | { prefix: string; level: string; name: string }
+  | { prefix: string; level: string; combinedName: string } {
   if (input.startsWith('QUEST')) {
     // For QUEST format  QUEST 001 0205
     const match = input.match(/^([A-Z]+)(\d{3})(\d+)$/);
@@ -192,7 +198,7 @@ export const getBlockHashsFromQuestHash = async (
         'mName',
         'Hash',
         parsed.level,
-        parsed.combinedName.toString().padStart(4, '0'),
+        parsed.combinedName.padStart(4, '0'),
       )) as number[];
     }
   }

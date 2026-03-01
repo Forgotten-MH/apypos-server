@@ -135,7 +135,7 @@ export const commentSet = async (req: Request, res: Response) => {
   }
 };
 
-export const navigationNews = async (req: Request, res: Response) => {
+export const navigationNews = (req: Request, res: Response) => {
   try {
     const data: {
       navigations: {
@@ -180,7 +180,7 @@ export const navigationNews = async (req: Request, res: Response) => {
   }
 };
 
-export const achievementNews = async (req: Request, res: Response) => {
+export const achievementNews = (req: Request, res: Response) => {
   try {
     const data = {
       achievements: [],
@@ -195,7 +195,7 @@ export const achievementNews = async (req: Request, res: Response) => {
   }
 };
 
-export const achievementAll = async (req: Request, res: Response) => {
+export const achievementAll = (req: Request, res: Response) => {
   try {
     const data = {
       achievements: [
@@ -215,7 +215,7 @@ export const achievementAll = async (req: Request, res: Response) => {
   }
 };
 
-export const OfferCheck = async (req: Request, res: Response) => {
+export const OfferCheck = (req: Request, res: Response) => {
   try {
     const data = {
       offer_products: [
@@ -464,7 +464,7 @@ export const partnerGet = async (req: Request, res: Response) => {
     encryptAndSend({}, res, req, 1, 2, 'Get partner failed');
   }
 };
-export const searchId = async (req: Request, res: Response) => {
+export const searchId = (req: Request, res: Response) => {
   try {
     const { uids: _uids } = req.body;
     //TODO search by uid loop over then produce below...
@@ -576,7 +576,7 @@ export const searchId = async (req: Request, res: Response) => {
     encryptAndSend({}, res, req, 1, 2, 'Search by ID failed');
   }
 };
-export const gameId = async (req: Request, res: Response) => {
+export const gameId = (req: Request, res: Response) => {
   try {
     const { gameIds: _gameIds } = req.body;
     //TODO search by gameIds loop over then produce below...

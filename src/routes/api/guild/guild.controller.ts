@@ -242,7 +242,7 @@ export const create = async (req: Request, res: Response) => {
     const data = {
       guild: {
         __v: 0,
-        _id: guild.gid?.toString() || '',
+        _id: guild.gid || '',
         auto_recruit: guild.auto_recruit,
         bingo: guild.bingo,
         bonus_value: guild.bonus_value,
@@ -304,7 +304,7 @@ export const getUserGuild = async (req: Request, res: Response) => {
     const data = {
       guild: {
         __v: 5,
-        _id: guild.gid?.toString() || '',
+        _id: guild.gid || '',
         auto_recruit: guild.auto_recruit,
         bingo: guild.bingo,
         bonus_value: guild.bonus_value,
@@ -421,7 +421,7 @@ export const searchId = async (req: Request, res: Response) => {
     const data = {
       guild: {
         __v: 5,
-        _id: guild.gid?.toString() || '',
+        _id: guild.gid || '',
         auto_recruit: guild.auto_recruit,
         bingo: guild.bingo,
         bonus_value: guild.bonus_value,
@@ -504,7 +504,7 @@ export const apply = async (req: Request, res: Response) => {
     const data = {
       guild: {
         __v: 0,
-        _id: guild.gid?.toString() || '',
+        _id: guild.gid || '',
         auto_recruit: guild.auto_recruit,
         bingo: guild.bingo,
         bonus_value: guild.bonus_value,
@@ -579,7 +579,7 @@ export const search = async (req: Request, res: Response) => {
 
     const guildList = guilds.map((guild) => ({
       __v: 5,
-      _id: guild.gid?.toString() || '',
+      _id: guild.gid || '',
       auto_recruit: guild.auto_recruit,
       bingo: guild.bingo,
       bonus_value: guild.bonus_value,

@@ -1254,7 +1254,7 @@ export async function enrichOceanData(
       if (!part.node_list) return { ...part };
 
       const enrichedNodes = part.node_list.map((node) => {
-        const nodeID = Number(node.mst_node_id);
+        const nodeID = node.mst_node_id;
         if (isNaN(nodeID)) return { ...node };
 
         const nodeQuests = nodeQuestMap.get(nodeID) || [];

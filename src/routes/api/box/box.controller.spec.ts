@@ -160,12 +160,12 @@ describe('box.controller', () => {
   });
 
   describe('sale', () => {
-    it('returns sale response data', async () => {
+    it('returns sale response data', () => {
       const { req, res } = mockReqRes({
         eqp_obj_ids: ['EQP_001'],
       });
 
-      await sale(req, res);
+      sale(req, res);
 
       expect(encryptAndSend).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -180,13 +180,13 @@ describe('box.controller', () => {
   });
 
   describe('favoriteSet', () => {
-    it('returns equipment with favorite flag set', async () => {
+    it('returns equipment with favorite flag set', () => {
       const { req, res } = mockReqRes({
         is_favorite: 1,
         eqp_obj_id: 'EQP_001',
       });
 
-      await favoriteSet(req, res);
+      favoriteSet(req, res);
 
       expect(encryptAndSend).toHaveBeenCalledWith(
         expect.objectContaining({

@@ -15,13 +15,14 @@ export const logger = winston.createLogger({
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
-        winston.format.printf(({ timestamp, level, message, context, ...rest }) => {
-          const ctx = context ? `[${context}]` : '';
+        winston.format.printf((info) => {
+          const { timestamp, level, message, context, ...rest } = info;
+          const ctx = context ? `[${JSON.stringify(context)}]` : '';
           const extra =
-            Object.keys(rest).length > 0 && rest.service === undefined
+            Object.keys(rest).length > 0 && rest['service'] === undefined
               ? ` ${JSON.stringify(rest)}`
               : '';
-          return `${timestamp} ${level} ${ctx} ${message}${extra}`;
+          return `${String(timestamp)} ${level} ${ctx} ${String(message)}${extra}`;
         }),
       ),
     }),

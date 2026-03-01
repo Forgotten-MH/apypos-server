@@ -14,7 +14,7 @@ export const getVersionData = (req: Request, res: Response) => {
       version = {
         res: `${RES_URL}res`,
         api: `${http}://${IP}${portSuffix}/api`,
-        web: `${WEB_URL}`,
+        web: WEB_URL,
         maintenance_bucket: `${http}://${IP}${portSuffix}/`,
         maintenance_env: 'maintenance_env',
       };
@@ -24,7 +24,7 @@ export const getVersionData = (req: Request, res: Response) => {
       version = {
         res: `${RES_URL}res`,
         api: `${http}://${IP}${portSuffix}/api`,
-        web: `${WEB_URL}`,
+        web: WEB_URL,
         maintenance_bucket: `${http}://${IP}${portSuffix}/`,
         maintenance_env: 'maintenance_env',
       };

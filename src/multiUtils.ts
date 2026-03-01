@@ -303,7 +303,7 @@ export function parseHeader(buffer: Buffer) {
   offset += 4;
 
   // Payload is everything after the header bytes
-  const payload = buffer.slice(offset);
+  const payload = buffer.subarray(offset);
   log.debug({
     roomNumber,
     playerId,

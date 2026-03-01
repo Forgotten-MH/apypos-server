@@ -71,7 +71,9 @@ app.use(
       winston.format.timestamp({
         format: 'YYYY-MM-DD hh:mm:ss.SSS A',
       }),
-      winston.format.printf((info) => `[${info.timestamp}] ${info.level}: ${info.message} \n`),
+      winston.format.printf((info) => {
+        return `[${String(info.timestamp)}] ${info.level}: ${String(info.message)} \n`;
+      }),
     ),
     meta: true,
     expressFormat: true,

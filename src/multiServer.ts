@@ -21,7 +21,7 @@ export function onConnect(socket: Socket) {
   socket.on('create', (data) => {
     const { header, payload } = parseHeader(data);
     // Extract ASCII string (24 bytes)
-    const user_id = payload.slice(0, 24).toString('ascii');
+    const user_id = payload.subarray(0, 24).toString('ascii');
     log.info('user_id:', user_id);
 
     // Extract uint32 at offset 24 (4 bytes)
