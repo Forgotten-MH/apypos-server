@@ -3,6 +3,54 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import * as guildService from '../../../services/guildService';
 import User from '../../../model/user';
 
+interface EquipPiece {
+  hash?: number
+  level?: number
+  potential?: number
+  skill_level?: number
+}
+
+interface SocialEquipPart {
+  equipment_id?: string
+  mst_equipment_id?: number
+}
+
+// Fields expected by the guild member details builder.
+// Some of these are not yet in the User schema and will resolve to undefined
+// (handled by || defaults in buildMemberDetails).
+interface GuildMemberData {
+  comment?: string
+  created?: number
+  equip_arm?: EquipPiece
+  equip_body?: EquipPiece
+  equip_head?: EquipPiece
+  equip_leg?: EquipPiece
+  equip_secret_weapon?: EquipPiece
+  equip_talisman?: EquipPiece & { is_awake?: number; is_enable?: number }
+  equip_waist?: EquipPiece
+  equip_weapon?: EquipPiece
+  guild_rank?: number
+  last_login?: number
+  login_freq?: number
+  monument_info?: {
+    attack?: number
+    auto_play?: number
+    defence?: number
+    hp?: number
+    hunter_rank?: number
+    sp?: number
+  }
+  social_equip?: {
+    social_arm?: SocialEquipPart
+    social_body?: SocialEquipPart
+    social_head?: SocialEquipPart
+    social_leg?: SocialEquipPart
+    social_waist?: SocialEquipPart
+  }
+  title?: { mst_title_id?: number }
+  use_social_equip?: number
+}
+
 
 const getUserFromSession = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
@@ -771,8 +819,7 @@ export const memberList = async (req: Request, res: Response) => {
         return null;
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const memberData = memberUser as any;
+      const memberData = memberUser.toObject() as unknown as GuildMemberData;
 
       return {
         comment: memberData.comment || '',

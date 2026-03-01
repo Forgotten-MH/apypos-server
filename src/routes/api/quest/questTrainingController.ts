@@ -114,8 +114,7 @@ export const trainingEnd = async (req: Request, res: Response) => {
   await User.findOneAndUpdate(filter, update, { new: true });
   const trainingPresent = new Present();
   trainingPresent.uu_id = doc.uu_id;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (trainingPresent as any).content = {
+  trainingPresent.set('content', {
     equipments: [
       {
         ...reward,
@@ -135,7 +134,7 @@ export const trainingEnd = async (req: Request, res: Response) => {
         created: Date.now(),
       },
     ],
-  };
+  });
   trainingPresent.message ='Training Reward'
   trainingPresent.save();
 

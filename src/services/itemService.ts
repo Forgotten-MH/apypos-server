@@ -1,6 +1,44 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function _buildExtendedItemList(rewardEntries: any[]) {
-  const item_list = {
+interface RewardEntry {
+  type: string
+  id?: number
+  amount?: number
+  value?: number
+  key?: string
+}
+
+interface RewardItem {
+  type: string
+  amount: number
+  id?: number
+  value: number
+}
+
+interface ItemList {
+  collections: RewardItem[]
+  equipments: RewardItem[]
+  growth_items: RewardItem[]
+  katamaris: never[]
+  limiteds: RewardItem[]
+  matatabis: RewardItem[]
+  materials: RewardItem[]
+  monument: {
+    augite: { id?: number; amount: number; value: number }[]
+    hr: number
+    mlv: Record<string, number>
+  }
+  otomos: RewardItem[]
+  partners: RewardItem[]
+  payments: RewardItem[]
+  pcoins: RewardItem[]
+  points: RewardItem[]
+  powers: RewardItem[]
+  stamp_sets: RewardItem[]
+  zenny: number
+  [key: string]: unknown
+}
+
+function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
+  const item_list: ItemList = {
     collections: [
       // {
       //     mst_collection_id: Number,

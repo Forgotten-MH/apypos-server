@@ -1,4 +1,3 @@
- // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Box = {
   capacity?: { [key: string]: number }
   equipments?: unknown[]

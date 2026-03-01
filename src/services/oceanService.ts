@@ -1,5 +1,26 @@
 import fs from 'fs';
 
+interface QuestListItem {
+  quest_name: string
+  clear_time: number
+  is_collection_quest: number
+  is_key_quest: number
+  mst_quest_id: number
+  quest_subtargets: { mst_subtarget_id: number; state: number }[]
+  state: number
+}
+
+interface OceanNode {
+  name: string
+  node_type: number
+  day_quest_list: QuestListItem[]
+  is_collection_node: number
+  mst_node_id: number
+  mst_story_id: number
+  night_quest_list: QuestListItem[]
+  state: number
+}
+
 function parseCSV(csvContent) {
   const lines = csvContent.trim().split('\n');
   const headers = lines.shift().split(',');
@@ -210,11 +231,10 @@ function parseDramaCSV(
       if (!part) continue;
 
       // Convert node list into a Map for fast lookups
-      const nodeMap = new Map(part.node_list.map((n) => [n.mst_node_id, n]));
+      const nodeMap = new Map<number, OceanNode>(part.node_list.map((n) => [n.mst_node_id, n]));
 
       for (const [nodeHash, questHashList] of nodeQuestMap) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const node = nodeMap.get(nodeHash) as any;
+        const node = nodeMap.get(nodeHash);
         if (node) {
           for (const {questHash,isCollectionQuest,isKeyQuest} of questHashList) {
             const { time: questTimeType, name } = questMap.get(questHash);

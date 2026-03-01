@@ -40,19 +40,14 @@ import ScoreEvents from './model/events/score';
 import http from 'http';
 import https from 'https';
 
-let createServer: typeof http.createServer;
-const credentials = false
+const useHttps = PORT === 443;
+const credentials: https.ServerOptions = useHttps
   ? {
       key: readFileSync('../keys/private.key'),
       cert: readFileSync('../keys/certificate.crt'),
-      ca: readFileSync('../keys/certificate.crt'), // Optional, for full certificate chain
+      ca: readFileSync('../keys/certificate.crt'),
     }
   : {};
-if (PORT === 443) {
-  createServer = https.createServer;
-} else {
-  createServer = http.createServer;
-}
 
 mongoose
   .connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_IP}:${DB_PORT}`, {
@@ -91,8 +86,9 @@ mongoose
       });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const server = createServer(PORT === 443 ? credentials as any : {}, app);
+    const server = useHttps
+      ? https.createServer(credentials, app)
+      : http.createServer(app);
 
     const io = Server(server, {
       allowEIO3: true, // false by default
