@@ -44,7 +44,9 @@
     "generate-island": "node --openssl-legacy-provider -r ts-node/register src/services/oceanService.ts",
     "generate-questList": "node --openssl-legacy-provider -r ts-node/register src/services/questList.ts",
     "bf-dec": "node --openssl-legacy-provider -r ts-node/register src/bin/testDecryption.ts",
-    "start:dev": "nodemon  --openssl-legacy-provider ./src/server.ts"
+    "start:dev": "nodemon  --openssl-legacy-provider ./src/server.ts",
+    "lint": "eslint 'src/**/*.ts'",
+    "format": "prettier --write 'src/**/*.ts'"
   },
   "engines": {
     "node": ">=20.0.0"
