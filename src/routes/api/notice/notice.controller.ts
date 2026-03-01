@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import Present from '../../../model/presents.js';
@@ -9,7 +10,7 @@ export const get = async (req: Request, res: Response) => {
   const { session_id } = req.body;
   const userDoc = await User.findOne({ current_session: session_id });
   if (!userDoc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
 
   const presentCount = await Present.countDocuments({

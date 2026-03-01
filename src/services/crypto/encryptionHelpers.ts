@@ -4,6 +4,7 @@ import { TimeService } from '../timeService.js';
 import * as crypto from 'crypto';
 import { createLogger } from '../../middleware/logger.js';
 import Session from '../../model/session.js';
+import { PROTOCOL } from '../../constants/protocol.js';
 
 const log = createLogger('session');
 
@@ -142,8 +143,8 @@ export function encryptAndSend(
   data: object,
   res: Response,
   req: Request,
-  error_code: number = 0, //TODO create a error code ENUM from EAPI_jpn.gmd in GUI_msg.arc
-  error_category: number = 0, //1 seems to retry automatically  2: error 3:would you like to retry question
+  error_code: number = 0,
+  error_category: number = 0,
   error_detail: string = '',
   status: number = 200,
 ) {
@@ -238,13 +239,13 @@ export function encryptAndSend(
     error_code: error_code,
     error_category: error_category,
     error_detail: error_detail,
-    app_ver_android: '09.03.06',
-    app_ver_ios: '09.03.06',
-    app_ver: '09.03.06',
-    res_ver: 282, //controlls banner version url /download/android/v0282/stdDL/download.list Official Value: 282
-    banner_ver: 91, //if set to 0 /api/banner/dllist/get is not called if you increment it to 1 it will be called then not called again untill incremented to 2 (Possible incremental update?) Official Value: 91
+    app_ver_android: PROTOCOL.APP_VER,
+    app_ver_ios: PROTOCOL.APP_VER,
+    app_ver: PROTOCOL.APP_VER,
+    res_ver: PROTOCOL.RES_VER,
+    banner_ver: PROTOCOL.BANNER_VER,
     session_id: session_token,
-    block_seq: 0, //Possibly need to increment this for cycling encryption. (Client ignores if 0)
+    block_seq: PROTOCOL.BLOCK_SEQ,
     one_day_time: timeService.getOneDayTime(),
     now_time: timeService.getNowTime(),
     relogin_time: timeService.getRelogTime(),

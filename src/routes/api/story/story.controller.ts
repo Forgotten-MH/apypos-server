@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import type {
@@ -182,7 +183,7 @@ export const end = async (req: Request, res: Response) => {
     };
 
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
 
     updateNodeList(doc.ocean_list, mst_ocean_id, mst_part_id, newNode);
@@ -232,7 +233,7 @@ export const end = async (req: Request, res: Response) => {
     const doc = await User.findOne(filter);
 
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
 
     updateMonument(doc.box!.monument!, augiteObj, hr, atk, def, hp, sp);

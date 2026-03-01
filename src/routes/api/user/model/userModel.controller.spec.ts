@@ -14,6 +14,7 @@ vi.mock('../../../../middleware/logger', () => ({
 
 import User from '../../../../model/user.js';
 import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../../constants/error.codes.js';
 import { modelCreate, modelSet } from './userModel.controller.js';
 
 function mockReqRes(body: Record<string, unknown> = {}) {
@@ -67,7 +68,7 @@ describe('userModel.controller', () => {
 
       await modelCreate(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 2004);
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     });
 
     it('returns error on DB failure', async () => {
@@ -80,7 +81,7 @@ describe('userModel.controller', () => {
 
       await modelCreate(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Model create failed');
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Model create failed');
     });
   });
 

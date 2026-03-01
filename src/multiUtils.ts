@@ -1,4 +1,5 @@
 import { createLogger } from './middleware/logger.js';
+import { FLAG1, HEADER_SIZE, DEFAULT_SEQ, DEFAULT_FLAG2, SERVER_PLAYER_ID } from './constants/multiplayer.js';
 const log = createLogger('multiUtils');
 
 export function createHeader({
@@ -31,7 +32,7 @@ uint16 pktlength;
 uint32 flag2;
 ubyte array[pktlength];
  */
-  const header = Buffer.alloc(16);
+  const header = Buffer.alloc(HEADER_SIZE);
   let offset = 0;
   header.writeUInt32LE(roomNumber, offset);
   offset += 4;
@@ -62,7 +63,7 @@ ubyte array[pktlength];
 }
 
 function createMaintenance({ durationSecondsTill }: { durationSecondsTill: number }) {
-  const pktId = 0x0a;
+  const pktId = FLAG1.NOTICE;
   const data = Buffer.alloc(4);
   log.debug('Maintenance Message Sent: ', durationSecondsTill);
 
@@ -75,13 +76,13 @@ export function createMaintenancePacket({ durationSecondsTill }: { durationSecon
   const { data, pktId } = createMaintenance({ durationSecondsTill });
   const header = createHeader({
     roomNumber: 0x00000000,
-    playerId: 0xff,
-    seq: 0x0004,
+    playerId: SERVER_PLAYER_ID,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
     emitTypeHex: 0x0,
     flag1: pktId,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
   return Buffer.concat([header, data]);
 }
@@ -109,12 +110,12 @@ export function createChatPacket(roomNo: number, messsage: string) {
   const header = createHeader({
     roomNumber: roomNo,
     playerId: playerId,
-    seq: 0x0004,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
     emitTypeHex: 0x0,
-    flag1: 0x09,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    flag1: FLAG1.CHAT,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
   return Buffer.concat([header, data]);
 }
@@ -122,7 +123,7 @@ export function createChatPacket(roomNo: number, messsage: string) {
 ///////////////
 
 function createInfo(msgType: number) {
-  const pktId = 0x07;
+  const pktId = FLAG1.INFO;
 
   // Allocate a buffer: 54 bytes padding + "hello\0" = 60 bytes total
   const data = Buffer.alloc(100); // Total size: 15 bytes
@@ -198,18 +199,18 @@ export function createInfoPacket() {
   const header = createHeader({
     roomNumber: 0x00000000,
     playerId: playerId,
-    seq: 0x0004,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
     emitTypeHex: 0x0,
     flag1: pktId,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
   return Buffer.concat([header, data]);
 }
 
 function createActivity() {
-  const pktId = 0x06;
+  const pktId = FLAG1.ACTIVITY;
   const data = Buffer.from([
     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10,
     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20,
@@ -226,18 +227,18 @@ export function createActivityPacket() {
   const header = createHeader({
     roomNumber: 0x00000000,
     playerId: playerId,
-    seq: 0x0004,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
     emitTypeHex: 0x0,
     flag1: pktId,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
   return Buffer.concat([header, data]);
 }
 
 function creatSession() {
-  const pktId = 0x03;
+  const pktId = FLAG1.SESSION;
   const data = Buffer.from([0x01, 0x02]);
   //the
   return { data, pktId };
@@ -251,12 +252,12 @@ export function createSessionPacket() {
   const header = createHeader({
     roomNumber: 0x00000000,
     playerId: playerId,
-    seq: 0x0004,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
-    emitTypeHex: 0x0, //0 data 4 join 7 entry 10 cancel 0xd/13 match 14 terminate 15 lock 18 unlock 21 leave 22 hostchange //TODO.. AUTOMATICALLY APPLY EMIT TYPE BASED ON THIS.
+    emitTypeHex: 0x0,
     flag1: pktId,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
   return Buffer.concat([header, data]);
 }
@@ -273,7 +274,7 @@ function _createRandomBuffer(minLength = 50, maxLength = 300) {
 }
 
 export function parseHeader(buffer: Buffer) {
-  if (buffer.length < 16) {
+  if (buffer.length < HEADER_SIZE) {
     throw new Error('Buffer too short to contain valid header');
   }
 

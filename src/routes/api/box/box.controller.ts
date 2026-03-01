@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import { calcMstId as _calcMstId } from '../../../services/defineService.js';
@@ -11,7 +12,7 @@ export const get = async (req: Request, res: Response) => {
 
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
     const data = {
       box: doc.box,
@@ -19,7 +20,7 @@ export const get = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in box get:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get box failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get box failed');
   }
 };
 export const storageInfo = (req: Request, res: Response) => {
@@ -85,10 +86,10 @@ export const otomoGet = async (req: Request, res: Response) => {
 
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
     if (!doc.box) {
-      return encryptAndSend({}, res, req, 1, 2, 'Box not found');
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Box not found');
     }
     const data = {
       otomos: doc.box.otomos,
@@ -96,7 +97,7 @@ export const otomoGet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in otomoGet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get otomo box failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get otomo box failed');
   }
 };
 
@@ -216,10 +217,10 @@ export const equipLevelup = async (req: Request, res: Response) => {
     const filter = { current_session: req.body.session_id };
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); // Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     }
     if (!doc.box) {
-      return encryptAndSend({}, res, req, 1, 2, 'Box not found');
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Box not found');
     }
 
     const equipmentId: string = req.body.eqp_obj_id;
@@ -230,13 +231,13 @@ export const equipLevelup = async (req: Request, res: Response) => {
 
     if (equipmentIndex === -1) {
       // Equipment not found
-      return encryptAndSend({}, res, req, 2001, 0, 'equipment not found');
+      return encryptAndSend({}, res, req, ERROR_CODE.EQUIPMENT_NOT_FOUND, ERROR_CATEGORY.NONE, 'equipment not found');
     }
 
     // Apply level up
     const equipment = doc.box.equipments?.[equipmentIndex];
     if (!equipment) {
-      return encryptAndSend({}, res, req, 2001, 0, 'equipment not found');
+      return encryptAndSend({}, res, req, ERROR_CODE.EQUIPMENT_NOT_FOUND, ERROR_CATEGORY.NONE, 'equipment not found');
     }
     const currentLevel = equipment.elv || 0;
     const newLevel = currentLevel + steps;
@@ -257,7 +258,7 @@ export const equipLevelup = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in equipLevelup:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Equipment level up failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Equipment level up failed');
   }
 };
 // TODO: Equipment awakening is not implemented. Requires knowledge of awakening
@@ -268,10 +269,10 @@ export const awake = async (req: Request, res: Response) => {
     const filter = { current_session: req.body.session_id };
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); // Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     }
     if (!doc.box) {
-      return encryptAndSend({}, res, req, 1, 2, 'Box not found');
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Box not found');
     }
 
     const { base_equipment_id } = req.body;
@@ -283,7 +284,7 @@ export const awake = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in awake:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Equipment awake failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Equipment awake failed');
   }
 };
 
@@ -352,7 +353,7 @@ export const potentialupAutoSet = (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in potentialupAutoSet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Potential up auto set failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Potential up auto set failed');
   }
 };
 
@@ -373,7 +374,7 @@ export const sale = (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in sale:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Equipment sale failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Equipment sale failed');
   }
 };
 
@@ -406,7 +407,7 @@ export const favoriteSet = (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in favoriteSet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Set favorite failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Set favorite failed');
   }
 };
 
@@ -415,10 +416,10 @@ export const leveupAuto = async (req: Request, res: Response) => {
     const filter = { current_session: req.body.session_id };
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); // Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     }
     if (!doc.box?.monument?.mlv) {
-      return encryptAndSend({}, res, req, 1, 2, 'Monument data not found');
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Monument data not found');
     }
     let targetIndex;
     switch (req.body.type) {
@@ -468,6 +469,6 @@ export const leveupAuto = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in leveupAuto:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Monument level up failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Monument level up failed');
   }
 };

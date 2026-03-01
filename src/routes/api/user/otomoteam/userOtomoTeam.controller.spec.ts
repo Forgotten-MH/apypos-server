@@ -14,6 +14,7 @@ vi.mock('../../../../middleware/logger', () => ({
 
 import User from '../../../../model/user.js';
 import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../../constants/error.codes.js';
 import { otomoteamGet, otomoteamSet, otomoteamSelect } from './userOtomoTeam.controller.js';
 
 function mockReqRes(body: Record<string, unknown> = {}) {
@@ -60,7 +61,7 @@ describe('userOtomoTeam.controller', () => {
 
       await otomoteamGet(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 2004);
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     });
 
     it('returns error on DB failure', async () => {
@@ -70,7 +71,7 @@ describe('userOtomoTeam.controller', () => {
 
       await otomoteamGet(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Get otomo team failed');
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get otomo team failed');
     });
   });
 
@@ -162,7 +163,7 @@ describe('userOtomoTeam.controller', () => {
 
       await otomoteamSelect(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 2004);
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     });
   });
 });

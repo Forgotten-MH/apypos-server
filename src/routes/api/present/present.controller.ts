@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import Present from '../../../model/presents.js';
@@ -11,7 +12,7 @@ export const presentSync = async (req: Request, res: Response) => {
     const { session_id } = req.body;
     const userDoc = await User.findOne({ current_session: session_id });
     if (!userDoc) {
-      return encryptAndSend({}, res, req, 2004); // Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     }
 
     encryptAndSend(
@@ -23,7 +24,7 @@ export const presentSync = async (req: Request, res: Response) => {
     );
   } catch (error) {
     log.error('Error in presentSync:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Present sync failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Present sync failed');
   }
 };
 
@@ -34,7 +35,7 @@ export const presentReceive = async (req: Request, res: Response) => {
     const { session_id } = req.body;
     const userDoc = await User.findOne({ current_session: session_id });
     if (!userDoc) {
-      return encryptAndSend({}, res, req, 2004); // Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     }
 
     const presents = await Present.find({
@@ -65,6 +66,6 @@ export const presentReceive = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in presentReceive:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Present receive failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Present receive failed');
   }
 };

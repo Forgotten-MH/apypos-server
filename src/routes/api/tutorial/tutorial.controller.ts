@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import { updatePartNoteState } from '../story/story.controller.js';
@@ -21,7 +22,7 @@ export const getTutorialFlag = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   const doc = await User.findOne(filter);
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
   const data = {
     flags: doc.tutorial_flags,
@@ -122,7 +123,7 @@ export const nyankenGo = async (req: Request, res: Response) => {
     new: true,
   });
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
   const data = {
     currency_ammount: 0,
@@ -144,7 +145,7 @@ export const nyankenResult = async (req: Request, res: Response) => {
     new: true,
   });
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
   const rewardEquip = {
     auto_potential_composite: 0,
@@ -195,7 +196,7 @@ export const TutorialFlagSet = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   let doc = await User.findOne(filter);
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
 
   const newFlags = doc.tutorial_flags;
@@ -208,7 +209,7 @@ export const TutorialFlagSet = async (req: Request, res: Response) => {
     new: true,
   });
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
   const data = {
     flags: doc.tutorial_flags,
@@ -382,7 +383,7 @@ export const stepUP = async (req: Request, res: Response) => {
   let doc = await User.findOne(filter);
 
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
 
   let update = { tutorial_step: doc.tutorial_step };
@@ -423,7 +424,7 @@ export const stepUP = async (req: Request, res: Response) => {
     new: true,
   });
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
 
   const data = {
@@ -438,7 +439,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
   let doc = await User.findOne(filter);
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
   updatePartNoteState(doc.ocean_list, 3525753088, 3815380063, 3758796689, 2);
   doc = await User.findOneAndUpdate(
@@ -449,7 +450,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
     },
   );
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
   //TODO make random
   const rewards = [
@@ -515,7 +516,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
   doc = await User.findOneAndUpdate(filter, { box: doc.box });
 
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
   encryptAndSend(data, res, req);
 };

@@ -14,6 +14,7 @@ vi.mock('../../../middleware/logger', () => ({
 
 import User from '../../../model/user.js';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { registerAccount, loginAccount, migrationReady, migrationAuth } from './account.controller.js';
 
 function mockReqRes(body: Record<string, unknown> = {}) {
@@ -115,7 +116,7 @@ describe('account.controller', () => {
 
       await loginAccount(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 4004);
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.LOGIN_FAILED);
     });
 
     it('returns 2004 when secret_id does not match', async () => {
@@ -130,7 +131,7 @@ describe('account.controller', () => {
 
       await loginAccount(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 2004);
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     });
 
     it('returns error when DB throws', async () => {
@@ -143,7 +144,7 @@ describe('account.controller', () => {
 
       await loginAccount(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 1, 2, 'Login failed');
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Login failed');
     });
   });
 
@@ -180,7 +181,7 @@ describe('account.controller', () => {
 
       await migrationReady(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 4004);
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.LOGIN_FAILED);
     });
   });
 
@@ -220,7 +221,7 @@ describe('account.controller', () => {
 
       await migrationAuth(req, res);
 
-      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, 4004);
+      expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.LOGIN_FAILED);
     });
   });
 });

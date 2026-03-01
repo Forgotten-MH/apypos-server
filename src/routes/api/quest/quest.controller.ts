@@ -10,6 +10,7 @@ import { Request, Response } from 'express';
 
 const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import Event from '../../../model/events.js';
@@ -147,7 +148,7 @@ export const eventNormalStart = async (req: Request, res: Response) => {
   const blocks = quest?.mBlocks || [];
 
   if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, 10001);
+    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
   }
   blocks.forEach((block, index) => {
     data.instance_data.block_list.push({
@@ -229,7 +230,7 @@ export const eventTicketStart = async (req: Request, res: Response) => {
   //Split Quest Name
   const blocks = quest?.mBlocks || [];
   if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, 10001);
+    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
   }
   blocks.forEach((block, index) => {
     data.instance_data.block_list.push({
@@ -317,7 +318,7 @@ export const eventScoreStart = async (req: Request, res: Response) => {
   //Split Quest Name
   const blocks = quest?.mBlocks || [];
   if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, 10001);
+    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
   }
   blocks.forEach((block, index) => {
     data.instance_data.block_list.push({
@@ -392,7 +393,7 @@ export const eternalStart = async (req: Request, res: Response) => {
   };
   const blocks = quest?.mBlocks || [];
   if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, 10001);
+    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
   }
   blocks.forEach((block, index) => {
     data.instance_data.block_list.push({
@@ -666,7 +667,7 @@ export const islandStart = async (req: Request, res: Response) => {
   const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
 
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
   const cleared_quests = doc.cleared_quests;
 
@@ -723,7 +724,7 @@ export const islandStart = async (req: Request, res: Response) => {
 
   const blocks = quest?.mBlocks || [];
   if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, 10001);
+    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
   }
   blocks.forEach((block, index) => {
     data.instance_data.block_list.push({
@@ -753,7 +754,7 @@ export const islandEnd = async (req: Request, res: Response) => {
   log.debug('Rewards: %o', quest?.mRewardItemList);
   const doc = await User.findOne(filter);
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
   const cleared_quests = doc.cleared_quests;
 
@@ -1328,7 +1329,7 @@ export const islandMapAll = async (req: Request, res: Response) => {
 
   const doc = await User.findOne(filter);
   if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
 
   // let final_ocean = await enrichOceanData(doc.ocean_list.toObject());

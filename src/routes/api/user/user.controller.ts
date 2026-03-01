@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import User from '../../../model/user.js';
 import { createLogger } from '../../../middleware/logger.js';
 const log = createLogger('user');
@@ -14,7 +15,7 @@ export const rename = async (req: Request, res: Response) => {
     });
 
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
 
     // Set name in db
@@ -25,7 +26,7 @@ export const rename = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in rename:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Rename failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Rename failed');
   }
 };
 
@@ -35,7 +36,7 @@ export const get = async (req: Request, res: Response) => {
 
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
 
     const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
@@ -107,7 +108,7 @@ export const get = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in user get:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get user failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get user failed');
   }
 };
 
@@ -121,7 +122,7 @@ export const commentSet = async (req: Request, res: Response) => {
     });
 
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); // Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     }
 
     const data = {
@@ -131,7 +132,7 @@ export const commentSet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in commentSet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Set comment failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Set comment failed');
   }
 };
 
@@ -176,7 +177,7 @@ export const navigationNews = (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in navigationNews:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get navigation news failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get navigation news failed');
   }
 };
 
@@ -191,7 +192,7 @@ export const achievementNews = (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in achievementNews:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get achievement news failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get achievement news failed');
   }
 };
 
@@ -211,7 +212,7 @@ export const achievementAll = (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in achievementAll:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get all achievements failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get all achievements failed');
   }
 };
 
@@ -238,7 +239,7 @@ export const OfferCheck = (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in OfferCheck:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Offer check failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Offer check failed');
   }
 };
 
@@ -367,7 +368,7 @@ export const titleSet = async (req: Request, res: Response) => {
 
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
     const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
       (team) => team.index === doc.otomoteam?.selected_index,
@@ -431,7 +432,7 @@ export const titleSet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in titleSet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Set title failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Set title failed');
   }
 };
 
@@ -441,7 +442,7 @@ export const partnerGet = async (req: Request, res: Response) => {
 
     let doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); // Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     }
     doc.selected_partner!.main_partner_id = req.body.main_partner_id;
     doc.selected_partner!.quest_partner_id = req.body.quest_partner_id;
@@ -461,7 +462,7 @@ export const partnerGet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in partnerGet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get partner failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get partner failed');
   }
 };
 export const searchId = (req: Request, res: Response) => {
@@ -573,7 +574,7 @@ export const searchId = (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in searchId:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Search by ID failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Search by ID failed');
   }
 };
 export const gameId = (req: Request, res: Response) => {
@@ -684,6 +685,6 @@ export const gameId = (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in gameId:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Search by game ID failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Search by game ID failed');
   }
 };

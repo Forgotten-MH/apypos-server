@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../../constants/error.codes.js';
 import User from '../../../../model/user.js';
 import { createLogger } from '../../../../middleware/logger.js';
 const log = createLogger('userModel');
@@ -15,7 +16,7 @@ export const modelCreate = async (req: Request, res: Response) => {
     });
 
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
 
     const responseData = {
@@ -27,7 +28,7 @@ export const modelCreate = async (req: Request, res: Response) => {
     encryptAndSend(responseData, res, req);
   } catch (error) {
     log.error('Error in modelCreate:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Model create failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Model create failed');
   }
 };
 
@@ -43,7 +44,7 @@ export const modelSet = async (req: Request, res: Response) => {
     });
 
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
 
     const data = {
@@ -53,6 +54,6 @@ export const modelSet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in modelSet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Model set failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Model set failed');
   }
 };

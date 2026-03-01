@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import * as guildService from '../../../services/guildService.js';
 import User from '../../../model/user.js';
 import { createLogger } from '../../../middleware/logger.js';
@@ -58,7 +59,7 @@ const getUserFromSession = async (req: Request, res: Response) => {
   const user = await User.findOne(filter);
 
   if (!user || !user.uu_id) {
-    encryptAndSend({}, res, req, 2004); // Not authenticated
+    encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     return null;
   }
 
@@ -124,7 +125,7 @@ export const userGet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in userGet:', error);
-    encryptAndSend({ user_guild: null }, res, req, 1, 2, 'Get user guild information failed');
+    encryptAndSend({ user_guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get user guild information failed');
   }
 };
 
@@ -162,7 +163,7 @@ export const userSetup = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in userSetup:', error);
-    encryptAndSend({ user_guild: null }, res, req, 1, 2, 'Initialize user guild settings failed');
+    encryptAndSend({ user_guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Initialize user guild settings failed');
   }
 };
 
@@ -202,7 +203,7 @@ export const searchResult = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in searchResult:', error);
-    encryptAndSend({ user_guild: null }, res, req, 1, 2, 'Search guild failed');
+    encryptAndSend({ user_guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Search guild failed');
   }
 };
 
@@ -219,12 +220,12 @@ export const create = async (req: Request, res: Response) => {
     const name = req.body.name;
 
     if (!name || name.trim() === '') {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, 'Guild name cannot be empty');
+      return encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Guild name cannot be empty');
     }
 
     const existingUserGuild = await guildService.getUserGuildInfo(uid);
     if (existingUserGuild && existingUserGuild.gid && existingUserGuild.joined === 1) {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, 'You are already in a guild');
+      return encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'You are already in a guild');
     }
 
     const guild = await guildService.createGuild(uid, name, {
@@ -274,7 +275,7 @@ export const create = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in create:', error);
-    encryptAndSend({ guild: null }, res, req, 1, 2, 'Create guild failed');
+    encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Create guild failed');
   }
 };
 
@@ -292,13 +293,13 @@ export const getUserGuild = async (req: Request, res: Response) => {
     const userGuild = await guildService.getUserGuildInfo(uid);
 
     if (!userGuild || !userGuild.gid || userGuild.joined === 0) {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, 'You are not in a guild');
+      return encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'You are not in a guild');
     }
 
     const guild = await guildService.getGuildById(userGuild.gid);
 
     if (!guild) {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, 'Guild not found');
+      return encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Guild not found');
     }
 
     const data = {
@@ -336,7 +337,7 @@ export const getUserGuild = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in getUserGuild:', error);
-    encryptAndSend({ guild: null }, res, req, 1, 2, 'Get guild information failed');
+    encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get guild information failed');
   }
 };
 
@@ -415,7 +416,7 @@ export const searchId = async (req: Request, res: Response) => {
         total: 0,
         is_recommendation: 0,
       };
-      return encryptAndSend(data, res, req, 100, 2, 'Guild not found');
+      return encryptAndSend(data, res, req, ERROR_CODE.NOT_FOUND, ERROR_CATEGORY.ERROR_DIALOG, 'Guild not found');
     }
 
     const data = {
@@ -451,7 +452,7 @@ export const searchId = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in searchId:', error);
-    encryptAndSend({ guild: null }, res, req, 1, 2, 'Search guild failed');
+    encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Search guild failed');
   }
 };
 
@@ -468,7 +469,7 @@ export const apply = async (req: Request, res: Response) => {
     const gid = req.body.gid;
 
     if (!gid) {
-      return encryptAndSend({}, res, req, 1, 2, 'Missing guild ID');
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Missing guild ID');
     }
 
     const result = await guildService.applyToGuild(uid, gid);
@@ -486,7 +487,7 @@ export const apply = async (req: Request, res: Response) => {
 
     const guild = await guildService.getGuildById(gid);
     if (!guild) {
-      return encryptAndSend({ guild: null, user_guild: null }, res, req, 1, 2, 'Guild not found');
+      return encryptAndSend({ guild: null, user_guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Guild not found');
     }
 
     const userGuild = await guildService.getUserGuildInfo(uid);
@@ -552,7 +553,7 @@ export const apply = async (req: Request, res: Response) => {
   } catch (error) {
     log.error('Error in apply:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to apply to join guild';
-    encryptAndSend({ guild: null, user_guild: null }, res, req, 1, 2, errorMessage);
+    encryptAndSend({ guild: null, user_guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, errorMessage);
   }
 };
 
@@ -612,7 +613,7 @@ export const search = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in search:', error);
-    encryptAndSend({ guild: [] }, res, req, 1, 2, 'Search guilds failed');
+    encryptAndSend({ guild: [] }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Search guilds failed');
   }
 };
 
@@ -630,11 +631,11 @@ export const chatSend = async (req: Request, res: Response) => {
     const characterName = user.character_name || 'Unnamed';
 
     if (!gid) {
-      return encryptAndSend({}, res, req, 1, 2, 'Missing guild ID');
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Missing guild ID');
     }
 
     if (!message || message.trim() === '') {
-      return encryptAndSend({}, res, req, 1, 2, 'Message cannot be empty');
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Message cannot be empty');
     }
 
     const chatMessage = await guildService.sendChatMessage(uid, gid, message.trim(), characterName);
@@ -651,7 +652,7 @@ export const chatSend = async (req: Request, res: Response) => {
   } catch (error) {
     log.error('Error in chatSend:', error);
     const errorMessage = error instanceof Error ? error.message : 'Failed to send chat message';
-    encryptAndSend({}, res, req, 1, 2, errorMessage);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, errorMessage);
   }
 };
 
@@ -782,7 +783,7 @@ export const mailList = async (req: Request, res: Response) => {
     const userGuild = await guildService.getUserGuildInfo(uid);
 
     if (!userGuild || !userGuild.gid || userGuild.joined === 0) {
-      return encryptAndSend({ mails: [] }, res, req, 1, 2, 'You are not in a guild');
+      return encryptAndSend({ mails: [] }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'You are not in a guild');
     }
 
     const data = {
@@ -792,7 +793,7 @@ export const mailList = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in mailList:', error);
-    encryptAndSend({ mails: [] }, res, req, 1, 2, 'Failed to get mail list');
+    encryptAndSend({ mails: [] }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Failed to get mail list');
   }
 };
 

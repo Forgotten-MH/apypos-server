@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import User from '../../../model/user.js';
 import { createLogger } from '../../../middleware/logger.js';
 const log = createLogger('account');
@@ -35,7 +36,7 @@ export const migrationReady = async (req: Request, res: Response) => {
       new: true,
     });
     if (!doc) {
-      return encryptAndSend({}, res, req, 4004);
+      return encryptAndSend({}, res, req, ERROR_CODE.LOGIN_FAILED);
     }
     const responseData = {
       migration_id: doc.migration_id,
@@ -43,7 +44,7 @@ export const migrationReady = async (req: Request, res: Response) => {
     encryptAndSend(responseData, res, req);
   } catch (error) {
     log.error('Error in migrationReady:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Migration ready failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Migration ready failed');
   }
 };
 
@@ -65,7 +66,7 @@ export const migrationAuth = async (req: Request, res: Response) => {
     });
 
     if (!doc) {
-      return encryptAndSend({}, res, req, 4004);
+      return encryptAndSend({}, res, req, ERROR_CODE.LOGIN_FAILED);
     }
     const responseData = {
       login_id: doc.login_id,
@@ -74,7 +75,7 @@ export const migrationAuth = async (req: Request, res: Response) => {
     encryptAndSend(responseData, res, req);
   } catch (error) {
     log.error('Error in migrationAuth:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Migration auth failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Migration auth failed');
   }
 };
 
@@ -144,7 +145,7 @@ export const registerAccount = async (req: Request, res: Response) => {
     encryptAndSend(responseData, res, req);
   } catch (error) {
     log.error('Error in registerAccount:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Account registration failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Account registration failed');
   }
 };
 
@@ -154,10 +155,10 @@ export const loginAccount = async (req: Request, res: Response) => {
     const filter = { uu_id: req.body.uu_id };
     let doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 4004); //Login failed. Would you like to create another account?
+      return encryptAndSend({}, res, req, ERROR_CODE.LOGIN_FAILED); //Login failed. Would you like to create another account?
     }
     if (doc.secret_id !== req.body.secret_id) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
     //3. Create Session
     const update = { current_session: req.body.session_id };
@@ -978,6 +979,6 @@ export const loginAccount = async (req: Request, res: Response) => {
     encryptAndSend(login, res, req);
   } catch (error) {
     log.error('Error in loginAccount:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Login failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Login failed');
   }
 };

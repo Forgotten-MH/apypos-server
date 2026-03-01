@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../../constants/error.codes.js';
 import User from '../../../../model/user.js';
 import { createLogger } from '../../../../middleware/logger.js';
 const log = createLogger('otomoTeam');
@@ -10,7 +11,7 @@ export const otomoteamGet = async (req: Request, res: Response) => {
 
     const doc = await User.findOne(filter);
     if (!doc?.otomoteam) {
-      return encryptAndSend({}, res, req, 2004);
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
     const data = {
       capacity: doc.otomoteam.capacity,
@@ -20,7 +21,7 @@ export const otomoteamGet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in otomoteamGet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get otomo team failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get otomo team failed');
   }
 };
 
@@ -30,7 +31,7 @@ export const otomoteamSet = async (req: Request, res: Response) => {
 
     const doc = await User.findOne(filter);
     if (!doc?.otomoteam) {
-      return encryptAndSend({}, res, req, 2004);
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
 
     if (req.body.otomo_teams.length > 0) {
@@ -58,7 +59,7 @@ export const otomoteamSet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in otomoteamSet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Set otomo team failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Set otomo team failed');
   }
 };
 
@@ -68,7 +69,7 @@ export const otomoteamSelect = async (req: Request, res: Response) => {
 
     let doc = await User.findOne(filter);
     if (!doc?.otomoteam) {
-      return encryptAndSend({}, res, req, 2004);
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
     doc.otomoteam.selected_index = req.body.index;
 
@@ -83,6 +84,6 @@ export const otomoteamSelect = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in otomoteamSelect:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Select otomo team failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Select otomo team failed');
   }
 };

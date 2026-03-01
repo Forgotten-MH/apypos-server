@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 import { createMaintenancePacket, createChatPacket, parseHeader, createHeader } from './multiUtils.js';
 import { createLogger } from './middleware/logger.js';
+import { FLAG1, DEFAULT_SEQ, DEFAULT_FLAG2 } from './constants/multiplayer.js';
 const log = createLogger('multiServer');
 
 //Client Sends: host_change_request, lock, unlock, kick, entry, cancel, data
@@ -72,10 +73,10 @@ export function onConnect(socket: Socket) {
     const { header, payload } = parseHeader(data);
 
     switch (header.flag1) {
-      case 0x03:
+      case FLAG1.SESSION:
         //Ignore
         break;
-      case 0x07:
+      case FLAG1.INFO:
         log.info('onReceiveInfo recieved room:', header.roomNumber, 'playerId', header.playerId);
         log.info('type:', payload.readUInt16BE(0));
         switch (payload.readUInt16BE(0)) {
@@ -86,12 +87,12 @@ export function onConnect(socket: Socket) {
                 createHeader({
                   roomNumber: 0x17d78400,
                   playerId: 0x0,
-                  seq: 0x0004,
+                  seq: DEFAULT_SEQ,
                   unk2: 0x0,
-                  emitTypeHex: 0x0, //0 data 4 join 7 entry 10 cancel 0xd/13 match 14 terminate 15 lock 18 unlock 21 leave 22 hostchange //TODO.. AUTOMATICALLY APPLY EMIT TYPE BASED ON THIS.
-                  flag1: 0x07,
-                  pktlen: 64, // auto-calculated
-                  flag2: 0x10,
+                  emitTypeHex: 0x0,
+                  flag1: FLAG1.INFO,
+                  pktlen: 64,
+                  flag2: DEFAULT_FLAG2,
                 }),
                 Buffer.from([
                   0x00,
@@ -167,7 +168,7 @@ export function onConnect(socket: Socket) {
             break;
         }
         break;
-      case 0x09: {
+      case FLAG1.CHAT: {
         log.info('client sent chat', header.roomNumber, 'playerId', header.playerId);
         const _user = payload.toString('ascii', 0, payload.indexOf(0, 0));
         const message = payload.toString(

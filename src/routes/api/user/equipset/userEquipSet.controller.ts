@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../../constants/error.codes.js';
 import User from '../../../../model/user.js';
 import { createLogger } from '../../../../middleware/logger.js';
 const log = createLogger('equipSet');
@@ -10,13 +11,13 @@ export const equipSetGet = async (req: Request, res: Response) => {
 
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004);
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
     const data = { ...doc.equipset } as object;
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in equipSetGet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get equip set failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get equip set failed');
   }
 };
 
@@ -25,7 +26,7 @@ export const equipSetSet = async (req: Request, res: Response) => {
     const filter = { current_session: req.body.session_id };
     const doc = await User.findOne(filter);
     if (!doc?.equipset) {
-      return encryptAndSend({}, res, req, 2004);
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
     if (req.body.equip_sets.length > 0) {
       doc.equipset.equip_sets = req.body.equip_sets;
@@ -39,7 +40,7 @@ export const equipSetSet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in equipSetSet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Set equip set failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Set equip set failed');
   }
 };
 
@@ -48,7 +49,7 @@ export const equipSetSocialGet = async (req: Request, res: Response) => {
     const filter = { current_session: req.body.session_id };
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004);
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
     const data = {
       social_equip_sets: doc.social_equip_sets,
@@ -56,7 +57,7 @@ export const equipSetSocialGet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in equipSetSocialGet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Get social equip set failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get social equip set failed');
   }
 };
 export const equipSetSocialSet = async (req: Request, res: Response) => {
@@ -64,7 +65,7 @@ export const equipSetSocialSet = async (req: Request, res: Response) => {
     const filter = { current_session: req.body.session_id };
     const doc = await User.findOne(filter);
     if (!doc) {
-      return encryptAndSend({}, res, req, 2004);
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
     if (req.body.social_equip_sets.length > 0) {
       doc.social_equip_sets = req.body.social_equip_sets;
@@ -77,6 +78,6 @@ export const equipSetSocialSet = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in equipSetSocialSet:', error);
-    encryptAndSend({}, res, req, 1, 2, 'Set social equip set failed');
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Set social equip set failed');
   }
 };
