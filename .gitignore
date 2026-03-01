@@ -26,6 +26,9 @@ src/public/
 # MongoDB data directory (docker-compose volume)
 /data/
 
+# Log files
+src/middleware/logs/
+
 # Patcher output
 scripts/patcher/out/
 

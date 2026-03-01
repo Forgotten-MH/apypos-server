@@ -5,66 +5,66 @@ import User from '../../../model/user';
 const log = createLogger('story');
 
 interface Node {
-  is_collection_node: number;
-  mst_node_id: number;
-  mst_story_id: number;
-  state: number;
+  is_collection_node: number
+  mst_node_id: number
+  mst_story_id: number
+  state: number
 }
 
 interface NoteContent {
-  mst_note_content_id: number;
-  state: number;
+  mst_note_content_id: number
+  state: number
 }
 
 interface Part {
-  mst_part_id: number;
-  node_list: Node[];
+  mst_part_id: number
+  node_list: Node[]
   exploration_note: {
-    note_contents: NoteContent[];
-    progress: number;
-  };
+    note_contents: NoteContent[]
+    progress: number
+  }
 }
 
 interface Ocean {
-  mst_ocean_id: number;
-  part_list: Part[];
+  mst_ocean_id: number
+  part_list: Part[]
 }
 
 interface Augite {
-  amount: number;
-  mst_augite_id: number;
-  mst_monument_type_id: number;
+  amount: number
+  mst_augite_id: number
+  mst_monument_type_id: number
 }
 
 interface Monument {
-  augite: Augite[];
-  hr: number;
+  augite: Augite[]
+  hr: number
   mlv: {
-    atk: number;
-    def: number;
-    hp: number;
-    sp: number;
-  };
+    atk: number
+    def: number
+    hp: number
+    sp: number
+  }
 }
 
 interface PopItem {
   item_list: {
-    pop_id: number;
+    pop_id: number
     monument?: {
-      augite: Augite[];
-      hr: number;
+      augite: Augite[]
+      hr: number
       mlv: {
-        atk: number;
-        def: number;
-        hp: number;
-        sp: number;
-      };
-    };
-  };
+        atk: number
+        def: number
+        hp: number
+        sp: number
+      }
+    }
+  }
 }
 
 interface OpenNode {
-  mst_node_id: number;
+  mst_node_id: number
 }
 
 const updateNodeList = (oceanList: Ocean[], mst_ocean_id: number, mst_part_id: number, newNode: Node) => {
