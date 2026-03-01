@@ -35,7 +35,7 @@ export function makeDownloadList(type: string, os: string) {
         let parsedPath = filePath.replace(/\\/g, '/');
         parsedPath = parsedPath.replace(
           path.posix.join('public', 'res', 'download', os),
-          ''
+          '',
         );
         parsedPath = parsedPath.replace('/v0282', '');
 
@@ -60,11 +60,11 @@ export function makeDownloadList(type: string, os: string) {
         } else {
           log.info('File created successfully.');
         }
-      }
+      },
     );
   } else {
     log.info(
-      folderPath + os + '/' + type + '/download.list' + ' Already exists'
+      folderPath + os + '/' + type + '/download.list' + ' Already exists',
     );
   }
 }

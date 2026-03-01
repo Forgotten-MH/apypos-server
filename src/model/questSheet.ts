@@ -6,7 +6,7 @@ const BossSchema = new mongoose.Schema(
     mAreaNo: String,
     mFieldSkillPackId: String,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const RewardItemSchema = new mongoose.Schema(
@@ -15,7 +15,7 @@ const RewardItemSchema = new mongoose.Schema(
     mProbScale: String,
     mRewardType: String,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const QuestDataSchema = new mongoose.Schema({
@@ -50,7 +50,7 @@ const RewardItemTableEntrySchema = new mongoose.Schema(
     mItemValue: String,
     mItemLevel: String,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const RewardItemTableSchema = new mongoose.Schema(
@@ -60,7 +60,7 @@ const RewardItemTableSchema = new mongoose.Schema(
       mpArray: [RewardItemTableEntrySchema],
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const _RewardDataSchema = new mongoose.Schema(
@@ -68,7 +68,7 @@ const _RewardDataSchema = new mongoose.Schema(
     mFixedItemTableID: String,
     mRewardItemTable: RewardItemTableSchema,
   },
-  { _id: false }
+  { _id: false },
 );
 
 const QuestSheet = mongoose.model('QuestSheet', QuestDataSchema);

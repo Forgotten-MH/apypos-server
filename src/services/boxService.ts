@@ -11,11 +11,15 @@ export class BoxService {
     }
   }
 
-  static removeItem<T extends Record<string, number | string>>(box: Box, field: keyof Box, matcher: Partial<T>): void {
+  static removeItem<T extends Record<string, number | string>>(
+    box: Box,
+    field: keyof Box,
+    matcher: Partial<T>,
+  ): void {
     const boxRecord = box as Record<string, T[] | undefined>;
     const list = boxRecord[field as string];
     if (Array.isArray(list)) {
-      boxRecord[field as string] = list.filter(item => {
+      boxRecord[field as string] = list.filter((item) => {
         return !Object.entries(matcher).every(([k, v]) => item[k] === v);
       });
     } else {
@@ -27,8 +31,15 @@ export class BoxService {
     box.zeny = (box.zeny || 0) + amount;
   }
 
-  static updateMonumentLevel(box: Box, stat: 'atk' | 'def' | 'hp' | 'sp', amount: number): void {
-    if (!box.monument?.mlv || !box.monument.mlv.hasOwnProperty(stat)) {
+  static updateMonumentLevel(
+    box: Box,
+    stat: 'atk' | 'def' | 'hp' | 'sp',
+    amount: number,
+  ): void {
+    if (
+      !box.monument?.mlv ||
+      !Object.prototype.hasOwnProperty.call(box.monument.mlv, stat)
+    ) {
       throw new Error(`Invalid monument stat: ${String(stat)}`);
     }
     box.monument.mlv[stat] += amount;

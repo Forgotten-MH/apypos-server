@@ -8,6 +8,6 @@ shopRouter.post('/list', shopController.list);
 shopRouter.post('/buy', shopController.buy);
 
 shopRouter.post('/karidama/info', shopController.karidamaInfo);
-shopRouter.post('/karidama/list',  shopController.karidamaList);
+shopRouter.post('/karidama/list', shopController.karidamaList);
 
 export default shopRouter;

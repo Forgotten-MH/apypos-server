@@ -17,10 +17,8 @@ const ScoreEventSchema = new mongoose.Schema(
     recommended_flag: { type: Number, default: 0 },
     state: { type: Number, default: 0 },
   },
-  { toJSON: { getters: true }, toObject: { getters: true } }
+  { toJSON: { getters: true }, toObject: { getters: true } },
 );
-
-
 
 const ScoreEvents = mongoose.model('ScoreEvents', ScoreEventSchema);
 export default ScoreEvents;

@@ -8,9 +8,6 @@ maintenanceEnvRouter.get(
   '/schedule',
   maintenanceEnvController.getMaintenanceEnvSchedule,
 );
-maintenanceEnvRouter.get(
-  '',
-  webController.getWebContent,
-);
+maintenanceEnvRouter.get('', webController.getWebContent);
 
 export default maintenanceEnvRouter;

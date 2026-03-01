@@ -10,4 +10,3 @@ const QuestSchema = new mongoose.Schema({
 });
 
 export default mongoose.model('Quest', QuestSchema);
-

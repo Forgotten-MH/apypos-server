@@ -4,7 +4,9 @@ import { EncryptionService } from './encryptionService';
 // Decrypt with autoPadding disabled returns PKCS5 padding bytes;
 // strip them the same way the production decrypt strips null bytes.
 function stripPadding(s: string): string {
-  return s.replace(/[\x01-\x08]+$/, '');
+  // PKCS5 padding bytes (0x01–0x08) are intentional control characters
+  // eslint-disable-next-line no-control-regex
+  return s.replace(/[\u0001-\u0008]+$/, '');
 }
 
 describe('EncryptionService', () => {

@@ -18,14 +18,14 @@ import full_island from '../../../json/full_enabled_state.json';
 import { readFile } from 'fs/promises';
 
 interface BlockListItem {
-  block_idx: number
-  block_instance_list: { instance_id: number; serial_no: number }[]
-  drop_list: never[]
-  instance_id: number
-  is_insert: number
-  is_raid: number
-  mst_block_id: number
-  repop_list: { amount: number; serial_no: number }[]
+  block_idx: number;
+  block_instance_list: { instance_id: number; serial_no: number }[];
+  drop_list: never[];
+  instance_id: number;
+  is_insert: number;
+  is_raid: number;
+  mst_block_id: number;
+  repop_list: { amount: number; serial_no: number }[];
 }
 import QuestSheet from '../../../model/questSheet';
 import { enrichEvent } from '../../../model/events/utils';
@@ -1149,68 +1149,68 @@ export const islandEnd = async (req: Request, res: Response) => {
 
 // --- Types ---
 type QuestRow = {
-  mQuestID: string
-  mDayNight: string
-  [key: string]: string
+  mQuestID: string;
+  mDayNight: string;
+  [key: string]: string;
 };
 
 type NodeQuestRow = {
-  mNodeHash: string
-  mQuestHash: string
-  isCollectionQuest: string
-  isKeyQuest: string
-  [key: string]: string
+  mNodeHash: string;
+  mQuestHash: string;
+  isCollectionQuest: string;
+  isKeyQuest: string;
+  [key: string]: string;
 };
 
 type QuestSubtargetRow = {
-  mQuestID: string
-  mSubTargetID: string
-  mDifficulty: string
-  mFixedItemTableID: string
-  [key: string]: string
+  mQuestID: string;
+  mSubTargetID: string;
+  mDifficulty: string;
+  mFixedItemTableID: string;
+  [key: string]: string;
 };
 
 // Adjust based on your actual ocean/part/node structure
 type QuestObject = {
-  clear_time: number
-  is_collection_quest: 0 | 1
-  is_key_quest: 0 | 1
-  mst_quest_id: number
-  quest_subtargets: []
-  state: number
+  clear_time: number;
+  is_collection_quest: 0 | 1;
+  is_key_quest: 0 | 1;
+  mst_quest_id: number;
+  quest_subtargets: [];
+  state: number;
 };
 
 type Node = {
-  mst_node_id: number
-  day_quest_list?: QuestObject[]
-  night_quest_list?: QuestObject[]
-  is_collection_node?: number
-  mst_story_id?: number
-  state?: number
+  mst_node_id: number;
+  day_quest_list?: QuestObject[];
+  night_quest_list?: QuestObject[];
+  is_collection_node?: number;
+  mst_story_id?: number;
+  state?: number;
 };
 
 type Part = {
-  node_list?: Node[]
-  mst_part_id?: number
-  campaign?: { mst_campaign_id: number; remain_time: number }[]
+  node_list?: Node[];
+  mst_part_id?: number;
+  campaign?: { mst_campaign_id: number; remain_time: number }[];
   exploration_note?: {
-    note_contents: { mst_note_content_id: number; state: number }[]
-    progress: number
-  }
-  gingira_node_id?: number
-  object_list?: { mst_object_id: number; state: number }[]
+    note_contents: { mst_note_content_id: number; state: number }[];
+    progress: number;
+  };
+  gingira_node_id?: number;
+  object_list?: { mst_object_id: number; state: number }[];
   raid_info?: {
-    end_remain: number
-    mst_node_id: number
-    start_remain: number
-  }[]
-  silver_bonus?: number
-  state?: number
+    end_remain: number;
+    mst_node_id: number;
+    start_remain: number;
+  }[];
+  silver_bonus?: number;
+  state?: number;
 };
 
 type Ocean = {
-  mst_ocean_id: number
-  part_list: Part[]
+  mst_ocean_id: number;
+  part_list: Part[];
 };
 
 // --- CSV Parser ---

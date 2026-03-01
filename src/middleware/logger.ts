@@ -8,20 +8,23 @@ export const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     winston.format.errors({ stack: true }),
-    winston.format.json()
+    winston.format.json(),
   ),
   defaultMeta: { service: 'mhxr-server' },
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(
         winston.format.colorize(),
-        winston.format.printf(({ timestamp, level, message, context, ...rest }) => {
-          const ctx = context ? `[${context}]` : '';
-          const extra = Object.keys(rest).length > 0 && rest.service === undefined
-            ? ` ${JSON.stringify(rest)}`
-            : '';
-          return `${timestamp} ${level} ${ctx} ${message}${extra}`;
-        })
+        winston.format.printf(
+          ({ timestamp, level, message, context, ...rest }) => {
+            const ctx = context ? `[${context}]` : '';
+            const extra =
+              Object.keys(rest).length > 0 && rest.service === undefined
+                ? ` ${JSON.stringify(rest)}`
+                : '';
+            return `${timestamp} ${level} ${ctx} ${message}${extra}`;
+          },
+        ),
       ),
     }),
     new winston.transports.File({

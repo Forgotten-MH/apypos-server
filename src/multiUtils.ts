@@ -11,16 +11,16 @@ export function createHeader({
   flag2,
   pktlen,
 }: {
-  roomNumber: number
-  playerId: number
-  seq: number
-  unk2: number
-  emitTypeHex: number
-  flag1: number
-  flag2: number
-  pktlen: number
+  roomNumber: number;
+  playerId: number;
+  seq: number;
+  unk2: number;
+  emitTypeHex: number;
+  flag1: number;
+  flag2: number;
+  pktlen: number;
 }) {
- /*
+  /*
 uint32 roomid;
 ubyte unk1;
 uint16 sequence;
@@ -33,7 +33,7 @@ ubyte array[pktlength];
  */
   const header = Buffer.alloc(16);
   let offset = 0;
-  header.writeUInt32LE(roomNumber, offset); 
+  header.writeUInt32LE(roomNumber, offset);
   offset += 4;
   header.writeUInt8(playerId, offset); //Unk but seems to be related to session size so 4 for 4 player and 16 for 16 player ff being like server maybe???
   offset += 1;
@@ -62,16 +62,24 @@ ubyte array[pktlength];
   return header;
 }
 
-function createMaintenance({ durationSecondsTill }: { durationSecondsTill: number }) {
+function createMaintenance({
+  durationSecondsTill,
+}: {
+  durationSecondsTill: number;
+}) {
   const pktId = 0x0a;
   const data = Buffer.alloc(4);
-    log.debug('Maintenance Message Sent: ',durationSecondsTill)
+  log.debug('Maintenance Message Sent: ', durationSecondsTill);
 
   data.writeUInt32LE(durationSecondsTill, 0);
   return { data, pktId };
 }
 
-export function createMaintenancePacket({ durationSecondsTill }: { durationSecondsTill: number }) {
+export function createMaintenancePacket({
+  durationSecondsTill,
+}: {
+  durationSecondsTill: number;
+}) {
   //10 onRecieveNotice
   const { data, pktId } = createMaintenance({ durationSecondsTill });
   const header = createHeader({
@@ -93,7 +101,7 @@ function createChat(message: string) {
   const data = Buffer.alloc(100);
   const messageStartIndex = 0x36;
   const name = 'Command User';
-  log.debug('Message From: ',name,'-',message)
+  log.debug('Message From: ', name, '-', message);
   data.write(name, 0x00, 'ascii');
   data[0x00 + name.length] = 0x00; // null terminator
   data.write(message, messageStartIndex, 'ascii');
@@ -117,7 +125,7 @@ export function createChatPacket(roomNo: number, messsage: string) {
     pktlen: data.length, // auto-calculated
     flag2: 0x10,
   });
-  return Buffer.concat([header,  data]);
+  return Buffer.concat([header, data]);
 }
 
 ///////////////
@@ -308,15 +316,15 @@ export function parseHeader(buffer: Buffer) {
   // Payload is everything after the header bytes
   const payload = buffer.slice(offset);
   log.debug({
-      roomNumber,
-      playerId,
-      seq,
-      unk2,
-      emitTypeHex,
-      flag1,
-      pktlen,
-      flag2,
-    })
+    roomNumber,
+    playerId,
+    seq,
+    unk2,
+    emitTypeHex,
+    flag1,
+    pktlen,
+    flag2,
+  });
   return {
     header: {
       roomNumber,

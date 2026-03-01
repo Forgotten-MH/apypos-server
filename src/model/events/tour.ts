@@ -1,6 +1,3 @@
-
-
-
 import mongoose from 'mongoose';
 import { getDurationFromValue } from './utils';
 
@@ -20,7 +17,7 @@ const TourEventSchema = new mongoose.Schema(
     },
     state: { type: Number, default: 0 },
   },
-  { toJSON: { getters: true }, toObject: { getters: true } }
+  { toJSON: { getters: true }, toObject: { getters: true } },
 );
 const TourEvents = mongoose.model('TourEvents', TourEventSchema);
 export default TourEvents;

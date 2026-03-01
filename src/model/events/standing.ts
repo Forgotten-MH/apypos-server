@@ -17,9 +17,8 @@ const StandingEventSchema = new mongoose.Schema(
     },
     state: { type: Number, default: 0 },
   },
-  { toJSON: { getters: true }, toObject: { getters: true } }
+  { toJSON: { getters: true }, toObject: { getters: true } },
 );
-
 
 const StandingEvents = mongoose.model('StandingEvents', StandingEventSchema);
 export default StandingEvents;

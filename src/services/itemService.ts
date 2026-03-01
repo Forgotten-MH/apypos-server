@@ -2,41 +2,41 @@ import { createLogger } from '../middleware/logger';
 const log = createLogger('itemService');
 
 interface RewardEntry {
-  type: string
-  id?: number
-  amount?: number
-  value?: number
-  key?: string
+  type: string;
+  id?: number;
+  amount?: number;
+  value?: number;
+  key?: string;
 }
 
 interface RewardItem {
-  type: string
-  amount: number
-  id?: number
-  value: number
+  type: string;
+  amount: number;
+  id?: number;
+  value: number;
 }
 
 interface ItemList {
-  collections: RewardItem[]
-  equipments: RewardItem[]
-  growth_items: RewardItem[]
-  katamaris: never[]
-  limiteds: RewardItem[]
-  matatabis: RewardItem[]
-  materials: RewardItem[]
+  collections: RewardItem[];
+  equipments: RewardItem[];
+  growth_items: RewardItem[];
+  katamaris: never[];
+  limiteds: RewardItem[];
+  matatabis: RewardItem[];
+  materials: RewardItem[];
   monument: {
-    augite: { id?: number; amount: number; value: number }[]
-    hr: number
-    mlv: Record<string, number>
-  }
-  otomos: RewardItem[]
-  partners: RewardItem[]
-  payments: RewardItem[]
-  pcoins: RewardItem[]
-  points: RewardItem[]
-  powers: RewardItem[]
-  stamp_sets: RewardItem[]
-  zenny: number
+    augite: { id?: number; amount: number; value: number }[];
+    hr: number;
+    mlv: Record<string, number>;
+  };
+  otomos: RewardItem[];
+  partners: RewardItem[];
+  payments: RewardItem[];
+  pcoins: RewardItem[];
+  points: RewardItem[];
+  powers: RewardItem[];
+  stamp_sets: RewardItem[];
+  zenny: number;
 }
 
 function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
@@ -206,9 +206,10 @@ function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
       case 'point':
       case 'power':
       case 'stamp_set':
-      case 'collection':
+      case 'collection': {
         // pluralize type for key matching
-        const listKey = type + (type.endsWith('s') ? '' : 's') as keyof ItemList;
+        const listKey = (type +
+          (type.endsWith('s') ? '' : 's')) as keyof ItemList;
         const list = item_list[listKey as keyof ItemList];
         if (Array.isArray(list)) {
           (list as RewardItem[]).push({
@@ -219,13 +220,17 @@ function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
           });
         }
         break;
+      }
 
       case 'monument_hr':
         item_list.monument.hr += value;
         break;
 
       case 'monument_mlv':
-        if (key && item_list.monument.mlv.hasOwnProperty(key)) {
+        if (
+          key &&
+          Object.prototype.hasOwnProperty.call(item_list.monument.mlv, key)
+        ) {
           item_list.monument.mlv[key] += value;
         }
         break;

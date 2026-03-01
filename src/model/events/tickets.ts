@@ -30,7 +30,7 @@ const TicketEventSchema = new mongoose.Schema(
     },
     state: { type: Number, default: 0 },
   },
-  { toJSON: { getters: true }, toObject: { getters: true } }
+  { toJSON: { getters: true }, toObject: { getters: true } },
 );
 
 const TicketEvents = mongoose.model('TicketEvents', TicketEventSchema);

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { getDurationFromValue } from './utils';
-const AssaultEventSchema =  new mongoose.Schema(
+const AssaultEventSchema = new mongoose.Schema(
   {
     appear_remain: {
       type: Date,
@@ -27,11 +27,8 @@ const AssaultEventSchema =  new mongoose.Schema(
     schedule_type: { type: Number, default: 1 },
     state: { type: Number, required: true },
   },
-  { toJSON: { getters: true }, toObject: { getters: true } }
+  { toJSON: { getters: true }, toObject: { getters: true } },
 );
-
-
 
 const AssualtEvents = mongoose.model('AssualtEvents', AssaultEventSchema);
 export default AssualtEvents;
-

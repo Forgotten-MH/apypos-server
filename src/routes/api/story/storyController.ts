@@ -18,22 +18,22 @@ type Node = OceanNode;
 
 interface PopItem {
   item_list: {
-    pop_id: number
+    pop_id: number;
     monument?: {
-      augite: Augite[]
-      hr: number
+      augite: Augite[];
+      hr: number;
       mlv: {
-        atk: number
-        def: number
-        hp: number
-        sp: number
-      }
-    }
-  }
+        atk: number;
+        def: number;
+        hp: number;
+        sp: number;
+      };
+    };
+  };
 }
 
 interface OpenNode {
-  mst_node_id: number
+  mst_node_id: number;
 }
 
 const updateNodeList = (

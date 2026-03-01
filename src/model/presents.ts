@@ -41,7 +41,7 @@ const ContentSchema = new mongoose.Schema(
     pcoins: [mongoose.Schema.Types.Mixed],
     stamp_sets: [mongoose.Schema.Types.Mixed],
   },
-  { _id: false }
+  { _id: false },
 );
 
 const PresentSchema = new mongoose.Schema({

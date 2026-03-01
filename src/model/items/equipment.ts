@@ -11,12 +11,12 @@ const equipmentSchema = new Schema({
   elv: Number, //Equipment Level for Armour and Weapons
   slv: Number, //Martial Arts level
   potential: Number, //Plus value secret technique release
-  is_complete_auto_potential_composite: Number, 
+  is_complete_auto_potential_composite: Number,
   auto_potential_composite: Number,
   //Charm Fields OD_*
-  awaked: Number, 
-  is_awake: Number, //is awake 
-  endAwakeCount: Number, 
+  awaked: Number,
+  is_awake: Number, //is awake
+  endAwakeCount: Number,
   endAwakeRemain: Number, //time left
   end_remain: Number, //time valid till
   start_remain: Number, //time till start

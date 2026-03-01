@@ -1,5 +1,11 @@
 import { Request, Response } from 'express';
-import { IP, API_NOT_AVAILABLE_MAINTENANCE, PORT, WEB_URL, RES_URL } from '../../config';
+import {
+  IP,
+  API_NOT_AVAILABLE_MAINTENANCE,
+  PORT,
+  WEB_URL,
+  RES_URL,
+} from '../../config';
 import { createLogger } from '../../middleware/logger';
 const log = createLogger('version');
 

@@ -1,15 +1,15 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface ISession extends Document {
-  key: string
-  session_token: string
-  created_at: number
-  last_accessed: number
-  user_agent?: string
-  account_id?: string
-  game_id?: string
-  ip_address?: string
-  device_fingerprint?: string
+  key: string;
+  session_token: string;
+  created_at: number;
+  last_accessed: number;
+  user_agent?: string;
+  account_id?: string;
+  game_id?: string;
+  ip_address?: string;
+  device_fingerprint?: string;
 }
 
 const sessionSchema = new Schema<ISession>({

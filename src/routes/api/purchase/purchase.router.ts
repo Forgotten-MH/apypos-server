@@ -6,6 +6,12 @@ const purchaseRouter = Router();
 
 purchaseRouter.post('/list', purchaseList);
 
-purchaseRouter.post('/tutorial', notImplementedController.blankResponseEncrypted);
-purchaseRouter.post('/validate', notImplementedController.blankResponseEncrypted);
+purchaseRouter.post(
+  '/tutorial',
+  notImplementedController.blankResponseEncrypted,
+);
+purchaseRouter.post(
+  '/validate',
+  notImplementedController.blankResponseEncrypted,
+);
 export default purchaseRouter;

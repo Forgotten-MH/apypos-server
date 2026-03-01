@@ -6,6 +6,4 @@ const matatabiSchema = new Schema({
   mst_matatabi_id: Number,
 });
 
-
-
 export default matatabiSchema;

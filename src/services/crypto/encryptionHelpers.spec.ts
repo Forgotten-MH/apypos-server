@@ -48,7 +48,9 @@ describe('encryptionHelpers - session management', () => {
   it('generateUniqueId returns a UUID string', () => {
     const id = generateUniqueId();
     expect(typeof id).toBe('string');
-    expect(id).toMatch(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/);
+    expect(id).toMatch(
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+    );
   });
 
   it('generateUniqueId returns unique values', () => {

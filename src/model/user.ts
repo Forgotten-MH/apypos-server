@@ -27,39 +27,39 @@ import type {
 const { Schema, model } = mongoose;
 
 export interface IUser extends Document {
-  uu_id?: string
-  secret_id?: string
-  login_id?: string
-  mst_himitsu_question_id?: string
-  himitsu_answer?: string
-  migration_pass?: string
-  migration_id?: string
-  user_id?: string
-  game_id?: string
-  tutorial_step?: number
-  character_name?: string
-  current_session?: string
-  comment?: string
-  tutorial_flags: number[]
-  model_info?: ModelInfo
-  box?: Box
+  uu_id?: string;
+  secret_id?: string;
+  login_id?: string;
+  mst_himitsu_question_id?: string;
+  himitsu_answer?: string;
+  migration_pass?: string;
+  migration_id?: string;
+  user_id?: string;
+  game_id?: string;
+  tutorial_step?: number;
+  character_name?: string;
+  current_session?: string;
+  comment?: string;
+  tutorial_flags: number[];
+  model_info?: ModelInfo;
+  box?: Box;
   equipset?: {
-    capacity_eqp_set: number
-    equip_sets: EquipSet[]
-    selected_equip_set_index: number
-  }
-  social_equip_sets?: SocialEquipset[]
+    capacity_eqp_set: number;
+    equip_sets: EquipSet[];
+    selected_equip_set_index: number;
+  };
+  social_equip_sets?: SocialEquipset[];
   otomoteam?: {
-    capacity: number
-    otomo_team: OtomoTeam[]
-    selected_index: number
-  }
-  selected_partner?: SelectedPartner
-  ocean_list: Ocean[]
-  cleared_quests: ClearedQuest[]
-  nyanken_cooldown?: NyankenCooldown
-  equipment_id_counter?: number
-  guild_info?: GuildInfo
+    capacity: number;
+    otomo_team: OtomoTeam[];
+    selected_index: number;
+  };
+  selected_partner?: SelectedPartner;
+  ocean_list: Ocean[];
+  cleared_quests: ClearedQuest[];
+  nyanken_cooldown?: NyankenCooldown;
+  equipment_id_counter?: number;
+  guild_info?: GuildInfo;
 }
 const equipPieceSchema = new Schema({
   created: Number,

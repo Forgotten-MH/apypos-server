@@ -6,10 +6,13 @@ import path from 'path';
 import crcjam from 'crc/crcjam';
 const log = createLogger('banner');
 
-const readFilesFromDir = async (dir: string, data: { download_list: { hash: number; path: string; size: number }[] }) => {
+const readFilesFromDir = async (
+  dir: string,
+  data: { download_list: { hash: number; path: string; size: number }[] },
+) => {
   try {
     const files = await fs.readdir(dir);
-    
+
     // Iterate over the files and push an object for each into the download_list
     for (const file of files) {
       if (path.extname(file) === '.fpk') {
@@ -39,14 +42,32 @@ export const getDlList = async (req: Request, res: Response) => {
     switch (req.body.device_id) {
       case 2:
         await readFilesFromDir(
-          path.join(__dirname, '..', '..','..', 'public', 'res', 'banner', 'android'),
-          data
+          path.join(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'public',
+            'res',
+            'banner',
+            'android',
+          ),
+          data,
         );
         break;
       case 3:
         await readFilesFromDir(
-          path.join(__dirname, '..','..','..', 'public', 'res', 'banner', 'ios'),
-          data
+          path.join(
+            __dirname,
+            '..',
+            '..',
+            '..',
+            'public',
+            'res',
+            'banner',
+            'ios',
+          ),
+          data,
         );
         break;
       default:
@@ -55,8 +76,7 @@ export const getDlList = async (req: Request, res: Response) => {
     }
 
     encryptAndSend(data, res, req);
-  } catch (error) {
-    res
-      .status(500);
+  } catch (_error) {
+    res.status(500);
   }
 };

@@ -6,53 +6,52 @@ import { createLogger } from '../../../middleware/logger';
 const log = createLogger('guild');
 
 interface EquipPiece {
-  hash?: number
-  level?: number
-  potential?: number
-  skill_level?: number
+  hash?: number;
+  level?: number;
+  potential?: number;
+  skill_level?: number;
 }
 
 interface SocialEquipPart {
-  equipment_id?: string
-  mst_equipment_id?: number
+  equipment_id?: string;
+  mst_equipment_id?: number;
 }
 
 // Fields expected by the guild member details builder.
 // Some of these are not yet in the User schema and will resolve to undefined
 // (handled by || defaults in buildMemberDetails).
 interface GuildMemberData {
-  comment?: string
-  created?: number
-  equip_arm?: EquipPiece
-  equip_body?: EquipPiece
-  equip_head?: EquipPiece
-  equip_leg?: EquipPiece
-  equip_secret_weapon?: EquipPiece
-  equip_talisman?: EquipPiece & { is_awake?: number; is_enable?: number }
-  equip_waist?: EquipPiece
-  equip_weapon?: EquipPiece
-  guild_rank?: number
-  last_login?: number
-  login_freq?: number
+  comment?: string;
+  created?: number;
+  equip_arm?: EquipPiece;
+  equip_body?: EquipPiece;
+  equip_head?: EquipPiece;
+  equip_leg?: EquipPiece;
+  equip_secret_weapon?: EquipPiece;
+  equip_talisman?: EquipPiece & { is_awake?: number; is_enable?: number };
+  equip_waist?: EquipPiece;
+  equip_weapon?: EquipPiece;
+  guild_rank?: number;
+  last_login?: number;
+  login_freq?: number;
   monument_info?: {
-    attack?: number
-    auto_play?: number
-    defence?: number
-    hp?: number
-    hunter_rank?: number
-    sp?: number
-  }
+    attack?: number;
+    auto_play?: number;
+    defence?: number;
+    hp?: number;
+    hunter_rank?: number;
+    sp?: number;
+  };
   social_equip?: {
-    social_arm?: SocialEquipPart
-    social_body?: SocialEquipPart
-    social_head?: SocialEquipPart
-    social_leg?: SocialEquipPart
-    social_waist?: SocialEquipPart
-  }
-  title?: { mst_title_id?: number }
-  use_social_equip?: number
+    social_arm?: SocialEquipPart;
+    social_body?: SocialEquipPart;
+    social_head?: SocialEquipPart;
+    social_leg?: SocialEquipPart;
+    social_waist?: SocialEquipPart;
+  };
+  title?: { mst_title_id?: number };
+  use_social_equip?: number;
 }
-
 
 const getUserFromSession = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
@@ -74,11 +73,11 @@ export const userGet = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
 
     const userGuild = await guildService.getUserGuildInfo(uid);
-    
+
     if (!userGuild) {
       const data = {
         user_guild: {
@@ -97,7 +96,7 @@ export const userGet = async (req: Request, res: Response) => {
           updated: 0,
           waited: 0,
           yarikomi: 0,
-        }
+        },
       };
       return encryptAndSend(data, res, req);
     }
@@ -119,13 +118,20 @@ export const userGet = async (req: Request, res: Response) => {
         updated: userGuild?.updated || 0,
         waited: userGuild?.waited || 0,
         yarikomi: userGuild?.yarikomi || 0,
-      }
+      },
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in userGet:', error);
-    encryptAndSend({ user_guild: null }, res, req, 1, 2, 'Get user guild information failed');
+    encryptAndSend(
+      { user_guild: null },
+      res,
+      req,
+      1,
+      2,
+      'Get user guild information failed',
+    );
   }
 };
 
@@ -137,7 +143,7 @@ export const userSetup = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
 
     const data = {
@@ -157,13 +163,20 @@ export const userSetup = async (req: Request, res: Response) => {
         updated: 0,
         waited: 0,
         yarikomi: 0,
-      }
+      },
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in userSetup:', error);
-    encryptAndSend({ user_guild: null }, res, req, 1, 2, 'Initialize user guild settings failed');
+    encryptAndSend(
+      { user_guild: null },
+      res,
+      req,
+      1,
+      2,
+      'Initialize user guild settings failed',
+    );
   }
 };
 
@@ -175,11 +188,11 @@ export const searchResult = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
 
     const userGuild = await guildService.getUserGuildInfo(uid);
-    
+
     const data = {
       user_guild: {
         __v: 5,
@@ -197,9 +210,9 @@ export const searchResult = async (req: Request, res: Response) => {
         updated: userGuild?.updated || 0,
         waited: userGuild?.waited || 0,
         yarikomi: userGuild?.yarikomi || 0,
-      }
+      },
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in searchResult:', error);
@@ -215,17 +228,35 @@ export const create = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
     const name = req.body.name;
-    
+
     if (!name || name.trim() === '') {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, 'Guild name cannot be empty');
+      return encryptAndSend(
+        { guild: null },
+        res,
+        req,
+        1,
+        2,
+        'Guild name cannot be empty',
+      );
     }
 
     const existingUserGuild = await guildService.getUserGuildInfo(uid);
-    if (existingUserGuild && existingUserGuild.gid && existingUserGuild.joined === 1) {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, 'You are already in a guild');
+    if (
+      existingUserGuild &&
+      existingUserGuild.gid &&
+      existingUserGuild.joined === 1
+    ) {
+      return encryptAndSend(
+        { guild: null },
+        res,
+        req,
+        1,
+        2,
+        'You are already in a guild',
+      );
     }
 
     const guild = await guildService.createGuild(uid, name, {
@@ -269,9 +300,9 @@ export const create = async (req: Request, res: Response) => {
         timezone: guild.timezone,
         updated: guild.updated,
         yarikomi: guild.yarikomi,
-      }
+      },
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in create:', error);
@@ -287,17 +318,24 @@ export const getUserGuild = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
 
     const userGuild = await guildService.getUserGuildInfo(uid);
-    
+
     if (!userGuild || !userGuild.gid || userGuild.joined === 0) {
-      return encryptAndSend({ guild: null }, res, req, 1, 2, 'You are not in a guild');
+      return encryptAndSend(
+        { guild: null },
+        res,
+        req,
+        1,
+        2,
+        'You are not in a guild',
+      );
     }
 
     const guild = await guildService.getGuildById(userGuild.gid);
-    
+
     if (!guild) {
       return encryptAndSend({ guild: null }, res, req, 1, 2, 'Guild not found');
     }
@@ -331,13 +369,20 @@ export const getUserGuild = async (req: Request, res: Response) => {
         timezone: guild.timezone,
         updated: guild.updated,
         yarikomi: guild.yarikomi,
-      }
+      },
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in getUserGuild:', error);
-    encryptAndSend({ guild: null }, res, req, 1, 2, 'Get guild information failed');
+    encryptAndSend(
+      { guild: null },
+      res,
+      req,
+      1,
+      2,
+      'Get guild information failed',
+    );
   }
 };
 
@@ -349,11 +394,11 @@ export const bingoGet = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
 
     const userGuild = await guildService.getUserGuildInfo(uid);
-    
+
     const holdInfo = {
       bonus_value: 0,
       is_bonus: 0,
@@ -380,11 +425,18 @@ export const bingoGet = async (req: Request, res: Response) => {
       },
       holdInfo: holdInfo,
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in bingoGet:', error);
-    encryptAndSend({ bingoDetail: null, holdInfo: null }, res, req, 1, 2, 'Get Bingo information failed');
+    encryptAndSend(
+      { bingoDetail: null, holdInfo: null },
+      res,
+      req,
+      1,
+      2,
+      'Get Bingo information failed',
+    );
   }
 };
 
@@ -396,13 +448,13 @@ export const searchId = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const searchId = req.body.id;
 
     log.debug('Request Body:', req.body);
 
     const guild = await guildService.getGuildBySearchId(searchId);
-    
+
     if (!guild) {
       const data = {
         guilds: [],
@@ -439,9 +491,9 @@ export const searchId = async (req: Request, res: Response) => {
         timezone: guild.timezone,
         updated: guild.updated,
         yarikomi: guild.yarikomi,
-      }
+      },
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in searchId:', error);
@@ -457,28 +509,49 @@ export const apply = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
     const gid = req.body.gid;
-    
+
     if (!gid) {
       return encryptAndSend({}, res, req, 1, 2, 'Missing guild ID');
     }
 
     const result = await guildService.applyToGuild(uid, gid);
-    
+
     if (!result.success) {
-      return encryptAndSend({ guild: null, user_guild: null }, res, req, 1, 2, 'Failed to apply to join guild');
+      return encryptAndSend(
+        { guild: null, user_guild: null },
+        res,
+        req,
+        1,
+        2,
+        'Failed to apply to join guild',
+      );
     }
 
     const guild = await guildService.getGuildById(gid);
     if (!guild) {
-      return encryptAndSend({ guild: null, user_guild: null }, res, req, 1, 2, 'Guild not found');
+      return encryptAndSend(
+        { guild: null, user_guild: null },
+        res,
+        req,
+        1,
+        2,
+        'Guild not found',
+      );
     }
 
     const userGuild = await guildService.getUserGuildInfo(uid);
     if (!userGuild) {
-      return encryptAndSend({ guild: null, user_guild: null }, res, req, 1, 2, 'User guild info not found');
+      return encryptAndSend(
+        { guild: null, user_guild: null },
+        res,
+        req,
+        1,
+        2,
+        'User guild info not found',
+      );
     }
 
     const data = {
@@ -525,14 +598,22 @@ export const apply = async (req: Request, res: Response) => {
         updated: userGuild.updated || 0,
         waited: userGuild.waited || 0,
         yarikomi: userGuild.yarikomi || 0,
-      }
+      },
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in apply:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to apply to join guild';
-    encryptAndSend({ guild: null, user_guild: null }, res, req, 1, 2, errorMessage);
+    const errorMessage =
+      error instanceof Error ? error.message : 'Failed to apply to join guild';
+    encryptAndSend(
+      { guild: null, user_guild: null },
+      res,
+      req,
+      1,
+      2,
+      errorMessage,
+    );
   }
 };
 
@@ -544,7 +625,7 @@ export const search = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const filters = {
       name: req.body.name,
       mood: req.body.mood,
@@ -556,8 +637,8 @@ export const search = async (req: Request, res: Response) => {
     };
 
     const guilds = await guildService.searchGuilds(filters);
-    
-    const guildList = guilds.map(guild => ({
+
+    const guildList = guilds.map((guild) => ({
       __v: 5,
       _id: guild.gid?.toString() || '',
       auto_recruit: guild.auto_recruit,
@@ -588,7 +669,7 @@ export const search = async (req: Request, res: Response) => {
     const data = {
       guild: guildList,
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in search:', error);
@@ -603,7 +684,7 @@ export const chatSend = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
     const gid = req.body.gid;
     const message = req.body.message || req.body.text;
@@ -621,7 +702,7 @@ export const chatSend = async (req: Request, res: Response) => {
       uid,
       gid,
       message.trim(),
-      characterName
+      characterName,
     );
 
     const data = {
@@ -635,7 +716,8 @@ export const chatSend = async (req: Request, res: Response) => {
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in chatSend:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to send chat message';
+    const errorMessage =
+      error instanceof Error ? error.message : 'Failed to send chat message';
     encryptAndSend({}, res, req, 1, 2, errorMessage);
   }
 };
@@ -647,24 +729,28 @@ export const chatGet = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
 
     const userGuild = await guildService.getUserGuildInfo(uid);
-    
+
     if (!userGuild || !userGuild.gid || userGuild.joined === 0) {
-      return encryptAndSend({
-        chatLog: {
-          __v: 0,
-          _id: '',
-          chat_logs: [],
-          created: 0,
-          gid: '',
-          recent_logs: [],
-          updated: 0,
+      return encryptAndSend(
+        {
+          chatLog: {
+            __v: 0,
+            _id: '',
+            chat_logs: [],
+            created: 0,
+            gid: '',
+            recent_logs: [],
+            updated: 0,
+          },
+          chatUserInfos: [],
         },
-        chatUserInfos: []
-      }, res, req);
+        res,
+        req,
+      );
     }
 
     const gid = userGuild.gid;
@@ -673,20 +759,27 @@ export const chatGet = async (req: Request, res: Response) => {
 
     const now = Math.floor(Date.now() / 1000);
 
-    const chat_logs = getMessages.map((msg: { message?: string; timestamp?: number; uid?: string }, index: number) => ({
-      comment: msg.message || '',
-      created: msg.timestamp || now,
-      message_id: index + 1,
-      type: 0,
-      uid: msg.uid || '',
-    }));
+    const chat_logs = getMessages.map(
+      (
+        msg: { message?: string; timestamp?: number; uid?: string },
+        index: number,
+      ) => ({
+        comment: msg.message || '',
+        created: msg.timestamp || now,
+        message_id: index + 1,
+        type: 0,
+        uid: msg.uid || '',
+      }),
+    );
 
     const recent_logs = chat_logs.slice(-20);
 
-    const uniqueUserIds = [...new Set(getMessages.map((msg: { uid?: string }) => msg.uid))];
-    
+    const uniqueUserIds = [
+      ...new Set(getMessages.map((msg: { uid?: string }) => msg.uid)),
+    ];
+
     const users = await User.find({ uu_id: { $in: uniqueUserIds } });
-    
+
     const chatUserInfos = uniqueUserIds.map((userId: string) => {
       const userData = users.find((u) => u.uu_id === userId);
       return {
@@ -715,24 +808,31 @@ export const chatGet = async (req: Request, res: Response) => {
       },
       chatUserInfos: chatUserInfos,
     };
-    
-    encryptAndSend(data, res, req);
 
+    encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in chatGet:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Failed to get chat messages';
-    encryptAndSend({
-      chatLog: {
-        __v: 0,
-        _id: '',
-        chat_logs: [],
-        created: 0,
-        gid: '',
-        recent_logs: [],
-        updated: 0,
+    const errorMessage =
+      error instanceof Error ? error.message : 'Failed to get chat messages';
+    encryptAndSend(
+      {
+        chatLog: {
+          __v: 0,
+          _id: '',
+          chat_logs: [],
+          created: 0,
+          gid: '',
+          recent_logs: [],
+          updated: 0,
+        },
+        chatUserInfos: [],
       },
-      chatUserInfos: []
-    }, res, req, 1, 2, errorMessage);
+      res,
+      req,
+      1,
+      2,
+      errorMessage,
+    );
   }
 };
 
@@ -743,26 +843,32 @@ export const mailList = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
 
     const userGuild = await guildService.getUserGuildInfo(uid);
-    
+
     if (!userGuild || !userGuild.gid || userGuild.joined === 0) {
-      return encryptAndSend({ mails: [] }, res, req, 1, 2, 'You are not in a guild');
+      return encryptAndSend(
+        { mails: [] },
+        res,
+        req,
+        1,
+        2,
+        'You are not in a guild',
+      );
     }
 
     const data = {
       mails: [],
     };
-    
+
     encryptAndSend(data, res, req);
   } catch (error) {
     log.error('Error in mailList:', error);
     encryptAndSend({ mails: [] }, res, req, 1, 2, 'Failed to get mail list');
   }
 };
-
 
 /**
  * POST /guild/member/list
@@ -771,7 +877,7 @@ export const memberList = async (req: Request, res: Response) => {
   try {
     const user = await getUserFromSession(req, res);
     if (!user) return;
-    
+
     const uid = user.uu_id;
     const gid = req.body.gid;
 
@@ -779,44 +885,66 @@ export const memberList = async (req: Request, res: Response) => {
     if (!targetGid) {
       const userGuild = await guildService.getUserGuildInfo(uid);
       if (!userGuild || !userGuild.gid) {
-        return encryptAndSend({
-          __v: 0,
-          _id: '',
-          leader_details: {},
-          normal_details: [],
-          sub_details: [] 
-        }, res, req, 1, 2, 'You are not in a guild');
+        return encryptAndSend(
+          {
+            __v: 0,
+            _id: '',
+            leader_details: {},
+            normal_details: [],
+            sub_details: [],
+          },
+          res,
+          req,
+          1,
+          2,
+          'You are not in a guild',
+        );
       }
       targetGid = userGuild.gid;
     }
 
     const guild = await guildService.getGuildById(targetGid);
     if (!guild) {
-      return encryptAndSend({
-        __v: 0,
-        _id: '',
-        leader_details: {},
-        normal_details: [],
-        sub_details: []
-      }, res, req, 1, 2, 'Guild not found');
+      return encryptAndSend(
+        {
+          __v: 0,
+          _id: '',
+          leader_details: {},
+          normal_details: [],
+          sub_details: [],
+        },
+        res,
+        req,
+        1,
+        2,
+        'Guild not found',
+      );
     }
 
     const memberList = await guildService.getMemberList(targetGid);
 
     const now = Math.floor(Date.now() / 1000);
 
-    const buildEquipInfo = (equipData?: { hash?: number; level?: number; potential?: number; skill_level?: number }) => ({
+    const buildEquipInfo = (equipData?: {
+      hash?: number;
+      level?: number;
+      potential?: number;
+      skill_level?: number;
+    }) => ({
       equip_info: {
         hash: equipData?.hash || 0,
         level: equipData?.level || 0,
         potential: equipData?.potential || 0,
         skill_level: equipData?.skill_level || 0,
-      }
+      },
     });
 
-    const buildMemberDetails = async (memberUid: string, memberType: number) => {
+    const buildMemberDetails = async (
+      memberUid: string,
+      memberType: number,
+    ) => {
       const memberUser = await User.findOne({ uu_id: memberUid });
-      
+
       if (!memberUser) {
         return null;
       }
@@ -877,24 +1005,34 @@ export const memberList = async (req: Request, res: Response) => {
         now: now,
         social_equip: {
           social_arm: {
-            equipment_id: memberData.social_equip?.social_arm?.equipment_id || '',
-            mst_equipment_id: memberData.social_equip?.social_arm?.mst_equipment_id || 0,
+            equipment_id:
+              memberData.social_equip?.social_arm?.equipment_id || '',
+            mst_equipment_id:
+              memberData.social_equip?.social_arm?.mst_equipment_id || 0,
           },
           social_body: {
-            equipment_id: memberData.social_equip?.social_body?.equipment_id || '',
-            mst_equipment_id: memberData.social_equip?.social_body?.mst_equipment_id || 0,
+            equipment_id:
+              memberData.social_equip?.social_body?.equipment_id || '',
+            mst_equipment_id:
+              memberData.social_equip?.social_body?.mst_equipment_id || 0,
           },
           social_head: {
-            equipment_id: memberData.social_equip?.social_head?.equipment_id || '',
-            mst_equipment_id: memberData.social_equip?.social_head?.mst_equipment_id || 0,
+            equipment_id:
+              memberData.social_equip?.social_head?.equipment_id || '',
+            mst_equipment_id:
+              memberData.social_equip?.social_head?.mst_equipment_id || 0,
           },
           social_leg: {
-            equipment_id: memberData.social_equip?.social_leg?.equipment_id || '',
-            mst_equipment_id: memberData.social_equip?.social_leg?.mst_equipment_id || 0,
+            equipment_id:
+              memberData.social_equip?.social_leg?.equipment_id || '',
+            mst_equipment_id:
+              memberData.social_equip?.social_leg?.mst_equipment_id || 0,
           },
           social_waist: {
-            equipment_id: memberData.social_equip?.social_waist?.equipment_id || '',
-            mst_equipment_id: memberData.social_equip?.social_waist?.mst_equipment_id || 0,
+            equipment_id:
+              memberData.social_equip?.social_waist?.equipment_id || '',
+            mst_equipment_id:
+              memberData.social_equip?.social_waist?.mst_equipment_id || 0,
           },
         },
         title: {
@@ -909,10 +1047,17 @@ export const memberList = async (req: Request, res: Response) => {
     const subDetailsList = [];
     const normalDetailsList = [];
 
-    const members = memberList as { leader?: { uid: string }; sub?: { uid: string }[]; normal?: { uid: string }[] };
+    const members = memberList as {
+      leader?: { uid: string };
+      sub?: { uid: string }[];
+      normal?: { uid: string }[];
+    };
 
     if (members?.leader?.uid) {
-      const leaderMemberDetails = await buildMemberDetails(members.leader.uid, 0);
+      const leaderMemberDetails = await buildMemberDetails(
+        members.leader.uid,
+        0,
+      );
       if (leaderMemberDetails) {
         leaderDetails = leaderMemberDetails;
       }
@@ -949,16 +1094,23 @@ export const memberList = async (req: Request, res: Response) => {
     };
 
     encryptAndSend(data, res, req);
-
   } catch (error) {
     log.error('Error in memberList:', error);
-    const errorMessage = error instanceof Error ? error.message : 'Get member list failed';
-    encryptAndSend({
-      __v: 0,
-      _id: '',
-      leader_details: {},
-      normal_details: [],
-      sub_details: []
-    }, res, req, 1, 2, errorMessage);
+    const errorMessage =
+      error instanceof Error ? error.message : 'Get member list failed';
+    encryptAndSend(
+      {
+        __v: 0,
+        _id: '',
+        leader_details: {},
+        normal_details: [],
+        sub_details: [],
+      },
+      res,
+      req,
+      1,
+      2,
+      errorMessage,
+    );
   }
-}
+};

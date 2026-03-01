@@ -140,23 +140,24 @@ export const commentSet = async (req: Request, res: Response) => {
 export const navigationNews = async (req: Request, res: Response) => {
   const data: {
     navigations: {
-      close_at: number
-      end_at: number
-      explain: string
-      is_clear: number
-      is_reward: number
-      item_list: Record<string, never>
-      limited_flag: number
-      mst_navigation_id: number
-      name: string
-      progress: number
-      progress_max: number
-      start_at: number
-    }[]
+      close_at: number;
+      end_at: number;
+      explain: string;
+      is_clear: number;
+      is_reward: number;
+      item_list: Record<string, never>;
+      limited_flag: number;
+      mst_navigation_id: number;
+      name: string;
+      progress: number;
+      progress_max: number;
+      start_at: number;
+    }[];
   } = {
     navigations: [],
   };
-  if (false) {
+  if (false as boolean) {
+    // TODO: enable when navigation is implemented
     data.navigations.push({
       close_at: 3600,
       end_at: 3600,

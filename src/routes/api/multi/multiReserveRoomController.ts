@@ -108,10 +108,6 @@ export const roomJoin = (req: Request, res: Response) => {
       tag: 0,
       type: 1,
     },
-
-
-
-    
   };
   encryptAndSend(data, res, req);
 };
@@ -230,7 +226,6 @@ export const memberInfo = (req: Request, res: Response) => {
     order: [], //string
     phase: 6, //needs to be dynamic....
     player_details: [
-      
       // {
       //   comment: "Let's hunt together!",
       //   created: 1717843200,
@@ -276,7 +271,6 @@ export const memberInfo = (req: Request, res: Response) => {
       //       skill_level: 1,
       //     },
       //   },
-
       //   equip_body: {
       //     equip_info: {
       //       hash: 1801022340,
@@ -285,7 +279,6 @@ export const memberInfo = (req: Request, res: Response) => {
       //       skill_level: 1,
       //     },
       //   },
-
       //   equip_head: {
       //     equip_info: {
       //       hash: 69277598,
@@ -294,7 +287,6 @@ export const memberInfo = (req: Request, res: Response) => {
       //       skill_level: 1,
       //     },
       //   },
-
       //   equip_leg: {
       //     equip_info: {
       //       hash: 3353202438,
@@ -303,7 +295,6 @@ export const memberInfo = (req: Request, res: Response) => {
       //       skill_level: 1,
       //     },
       //   },
-
       //   equip_secret_weapon: {
       //     equip_info: {
       //       hash: 2006810019,

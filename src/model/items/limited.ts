@@ -6,6 +6,4 @@ const limitedSchema = new Schema({
   mst_limited_id: Number,
 });
 
-
-
 export default limitedSchema;

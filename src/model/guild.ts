@@ -1,31 +1,43 @@
 import mongoose from 'mongoose';
 const { Schema, model } = mongoose;
 
-const GuildMemberSchema = new Schema({
-  created: { type: Number, default: 0 },
-  last_login: { type: Number, default: 0 },
-  uid: { type: String, required: true },
-}, { _id: false });
+const GuildMemberSchema = new Schema(
+  {
+    created: { type: Number, default: 0 },
+    last_login: { type: Number, default: 0 },
+    uid: { type: String, required: true },
+  },
+  { _id: false },
+);
 
-const GuildMemberConfigSchema = new Schema({
-  leader: { type: GuildMemberSchema, required: true },
-  normal: { type: [GuildMemberSchema], default: [] },
-  sub: { type: [GuildMemberSchema], default: [] },
-}, { _id: false });
-  
-const GuildRequestSchema = new Schema({
-  _id: { type: String, required: true },
-  created: { type: Number, default: 0 },
-  gid: { type: String, required: true },
-  uid: { type: String, required: true },
-}, { _id: false });
+const GuildMemberConfigSchema = new Schema(
+  {
+    leader: { type: GuildMemberSchema, required: true },
+    normal: { type: [GuildMemberSchema], default: [] },
+    sub: { type: [GuildMemberSchema], default: [] },
+  },
+  { _id: false },
+);
 
-const GuildChatMessageSchema = new Schema({
-  uid: { type: String, required: true },
-  character_name: { type: String, required: true },
-  message: { type: String, required: true },
-  timestamp: { type: Number, default: () => Date.now() },
-}, { _id: false });
+const GuildRequestSchema = new Schema(
+  {
+    _id: { type: String, required: true },
+    created: { type: Number, default: 0 },
+    gid: { type: String, required: true },
+    uid: { type: String, required: true },
+  },
+  { _id: false },
+);
+
+const GuildChatMessageSchema = new Schema(
+  {
+    uid: { type: String, required: true },
+    character_name: { type: String, required: true },
+    message: { type: String, required: true },
+    timestamp: { type: Number, default: () => Date.now() },
+  },
+  { _id: false },
+);
 
 const GuildSchema = new Schema({
   gid: { type: String, required: true, unique: true },
@@ -45,7 +57,7 @@ const GuildSchema = new Schema({
   exp: { type: Number, default: 0 },
   joined: { type: Number, default: 0 },
   member: { type: GuildMemberConfigSchema, required: true },
-  
+
   holding_bingo_id: { type: Number, default: 0 },
   bingo: { type: [Number], default: [] },
   mark_box: { type: [Number], default: [] },
@@ -63,4 +75,3 @@ GuildSchema.index({ name: 1 });
 
 const Guild = model('Guild', GuildSchema);
 export default Guild;
-

@@ -74,8 +74,8 @@ mongoose
       });
     } catch (error) {
       log.error(
-        'Failed to create FPK download lists. Please ensure the FPK files are located in \'./src/public/res/\' and the server is properly configured.',
-        error
+        "Failed to create FPK download lists. Please ensure the FPK files are located in './src/public/res/' and the server is properly configured.",
+        error,
       );
     }
     app.use((req, res, next) => {
@@ -103,12 +103,12 @@ mongoose
         if (Buffer.isBuffer(arg)) {
           log.debug(
             `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
-              arg.toString('hex')
+              arg.toString('hex'),
           );
         } else {
           log.debug(
             `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
-              arg
+              arg,
           );
         }
       });
@@ -119,12 +119,12 @@ mongoose
     io.on('connection', onConnect);
 
     server.listen(PORT, () => {
-      Event.countDocuments({})
+      void Event.countDocuments({})
         .then((count) => {
           log.info(`Number of Events: ${count}`);
           if (count == 0) {
             const eventDefault = new Event();
-            eventDefault.save();
+            void eventDefault.save();
             log.info('Event Data imported successfully.');
           } else {
             log.info('Event Data is not empty. Skipping import.');
@@ -133,12 +133,12 @@ mongoose
         .catch((err) => {
           log.error('Error:', err);
         });
-      AssualtEvents.countDocuments({})
+      void AssualtEvents.countDocuments({})
         .then((count) => {
           log.info(`Number of Assualt Events: ${count}`);
           if (count == 0) {
-            easyEvents.map((easyEvent) => {
-              AssualtEvents.create({
+            easyEvents.forEach((easyEvent) => {
+              void AssualtEvents.create({
                 appear_remain: Date.now(), //Only start when this hits 0
                 disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
@@ -146,8 +146,8 @@ mongoose
                 ...easyEvent,
               });
             });
-            normEvents.map((normEvent) => {
-              AssualtEvents.create({
+            normEvents.forEach((normEvent) => {
+              void AssualtEvents.create({
                 appear_remain: Date.now(), //Only start when this hits 0
                 disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
@@ -155,8 +155,8 @@ mongoose
                 ...normEvent,
               });
             });
-            hardEvents.map((hardEvent) => {
-              AssualtEvents.create({
+            hardEvents.forEach((hardEvent) => {
+              void AssualtEvents.create({
                 appear_remain: Date.now(), //Only start when this hits 0
                 disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
@@ -164,8 +164,8 @@ mongoose
                 ...hardEvent,
               });
             });
-            forbEvents.map((forbEvent) => {
-              AssualtEvents.create({
+            forbEvents.forEach((forbEvent) => {
+              void AssualtEvents.create({
                 appear_remain: Date.now(), //Only start when this hits 0
                 disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
@@ -182,12 +182,12 @@ mongoose
         .catch((err) => {
           log.error('Error:', err);
         });
-      ScoreEvents.countDocuments({})
+      void ScoreEvents.countDocuments({})
         .then((count) => {
           log.info(`Number of Score Events: ${count}`);
           if (count == 0) {
-            coevEvents.map((coevEvent) => {
-              ScoreEvents.create({
+            coevEvents.forEach((coevEvent) => {
+              void ScoreEvents.create({
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 start_remain: Date.now(),
                 ...coevEvent,
@@ -202,12 +202,12 @@ mongoose
         .catch((err) => {
           log.error('Error:', err);
         });
-      TicketEvents.countDocuments({})
+      void TicketEvents.countDocuments({})
         .then((count) => {
           log.info(`Number of Ticket Events: ${count}`);
           if (count == 0) {
-            ticketEvents.map((ticketEvent) => {
-              TicketEvents.create({
+            ticketEvents.forEach((ticketEvent) => {
+              void TicketEvents.create({
                 buy_end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 buy_start_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 clear_time: 0,
@@ -225,18 +225,24 @@ mongoose
         .catch((err) => {
           log.error('Error:', err);
         });
-      QuestSheet.countDocuments({})
+      void QuestSheet.countDocuments({})
         .then((count) => {
           log.info(`Number of Quests: ${count}`);
           if (count === 0) {
-            QuestSheet.create(
-              normalTutorialQuestSheets.rQuestSheet.mQuestDataList
+            void QuestSheet.create(
+              normalTutorialQuestSheets.rQuestSheet.mQuestDataList,
             );
-            QuestSheet.create(trainingQuestSheets.rQuestSheet.mQuestDataList);
-            QuestSheet.create(scoreQuestSheets.rQuestSheet.mQuestDataList);
-            QuestSheet.create(eternalQuestSheets.rQuestSheet.mQuestDataList);
-            QuestSheet.create(ticketQuestSheets.rQuestSheet.mQuestDataList);
-            QuestSheet.create(eventQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.create(
+              trainingQuestSheets.rQuestSheet.mQuestDataList,
+            );
+            void QuestSheet.create(scoreQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.create(
+              eternalQuestSheets.rQuestSheet.mQuestDataList,
+            );
+            void QuestSheet.create(
+              ticketQuestSheets.rQuestSheet.mQuestDataList,
+            );
+            void QuestSheet.create(eventQuestSheets.rQuestSheet.mQuestDataList);
 
             log.info('✅ Quest Data imported successfully.');
           } else {
@@ -249,14 +255,12 @@ mongoose
 
       //TODO Instatiate entire ocean map here.
 
-      log.info(
-        `Apypos Server Internal Test v0.0.12 started on ${IP}:${PORT}`
-      );
+      log.info(`Apypos Server Internal Test v0.0.12 started on ${IP}:${PORT}`);
     });
   })
   .catch((err) =>
     log.error(
-      'Coudn\'t Start Apypos Server: Couldn\'t connect to MongoDB....',
-      err
-    )
+      "Coudn't Start Apypos Server: Couldn't connect to MongoDB....",
+      err,
+    ),
   );

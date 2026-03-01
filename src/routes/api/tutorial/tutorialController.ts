@@ -475,9 +475,9 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
     ],
     tutorial_rewards: {
       tutorial_normal_add: [] as {
-        idx: number
-        value: number
-        item_list: Record<string, Record<string, number>[]>
+        idx: number;
+        value: number;
+        item_list: Record<string, Record<string, number>[]>;
       }[],
       tutorial_normal_reward: {
         item_list: {} as Record<string, Record<string, number>[]>,

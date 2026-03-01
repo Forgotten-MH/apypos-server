@@ -11,10 +11,6 @@ const _QuestSchema = new Schema({
   state: { type: Number, required: true }, // Bool for new = 1
 });
 
-
-
-
-
 const NodeInfoSchema = new Schema({
   beginner_node_id: { type: Number, default: 0 },
   hard_polar_node_id: { type: Number, default: 0 },

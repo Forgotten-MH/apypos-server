@@ -8,7 +8,7 @@ export const blankResponseEncrypted = (req: Request, res: Response) => {
   log.warn(
     'Using blank response to go forward this could have unintended side effects',
   );
-  encryptAndSend(data, res,req);
+  encryptAndSend(data, res, req);
 };
 export const blankResponse = (req: Request, res: Response) => {
   const data = {};
@@ -17,4 +17,3 @@ export const blankResponse = (req: Request, res: Response) => {
   );
   res.status(200).header('Content-Type', 'application/json').send(data);
 };
-

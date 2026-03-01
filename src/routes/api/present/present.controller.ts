@@ -42,18 +42,20 @@ export const presentReceive = async (req: Request, res: Response) => {
     });
 
     type BoxKey = keyof import('../../../types/game').Box;
-    presents.map(async (present) => {
-      for (const [key, value] of Object.entries(present.toObject().content)) {
-        log.debug('CONTENT KEY', key);
-        if (Array.isArray(value)) {
-          value.forEach((item) => {
-            log.debug('ADDED ITEM TO BOX', key, item);
-            BoxService.addItem(userDoc.box!, key as BoxKey, item);
-          });
+    await Promise.all(
+      presents.map(async (present) => {
+        for (const [key, value] of Object.entries(present.toObject().content)) {
+          log.debug('CONTENT KEY', key);
+          if (Array.isArray(value)) {
+            value.forEach((item) => {
+              log.debug('ADDED ITEM TO BOX', key, item);
+              BoxService.addItem(userDoc.box!, key as BoxKey, item);
+            });
+          }
         }
-      }
-      await Present.updateOne({ _id: present._id }, { received: 1 });
-    });
+        await Present.updateOne({ _id: present._id }, { received: 1 });
+      }),
+    );
     await User.updateOne({ uu_id: userDoc.uu_id }, { box: userDoc.box });
 
     const data = {

@@ -11,5 +11,4 @@ webRouter.get('/notice/first_dl', webController.getFirstDL);
 // webRouter.get("/*", webController.getWebContent);
 // webRouter.post("/*", webController.getWebContent);
 
-
 export default webRouter;

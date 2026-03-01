@@ -42,7 +42,7 @@ export function onConnect(socket: Socket) {
 
     log.info(
       `sending create Buffer at ${new Date().toISOString()}:\n` +
-        data.toString('hex')
+        data.toString('hex'),
     );
     //Guessing...
     socket.emit('create_ok', Buffer.concat([createHeader(header), payload]));
@@ -68,14 +68,13 @@ export function onConnect(socket: Socket) {
     //   ])
     // );
     //socket.emit("join_ng", data);
-        socket.emit('join', data);
-
+    socket.emit('join', data);
   });
 
   socket.on('leave', (data) => {
     log.info(
       `sending leave_ok Buffer at ${new Date().toISOString()}:\n` +
-        data.toString('hex')
+        data.toString('hex'),
     );
     socket.emit('leave_ok', data);
     //socket.emit("create_ng", data);
@@ -92,7 +91,7 @@ export function onConnect(socket: Socket) {
           'onReceiveInfo recieved room:',
           header.roomNumber,
           'playerId',
-          header.playerId
+          header.playerId,
         );
         log.info('type:', payload.readUInt16BE(0));
         switch (payload.readUInt16BE(0)) {
@@ -176,7 +175,7 @@ export function onConnect(socket: Socket) {
                   0x00,
                   0x00,
                 ]),
-              ])
+              ]),
             );
             break;
 
@@ -184,37 +183,38 @@ export function onConnect(socket: Socket) {
             break;
         }
         break;
-      case 0x09:
+      case 0x09: {
         log.info(
           'client sent chat',
           header.roomNumber,
           'playerId',
-          header.playerId
+          header.playerId,
         );
         const _user = payload.toString('ascii', 0, payload.indexOf(0, 0));
         const message = payload.toString(
           'ascii',
           payload.indexOf(0x2f),
-          payload.indexOf(0, payload.indexOf(0x2f))
+          payload.indexOf(0, payload.indexOf(0x2f)),
         );
         const command = message.split(' ')[0];
         switch (command) {
           case '/chat':
             socket.emit(
               'data',
-              createChatPacket(header.roomNumber, message.split(' ')[1])
+              createChatPacket(header.roomNumber, message.split(' ')[1]),
             );
             break;
           case '/maintenance':
             socket.emit(
               'data',
-              createMaintenancePacket({ durationSecondsTill: 4000 })
+              createMaintenancePacket({ durationSecondsTill: 4000 }),
             );
             break;
           default:
             break;
         }
         break;
+      }
       default:
         break;
     }

@@ -5,7 +5,6 @@ export const infoGet = (req: Request, res: Response) => {
   const data = {
     beginner_node_id: [1122664016],
     event_info: [
-      
       // {
       //   accumulate_rewards: [
       //     // {
@@ -107,7 +106,7 @@ export const infoGet = (req: Request, res: Response) => {
       //   },
       //   loop_start_value: 5,
       //   m16_meta_normal_node_id: 0,
-      //   mst_event_info_id: 628862266, //controls the event  (eventHome.xml) if (mIsDisplayHome == true) then it displays a button for monster //also populates the url  id 
+      //   mst_event_info_id: 628862266, //controls the event  (eventHome.xml) if (mIsDisplayHome == true) then it displays a button for monster //also populates the url  id
       //   mst_event_point_id: 4081529372, //point type for event
       //   mst_event_shop_id: 1,   //TODO find out how to trigger shop
       //   mst_power_id: 1958874842,
@@ -134,7 +133,6 @@ export const infoGet = (req: Request, res: Response) => {
       //   total_guild_point: 23,
       //   total_point: 24,
       // },
-      
     ],
     total_event_point_info: [
       {

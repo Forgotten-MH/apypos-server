@@ -14,7 +14,7 @@ const questPath = path.join(
   '..',
   'json',
   'questDB',
-  `${questType}.json`
+  `${questType}.json`,
 );
 const questSheets = JSON.parse(readFileSync(questPath, 'utf-8'));
 const originalLen = questSheets.rQuestSheet.mQuestDataList.length;
@@ -44,9 +44,7 @@ function condenseAutoDeleteArrays(obj: unknown) {
         autoDeleteFalse &&
         (Array.isArray(classrefArray) || Array.isArray(arrayArray))
       ) {
-        record[key] = Array.isArray(classrefArray)
-          ? classrefArray
-          : arrayArray;
+        record[key] = Array.isArray(classrefArray) ? classrefArray : arrayArray;
       } else {
         condenseAutoDeleteArrays(val); // Recurse into deeper structures
       }
@@ -62,7 +60,7 @@ async function enrichAndPersist() {
   for (const obj of questSheets.rQuestSheet.mQuestDataList) {
     try {
       const blocks = (await getBlockHashsFromQuestHash(
-        obj.mQuestID
+        obj.mQuestID,
       )) as number[];
       obj.mBlocks = blocks;
       blocks.map((block) => {
@@ -95,7 +93,7 @@ async function enrichAndPersist() {
       ) {
         errors.push(obj);
       }
-    }
+    },
   );
   log.info(originalLen, questSheets.rQuestSheet.mQuestDataList.length);
   try {
@@ -104,7 +102,7 @@ async function enrichAndPersist() {
     await fs.writeFile(
       extendedPath,
       JSON.stringify(questSheets, null, 2),
-      'utf-8'
+      'utf-8',
     );
     log.info('Extended file saved to:', extendedPath);
     log.info('Errors:', errors);
@@ -114,11 +112,7 @@ async function enrichAndPersist() {
   log.info(allBlocks);
   const extendedPath = questPath.replace(/\.json$/, '.blocks.json');
 
-  await fs.writeFile(
-    extendedPath,
-    JSON.stringify(allBlocks, null, 2),
-    'utf-8'
-  );
+  await fs.writeFile(extendedPath, JSON.stringify(allBlocks, null, 2), 'utf-8');
 }
 
-enrichAndPersist();
+void enrichAndPersist();

@@ -53,8 +53,7 @@ app.use((req, res, next) => {
       log.error('Error processing raw request:', err);
       next(err);
     });
-  }
-  else {
+  } else {
     log.debug('Request Body:\n%s', JSON.stringify(req.body, null, '\t'));
     next();
   }
@@ -67,7 +66,9 @@ app.use(
       winston.format.timestamp({
         format: 'YYYY-MM-DD hh:mm:ss.SSS A',
       }),
-      winston.format.printf((info) => `[${info.timestamp}] ${info.level}: ${info.message} \n`),
+      winston.format.printf(
+        (info) => `[${info.timestamp}] ${info.level}: ${info.message} \n`,
+      ),
     ),
     meta: true,
     expressFormat: true,
@@ -102,4 +103,4 @@ app.use(
   }),
 );
 
-export { app}
+export { app };

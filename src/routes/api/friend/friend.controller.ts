@@ -7,5 +7,5 @@ export const capacityInfo = (req: Request, res: Response) => {
     now: 0,
     price: 0,
   };
-  encryptAndSend(data, res,req);
+  encryptAndSend(data, res, req);
 };

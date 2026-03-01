@@ -5,19 +5,19 @@ import User from '../../../model/user';
 import Present from '../../../model/presents';
 const log = createLogger('notice');
 
-export const get = async(req: Request, res: Response) => {
-   const { session_id } = req.body;
-    const userDoc = await User.findOne({ current_session: session_id })
-    if (!userDoc) {
-      return encryptAndSend({}, res, req, 2004); //Not authenticated
-    }
-  
-    const presentCount = await Present.countDocuments({
-      uu_id: userDoc.uu_id,
-      received: { $ne: 1 }
-    });
+export const get = async (req: Request, res: Response) => {
+  const { session_id } = req.body;
+  const userDoc = await User.findOne({ current_session: session_id });
+  if (!userDoc) {
+    return encryptAndSend({}, res, req, 2004); //Not authenticated
+  }
 
-log.debug('Count of unreceived presents:', presentCount);  // Incomplete
+  const presentCount = await Present.countDocuments({
+    uu_id: userDoc.uu_id,
+    received: { $ne: 1 },
+  });
+
+  log.debug('Count of unreceived presents:', presentCount); // Incomplete
   const data = {
     banner_list: {
       outer_banner_list: [
@@ -133,14 +133,14 @@ log.debug('Count of unreceived presents:', presentCount);  // Incomplete
         // }
       ],
       strengthen_campaign_list: [
-      //   {
-      //   end:3600,
-      //   message:"strengthen",
-      //   mst_strengthen_campaign_type_id:1,
-      //   start_remain:0,
-      //   value:1
-      // }
-    ],
+        //   {
+        //   end:3600,
+        //   message:"strengthen",
+        //   mst_strengthen_campaign_type_id:1,
+        //   start_remain:0,
+        //   value:1
+        // }
+      ],
     },
     emergency_info_list: [
       //Adds more notices similar to /activity/get
@@ -256,7 +256,7 @@ log.debug('Count of unreceived presents:', presentCount);  // Incomplete
           end: 36000,
           end_remain: 36000,
           start: 0,
-          start_remain: 0, 
+          start_remain: 0,
         },
       },
     },

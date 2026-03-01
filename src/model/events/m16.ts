@@ -25,9 +25,8 @@ const M16EventSchema = new mongoose.Schema(
       get: getDurationFromValue,
     },
   },
-  { toJSON: { getters: true }, toObject: { getters: true } }
+  { toJSON: { getters: true }, toObject: { getters: true } },
 );
-
 
 const M16Events = mongoose.model('M16Events', M16EventSchema);
 export default M16Events;

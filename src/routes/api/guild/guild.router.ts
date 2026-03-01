@@ -1,18 +1,18 @@
 import { Router } from 'express';
-import { 
-  create, 
-  getUserGuild, 
-  userGet, 
+import {
+  create,
+  getUserGuild,
+  userGet,
   userSetup,
-  bingoGet, 
-  searchResult, 
+  bingoGet,
+  searchResult,
   searchId,
   apply,
   search,
   chatSend,
   chatGet,
   mailList,
-  memberList
+  memberList,
 } from './guild.controller';
 
 const guildRouter = Router();

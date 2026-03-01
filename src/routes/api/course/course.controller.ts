@@ -115,7 +115,7 @@ export const premiumList = (req: Request, res: Response) => {
                 {
                   amount: 50,
                   mst_payment_id: 1573159746,
-              },
+                },
               ],
               pcoins: [
                 {

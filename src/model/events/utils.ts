@@ -2,37 +2,38 @@ import event_nodes from '../../json/event_nodes.json';
 import { createLogger } from '../../middleware/logger';
 import type { QuestSubtarget } from '../../types/game';
 const log = createLogger('eventUtils');
-export const getDurationFromValue = (value: { getTime(): number } | null | undefined) => {
+export const getDurationFromValue = (
+  value: { getTime(): number } | null | undefined,
+) => {
   if (!value) return null; // Handle cases where the date is not set
   const now = Date.now(); // Current timestamp in milliseconds
   return Math.max(0, Math.floor((value.getTime() - now) / 1000)); // Convert duration to seconds
 };
 
 interface EventEntry {
-  mst_event_node_id?: number
-  mst_score_node_id?: number
+  mst_event_node_id?: number;
+  mst_score_node_id?: number;
   quest_list?: Array<{
-    clear_time: number
-    limited_amount: number
-    mst_limited_id: number
-    mst_quest_id: number
-    quest_subtargets: QuestSubtarget[]
-    state: number
-  }>
+    clear_time: number;
+    limited_amount: number;
+    mst_limited_id: number;
+    mst_quest_id: number;
+    quest_subtargets: QuestSubtarget[];
+    state: number;
+  }>;
 }
 
 export function enrichEvent(eventList: EventEntry[]): EventEntry[] {
   return eventList.map((event) => {
-    
     const nodeId = event.mst_event_node_id ?? event.mst_score_node_id;
 
     const node = event_nodes.find(
-      (node) => parseInt(node.mEventNodeHash, 10) === nodeId
+      (node) => parseInt(node.mEventNodeHash, 10) === nodeId,
     );
 
     if (!node) {
       log.warn(
-        `No matching node found for event ID: ${event.mst_event_node_id}`
+        `No matching node found for event ID: ${event.mst_event_node_id}`,
       );
       return event;
     }

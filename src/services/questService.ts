@@ -6,7 +6,7 @@ export function lookupValueFromFile(
   csvFilePath: string,
   keyColumn: string,
   valueColumn: string,
-  lookupKey: string
+  lookupKey: string,
 ) {
   return new Promise((resolve, reject) => {
     fs.readFile(csvFilePath, 'utf-8', (err, data) => {
@@ -33,7 +33,9 @@ export function lookupValueFromFile(
         }
         resolve(null);
       } catch (parseError: unknown) {
-        reject(`Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
+        reject(
+          `Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+        );
       }
     });
   });
@@ -44,7 +46,7 @@ function lookupValuesByPattern(
   keyColumn: string,
   valueColumn: string,
   level: string,
-  suffix: string
+  suffix: string,
 ) {
   /**
    * Looks up values in a CSV file where the key matches a specific pattern.
@@ -101,7 +103,9 @@ function lookupValuesByPattern(
         log.debug('blocks Found:', results);
         resolve(results);
       } catch (parseError: unknown) {
-        reject(`Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
+        reject(
+          `Error parsing CSV: ${parseError instanceof Error ? parseError.message : String(parseError)}`,
+        );
       }
     });
   });
@@ -147,39 +151,41 @@ export const getQuestNameFromQuestHash = async (questHash: string) => {
     questCsvFilePath,
     'Hash',
     'mName',
-    questHash
+    questHash,
   );
 };
-export const getBlockHashsFromQuestHash = async (questHash: string): Promise<number[] | undefined> => {
+export const getBlockHashsFromQuestHash = async (
+  questHash: string,
+): Promise<number[] | undefined> => {
   const csvFilePath = './src/csv/blocks.csv';
   log.debug('Quest Hash Inserted:', questHash);
-  const questName = await getQuestNameFromQuestHash(questHash) as string;
+  const questName = (await getQuestNameFromQuestHash(questHash)) as string;
   log.debug('Quest Name Found:', questName);
   if (questName.startsWith('QUEST')) {
     //TODO Quest Look up works... just needs reversing...
     const { prefix, level, name } = parseString(questName);
     log.debug('prefix', prefix, 'level', level, 'name');
 
-    return await lookupValuesByPattern(
+    return (await lookupValuesByPattern(
       csvFilePath,
       'mName',
       'Hash',
       formatNumber(level),
-      name!
-    ) as number[];
+      name!,
+    )) as number[];
   } else if (questName.startsWith('EVENT')) {
     //EVENT 92 99 001
     //EVENT 92 15 6002
     //EVENT 92 19 1001
     const { prefix: _prefix, level, combinedName } = parseString(questName);
 
-    return await lookupValuesByPattern(
+    return (await lookupValuesByPattern(
       csvFilePath,
       'mName',
       'Hash',
       level,
-      combinedName!.toString().padStart(4, '0')
-    ) as number[];
+      combinedName!.toString().padStart(4, '0'),
+    )) as number[];
   }
   return undefined;
 };

@@ -138,7 +138,7 @@ export const trainingEnd = async (req: Request, res: Response) => {
     ],
   });
   trainingPresent.message = 'Training Reward';
-  trainingPresent.save();
+  await trainingPresent.save();
 
   const data = {
     mst_quest_id: req.body.mst_quest_id,

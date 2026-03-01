@@ -39,8 +39,6 @@ export const islandInfoGet = (req: Request, res: Response) => {
             is_reward: 1,
             prob_type_id: 0,
             reward_item: {
-
-              
               katamaris: [
                 {
                   mst_katamari_type_id: 1286668442,

@@ -408,7 +408,7 @@ export const leveupAuto = async (req: Request, res: Response) => {
     }
     let targetIndex;
     switch (req.body.type) {
-      case 'hp':
+      case 'hp': {
         // Increment HP
         doc.box.monument.mlv.hp = doc.box.monument.mlv.hp + 1;
         // Increase HR
@@ -426,6 +426,7 @@ export const leveupAuto = async (req: Request, res: Response) => {
         }
 
         break;
+      }
       case 'atk':
         doc.box.monument.mlv.atk = doc.box.monument.mlv.atk + 1;
         // Increase HR

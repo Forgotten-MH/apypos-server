@@ -3,8 +3,7 @@ import fs from 'fs';
 import { createLogger } from '../middleware/logger';
 const log = createLogger('testDecryption');
 
-const cacheKey = 'K@HW`wQ=O_fAHSoy/bV'
-
+const cacheKey = 'K@HW`wQ=O_fAHSoy/bV';
 
 const fileBuffer = fs.readFileSync('.\\Caches\\cache');
 
@@ -15,11 +14,7 @@ const encryptedData = Buffer.from(hexData, 'hex');
 function decrypt(data: Buffer): Buffer {
   const keyBuf = Buffer.from(cacheKey, 'ascii'); // Use raw ASCII bytes
 
-  const decipher = crypto.createDecipheriv(
-    'bf-ecb',
-    keyBuf,
-    null,
-  );
+  const decipher = crypto.createDecipheriv('bf-ecb', keyBuf, null);
 
   decipher.setAutoPadding(false);
 
