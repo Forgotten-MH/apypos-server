@@ -151,7 +151,7 @@ describe('account.controller', () => {
   describe('migrationReady', () => {
     it('updates migration data and returns migration_id', async () => {
       vi.mocked(User.findOneAndUpdate).mockResolvedValue({
-        migration_id: 'MIG12345',
+        transfer: { migration_id: 'MIG12345' },
       } as never);
 
       const { req, res } = mockReqRes({

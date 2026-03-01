@@ -39,10 +39,12 @@ export interface IUser extends Document {
   uu_id?: string;
   secret_id?: string;
   login_id?: string;
-  mst_himitsu_question_id?: string;
-  himitsu_answer?: string;
-  migration_pass?: string;
-  migration_id?: string;
+  transfer?: {
+    mst_himitsu_question_id?: string;
+    himitsu_answer?: string;
+    migration_pass?: string;
+    migration_id?: string;
+  };
   user_id?: string;
   game_id?: string;
   tutorial_step?: number;
@@ -152,10 +154,12 @@ const userSchema = new Schema({
   uu_id: String,
   secret_id: String,
   login_id: String,
-  mst_himitsu_question_id: String, //transfer related (TODO move to transfer.mst_himitsu_question_id)
-  himitsu_answer: String, //transfer related (TODO move to transfer.himitsu_answer)
-  migration_pass: String, //transfer related (TODO move to transfer.migration_pass)
-  migration_id: String, //transfer related (TODO move to transfer.migration_id)
+  transfer: {
+    mst_himitsu_question_id: String,
+    himitsu_answer: String,
+    migration_pass: String,
+    migration_id: String,
+  },
   user_id: String,
   game_id: String,
   tutorial_step: Number,

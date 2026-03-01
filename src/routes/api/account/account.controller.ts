@@ -26,10 +26,10 @@ export const migrationReady = async (req: Request, res: Response) => {
     const migration_id = generateToken(8);
     const filter = { login_id: login_id, secret_id: secret_id };
     const update = {
-      mst_himitsu_question_id: mst_himitsu_question_id,
-      himitsu_answer: himitsu_answer,
-      migration_pass: migration_pass,
-      migration_id: migration_id,
+      'transfer.mst_himitsu_question_id': mst_himitsu_question_id,
+      'transfer.himitsu_answer': himitsu_answer,
+      'transfer.migration_pass': migration_pass,
+      'transfer.migration_id': migration_id,
     };
 
     const doc = await User.findOneAndUpdate(filter, update, {
@@ -39,7 +39,7 @@ export const migrationReady = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, ERROR_CODE.LOGIN_FAILED);
     }
     const responseData = {
-      migration_id: doc.migration_id,
+      migration_id: doc.transfer?.migration_id,
     };
     encryptAndSend(responseData, res, req);
   } catch (error) {
@@ -56,8 +56,8 @@ export const migrationAuth = async (req: Request, res: Response) => {
     const uu_id = req.body.uu_id; //0F5D39CF3EA1F0A0_
 
     const filter = {
-      migration_id: migration_id,
-      migration_pass: migration_pass,
+      'transfer.migration_id': migration_id,
+      'transfer.migration_pass': migration_pass,
     };
     const update = { uu_id: uu_id, secret_id: secret_id };
 
