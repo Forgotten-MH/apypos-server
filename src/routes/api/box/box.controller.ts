@@ -4,11 +4,13 @@ import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import { calcMstId as _calcMstId } from '../../../services/defineService.js';
+import type { BoxGetInput, StorageGetInput, EquipLevelupInput, EquipAwakeInput, PotentialupAutoSetInput, SaleInput, FavoriteSetInput, MonumentLevelupInput } from './box.schema.js';
 const log = createLogger('box');
 
 export const get = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id } = req.body as BoxGetInput;
+    const filter = { current_session: session_id };
 
     const doc = await User.findOne(filter);
     if (!doc) {
@@ -42,7 +44,7 @@ export const storageInfo = (req: Request, res: Response) => {
 };
 
 export const storageGet = (req: Request, res: Response) => {
-  const { target_idx: _target_idx } = req.body;
+  const { target_idx: _target_idx } = req.body as StorageGetInput;
 
   const data = {
     storage_info: {
@@ -82,7 +84,8 @@ export const storageGet = (req: Request, res: Response) => {
 
 export const otomoGet = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id } = req.body as BoxGetInput;
+    const filter = { current_session: session_id };
 
     const doc = await User.findOne(filter);
     if (!doc) {
@@ -214,7 +217,8 @@ export const PaymentGet = (req: Request, res: Response) => {
 export const equipLevelup = async (req: Request, res: Response) => {
   try {
     // Authenticate by session
-    const filter = { current_session: req.body.session_id };
+    const { session_id, eqp_obj_id, num } = req.body as EquipLevelupInput;
+    const filter = { current_session: session_id };
     const doc = await User.findOne(filter);
     if (!doc) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
@@ -223,8 +227,8 @@ export const equipLevelup = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Box not found');
     }
 
-    const equipmentId: string = req.body.eqp_obj_id;
-    const steps: number = Math.max(1, Number(req.body.num || 1));
+    const equipmentId: string = eqp_obj_id;
+    const steps: number = Math.max(1, Number(num || 1));
 
     // Find equipment in user's box
     const equipmentIndex = doc.box.equipments!.findIndex((eq) => eq.equipment_id === equipmentId);
@@ -266,7 +270,8 @@ export const equipLevelup = async (req: Request, res: Response) => {
 // Currently returns the session-authenticated user's equipment unchanged.
 export const awake = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id, base_equipment_id } = req.body as EquipAwakeInput;
+    const filter = { current_session: session_id };
     const doc = await User.findOne(filter);
     if (!doc) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
@@ -274,8 +279,6 @@ export const awake = async (req: Request, res: Response) => {
     if (!doc.box) {
       return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Box not found');
     }
-
-    const { base_equipment_id } = req.body;
     const equipment = doc.box.equipments!.find((eq) => eq.equipment_id === base_equipment_id);
 
     const data = {
@@ -290,7 +293,7 @@ export const awake = async (req: Request, res: Response) => {
 
 export const potentialupAutoSet = (req: Request, res: Response) => {
   try {
-    const { eqp_obj_infos: _eqp_obj_infos } = req.body;
+    const { eqp_obj_infos: _eqp_obj_infos } = req.body as PotentialupAutoSetInput;
     //todo make real data
     const data = {
       base_equipment: {
@@ -359,7 +362,7 @@ export const potentialupAutoSet = (req: Request, res: Response) => {
 
 export const sale = (req: Request, res: Response) => {
   try {
-    const { eqp_obj_ids: _eqp_obj_ids } = req.body;
+    const { eqp_obj_ids: _eqp_obj_ids } = req.body as SaleInput;
     //todo real data
     const data = {
       equip_sell: {
@@ -380,7 +383,7 @@ export const sale = (req: Request, res: Response) => {
 
 export const favoriteSet = (req: Request, res: Response) => {
   try {
-    const { is_favorite, eqp_obj_id } = req.body;
+    const { is_favorite, eqp_obj_id } = req.body as FavoriteSetInput;
     //todo real data
     const data = {
       favorite_set: {
@@ -413,7 +416,8 @@ export const favoriteSet = (req: Request, res: Response) => {
 
 export const leveupAuto = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id, type } = req.body as MonumentLevelupInput;
+    const filter = { current_session: session_id };
     const doc = await User.findOne(filter);
     if (!doc) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
@@ -422,7 +426,7 @@ export const leveupAuto = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Monument data not found');
     }
     let targetIndex;
-    switch (req.body.type) {
+    switch (type) {
       case 'hp': {
         // Increment HP
         doc.box.monument.mlv.hp = doc.box.monument.mlv.hp + 1;

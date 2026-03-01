@@ -35,12 +35,13 @@
     "express-winston": "^4.2.0",
     "mongoose": "^9",
     "socket.io": "4",
-    "winston": "^3.10.0"
+    "winston": "^3.10.0",
+    "zod": "^4.3.6"
   },
   "scripts": {
     "install:clean": "cross-env rimraf node_modules/ yarn.lock && yarn install",
     "clean": "rimraf dist",
-    "build": "yarn clean && tsc -p tsconfig.build.json",
+    "build": "yarn clean && tsc -p tsconfig.build.json && ln -sfn ../src/public dist/public && cp -r src/json dist/json && cp -r src/csv dist/csv",
     "dev": "tsx src/server.ts",
     "start": "node dist/server.js",
     "generate-island": "tsx src/services/oceanService.ts",

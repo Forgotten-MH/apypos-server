@@ -3,12 +3,13 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import User from '../../../model/user.js';
 import { createLogger } from '../../../middleware/logger.js';
+import type { RenameInput, CommentSetInput, TitleSetInput, PartnerSetInput, SearchUserIdInput, SearchGameIdInput, SessionOnlyInput } from './user.schema.js';
 const log = createLogger('user');
 
 export const rename = async (req: Request, res: Response) => {
   try {
-    const name = req.body.name;
-    const filter = { current_session: req.body.session_id };
+    const { name, session_id } = req.body as RenameInput;
+    const filter = { current_session: session_id };
     const update = { character_name: name };
     const doc = await User.findOneAndUpdate(filter, update, {
       new: true,
@@ -32,7 +33,8 @@ export const rename = async (req: Request, res: Response) => {
 
 export const get = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id } = req.body as SessionOnlyInput;
+    const filter = { current_session: session_id };
 
     const doc = await User.findOne(filter);
     if (!doc) {
@@ -114,8 +116,8 @@ export const get = async (req: Request, res: Response) => {
 
 export const commentSet = async (req: Request, res: Response) => {
   try {
-    const comment = req.body.comment;
-    const filter = { current_session: req.body.session_id };
+    const { comment, session_id } = req.body as CommentSetInput;
+    const filter = { current_session: session_id };
     const update = { comment: comment };
     const doc = await User.findOneAndUpdate(filter, update, {
       new: true,
@@ -364,7 +366,8 @@ export const titleNews = (req: Request, res: Response) => {
 
 export const titleSet = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id, mst_title_id } = req.body as TitleSetInput;
+    const filter = { current_session: session_id };
 
     const doc = await User.findOne(filter);
     if (!doc) {
@@ -423,7 +426,7 @@ export const titleSet = async (req: Request, res: Response) => {
           },
         },
         title: {
-          mst_title_id: req.body.mst_title_id,
+          mst_title_id,
         },
         use_social_equip: -1,
         user_id: doc.user_id,
@@ -438,14 +441,15 @@ export const titleSet = async (req: Request, res: Response) => {
 
 export const partnerGet = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id, main_partner_id, quest_partner_id } = req.body as PartnerSetInput;
+    const filter = { current_session: session_id };
 
     let doc = await User.findOne(filter);
     if (!doc) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     }
-    doc.selected_partner!.main_partner_id = req.body.main_partner_id;
-    doc.selected_partner!.quest_partner_id = req.body.quest_partner_id;
+    doc.selected_partner!.main_partner_id = String(main_partner_id);
+    doc.selected_partner!.quest_partner_id = String(quest_partner_id);
 
     const update = { selected_partner: doc.selected_partner };
     doc = await User.findOneAndUpdate(filter, update, {
@@ -467,7 +471,7 @@ export const partnerGet = async (req: Request, res: Response) => {
 };
 export const searchId = (req: Request, res: Response) => {
   try {
-    const { uids: _uids } = req.body;
+    const { uids: _uids } = req.body as SearchUserIdInput;
     //TODO search by uid loop over then produce below...
     const data = {
       capacity_eqp_set: 1,
@@ -579,7 +583,7 @@ export const searchId = (req: Request, res: Response) => {
 };
 export const gameId = (req: Request, res: Response) => {
   try {
-    const { gameIds: _gameIds } = req.body;
+    const { gameIds: _gameIds } = req.body as SearchGameIdInput;
     //TODO search by gameIds loop over then produce below...
     const data = {
       capacity_eqp_set: 3,

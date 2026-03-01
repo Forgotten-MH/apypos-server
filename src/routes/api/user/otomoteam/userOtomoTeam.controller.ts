@@ -3,11 +3,14 @@ import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers.js
 import { ERROR_CODE, ERROR_CATEGORY } from '../../../../constants/error.codes.js';
 import User from '../../../../model/user.js';
 import { createLogger } from '../../../../middleware/logger.js';
+import type { SessionOnlyInput, OtomoTeamSetInput, OtomoTeamSelectInput } from './userOtomoTeam.schema.js';
+import type { OtomoTeam } from '../../../../types/game.js';
 const log = createLogger('otomoTeam');
 
 export const otomoteamGet = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id } = req.body as SessionOnlyInput;
+    const filter = { current_session: session_id };
 
     const doc = await User.findOne(filter);
     if (!doc?.otomoteam) {
@@ -27,15 +30,16 @@ export const otomoteamGet = async (req: Request, res: Response) => {
 
 export const otomoteamSet = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id, otomo_teams } = req.body as OtomoTeamSetInput;
+    const filter = { current_session: session_id };
 
     const doc = await User.findOne(filter);
     if (!doc?.otomoteam) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
 
-    if (req.body.otomo_teams.length > 0) {
-      const newTeam = req.body.otomo_teams[0];
+    if (otomo_teams.length > 0) {
+      const newTeam = otomo_teams[0] as OtomoTeam;
 
       const arrayIndex = doc.otomoteam.otomo_team.findIndex((team) => team.index === newTeam.index);
       log.debug('Found index:', arrayIndex);
@@ -65,13 +69,14 @@ export const otomoteamSet = async (req: Request, res: Response) => {
 
 export const otomoteamSelect = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
+    const { session_id, index } = req.body as OtomoTeamSelectInput;
+    const filter = { current_session: session_id };
 
     let doc = await User.findOne(filter);
     if (!doc?.otomoteam) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
-    doc.otomoteam.selected_index = req.body.index;
+    doc.otomoteam.selected_index = index;
 
     const update = { otomoteam: doc.otomoteam };
     doc = await User.findOneAndUpdate(filter, update, {

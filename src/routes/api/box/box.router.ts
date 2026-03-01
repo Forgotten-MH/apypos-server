@@ -1,25 +1,33 @@
 import { Router } from 'express';
 import * as boxController from './box.controller.js';
 import * as notImplemented from '../notImplemented.controller.js';
+import { validate } from '../../../middleware/validation.js';
+import {
+  BoxGetSchema,
+  StorageGetSchema,
+  EquipLevelupSchema,
+  MonumentLevelupSchema,
+} from './box.schema.js';
+import { SessionOnlySchema } from '../../../schemas/common.schema.js';
 
 const boxRouter = Router();
 
-boxRouter.post('/get', boxController.get);
+boxRouter.post('/get', validate(BoxGetSchema), boxController.get);
 boxRouter.post('/payment/get', boxController.PaymentGet);
 boxRouter.post('/payment/limit/get', boxController.paymentLimitGet);
 
-boxRouter.post('/otomo/get', boxController.otomoGet);
+boxRouter.post('/otomo/get', validate(SessionOnlySchema), boxController.otomoGet);
 // boxRouter.post("/otomo/skill/remove", );
 // boxRouter.post("/partner/get", );
 boxRouter.post('/partner/levelup', notImplemented.blankResponseEncrypted);
 boxRouter.post('/material/sell', notImplemented.blankResponseEncrypted);
 
 boxRouter.post('/storage/info', boxController.storageInfo);
-boxRouter.post('/storage/content/get', boxController.storageGet);
+boxRouter.post('/storage/content/get', validate(StorageGetSchema), boxController.storageGet);
 // boxRouter.post("/storage/content/move", );
 // boxRouter.post("/storage/rename", );
 
-boxRouter.post('/equipment/levelup', boxController.equipLevelup);
+boxRouter.post('/equipment/levelup', validate(EquipLevelupSchema), boxController.equipLevelup);
 boxRouter.post('/equipment/awake', notImplemented.blankResponseEncrypted);
 // boxRouter.post("/equipment/evolve", );
 // boxRouter.post("/equipment/get", );
@@ -40,7 +48,7 @@ boxRouter.post('/equipment/capacity/expand', boxController.equipCapacityExpand);
 // boxRouter.post("/material/get", );
 // boxRouter.post("/monument/get", );
 // boxRouter.post("/monument/levelup", );
-boxRouter.post('/monument/levelup/auto', boxController.leveupAuto);
+boxRouter.post('/monument/levelup/auto', validate(MonumentLevelupSchema), boxController.leveupAuto);
 
 boxRouter.post('/stamp/get', boxController.stampGet);
 boxRouter.post('/stamp/hold/get', boxController.stampHoldGet);

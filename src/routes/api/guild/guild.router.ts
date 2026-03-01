@@ -14,26 +14,36 @@ import {
   mailList,
   memberList,
 } from './guild.controller.js';
+import { validate } from '../../../middleware/validation.js';
+import {
+  SessionOnlySchema,
+  CreateSchema,
+  SearchIdSchema,
+  ApplySchema,
+  SearchSchema,
+  ChatSendSchema,
+  MemberListSchema,
+} from './guild.schema.js';
 
 const guildRouter = Router();
 
-guildRouter.post('/user/get', userGet);
-guildRouter.post('/user/setup', userSetup);
-guildRouter.post('/get/user/guild', getUserGuild);
-guildRouter.post('/member/list', memberList);
+guildRouter.post('/user/get', validate(SessionOnlySchema), userGet);
+guildRouter.post('/user/setup', validate(SessionOnlySchema), userSetup);
+guildRouter.post('/get/user/guild', validate(SessionOnlySchema), getUserGuild);
+guildRouter.post('/member/list', validate(MemberListSchema), memberList);
 
-guildRouter.post('/create', create);
+guildRouter.post('/create', validate(CreateSchema), create);
 
-guildRouter.post('/search/result', searchResult);
-guildRouter.post('/search/ID', searchId);
-guildRouter.post('/search', search);
+guildRouter.post('/search/result', validate(SessionOnlySchema), searchResult);
+guildRouter.post('/search/ID', validate(SearchIdSchema), searchId);
+guildRouter.post('/search', validate(SearchSchema), search);
 
-guildRouter.post('/apply', apply);
+guildRouter.post('/apply', validate(ApplySchema), apply);
 
-guildRouter.post('/bingo/get', bingoGet);
+guildRouter.post('/bingo/get', validate(SessionOnlySchema), bingoGet);
 
-guildRouter.post('/user/mail/list', mailList);
-guildRouter.post('/chat/get', chatGet);
-guildRouter.post('/chat/send', chatSend);
+guildRouter.post('/user/mail/list', validate(SessionOnlySchema), mailList);
+guildRouter.post('/chat/get', validate(SessionOnlySchema), chatGet);
+guildRouter.post('/chat/send', validate(ChatSendSchema), chatSend);
 
 export default guildRouter;

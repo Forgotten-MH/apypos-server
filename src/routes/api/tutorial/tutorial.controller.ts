@@ -6,6 +6,7 @@ import User from '../../../model/user.js';
 import { updatePartNoteState } from '../story/story.controller.js';
 import type { Box } from '../../../types/game.js';
 import { addItem } from '../../../services/boxService.js';
+import type { SessionOnlyInput, FlagSetInput, QuestStartInput } from './tutorial.schema.js';
 const log = createLogger('tutorial');
 // tutorialFlags
 // 110 = is characterCreate
@@ -19,7 +20,8 @@ const log = createLogger('tutorial');
 // 0xFFFF = isTutorialEnd
 
 export const getTutorialFlag = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  const { session_id } = req.body as SessionOnlyInput;
+  const filter = { current_session: session_id };
   const doc = await User.findOne(filter);
   if (!doc) {
     return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
@@ -116,7 +118,8 @@ export const nyankenList = (req: Request, res: Response) => {
 };
 
 export const nyankenGo = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  const { session_id } = req.body as SessionOnlyInput;
+  const filter = { current_session: session_id };
   const update = { tutorial_step: 6010 };
 
   const doc = await User.findOneAndUpdate(filter, update, {
@@ -138,7 +141,8 @@ export const nyankenGo = async (req: Request, res: Response) => {
 };
 
 export const nyankenResult = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  const { session_id } = req.body as SessionOnlyInput;
+  const filter = { current_session: session_id };
   const update = { tutorial_step: 7010 };
 
   const doc = await User.findOneAndUpdate(filter, update, {
@@ -193,14 +197,15 @@ export const nyankenResult = async (req: Request, res: Response) => {
 };
 
 export const TutorialFlagSet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  const { session_id, flags } = req.body as FlagSetInput;
+  const filter = { current_session: session_id };
   let doc = await User.findOne(filter);
   if (!doc) {
     return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
   }
 
   const newFlags = doc.tutorial_flags;
-  req.body.flags.forEach((flag: number) => {
+  flags.forEach((flag) => {
     newFlags.push(flag);
   });
 
@@ -352,7 +357,7 @@ export const TutorialQuestStart = (req: Request, res: Response) => {
       ],
       instance_id: 0,
       mission_message: 'start',
-      mst_quest_id: req.body.mst_quest_id ? req.body.mst_quest_id : 1778018296,
+      mst_quest_id: (req.body as QuestStartInput).mst_quest_id ?? 1778018296,
       multi_leave_check_time: 0,
       point_info: {
         armor_skill_value: 0,
@@ -379,7 +384,8 @@ export const TutorialQuestStart = (req: Request, res: Response) => {
 };
 
 export const stepUP = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  const { session_id } = req.body as SessionOnlyInput;
+  const filter = { current_session: session_id };
   let doc = await User.findOne(filter);
 
   if (!doc) {
@@ -436,7 +442,8 @@ export const stepUP = async (req: Request, res: Response) => {
 };
 
 export const TutorialQuestEnd = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  const { session_id } = req.body as SessionOnlyInput;
+  const filter = { current_session: session_id };
   let doc = await User.findOne(filter);
   if (!doc) {
     return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated

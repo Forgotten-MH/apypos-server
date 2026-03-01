@@ -5,11 +5,12 @@ import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import Present from '../../../model/presents.js';
 import { addItem } from '../../../services/boxService.js';
+import type { SessionOnlyInput, PresentReceiveInput } from './present.schema.js';
 const log = createLogger('present');
 
 export const presentSync = async (req: Request, res: Response) => {
   try {
-    const { session_id } = req.body;
+    const { session_id } = req.body as SessionOnlyInput;
     const userDoc = await User.findOne({ current_session: session_id });
     if (!userDoc) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
@@ -30,9 +31,7 @@ export const presentSync = async (req: Request, res: Response) => {
 
 export const presentReceive = async (req: Request, res: Response) => {
   try {
-    const requestedIdsToBePutInBox: string[] = req.body._ids;
-    //Mark present as recieved
-    const { session_id } = req.body;
+    const { _ids: requestedIdsToBePutInBox, session_id } = req.body as PresentReceiveInput;
     const userDoc = await User.findOne({ current_session: session_id });
     if (!userDoc) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated

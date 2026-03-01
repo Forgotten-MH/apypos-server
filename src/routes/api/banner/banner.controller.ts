@@ -4,6 +4,7 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 import { createLogger } from '../../../middleware/logger.js';
 import { promises as fs } from 'fs';
 import path from 'path';
+import type { BannerDlListInput } from './banner.schema.js';
 
 const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
 import crcjam from 'crc/crcjam';
@@ -42,7 +43,8 @@ export const getDlList = async (req: Request, res: Response) => {
   };
 
   try {
-    switch (req.body.device_id) {
+    const { device_id } = req.body as BannerDlListInput;
+    switch (device_id) {
       case 2:
         await readFilesFromDir(
           path.join(__dirname, '..', '..', '..', 'public', 'res', 'banner', 'android'),

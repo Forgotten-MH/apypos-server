@@ -38,6 +38,7 @@ import ScoreEvents from '../../../model/events/score.js';
 import StandingEvents from '../../../model/events/standing.js';
 import TicketEvents from '../../../model/events/tickets.js';
 import TourEvents from '../../../model/events/tour.js';
+import type { IslandStartInput, IslandEndInput, IslandMapAllInput, EventStartInput, EternalStartInput } from './quest.schema.js';
 
 export const questProgress = (req: Request, res: Response) => {
   const data = {
@@ -103,6 +104,7 @@ export const eventNormalStart = async (req: Request, res: Response) => {
         "select_fix_equipment_idx": -1
 }
   */
+  const { mst_quest_id } = req.body as EventStartInput;
 
   const data = {
     instance_data: {
@@ -124,7 +126,7 @@ export const eventNormalStart = async (req: Request, res: Response) => {
       ],
       instance_id: 0,
       mission_message: 'start',
-      mst_quest_id: req.body.mst_quest_id,
+      mst_quest_id,
       multi_leave_check_time: 0,
       point_info: {
         armor_skill_value: 0,
@@ -144,7 +146,7 @@ export const eventNormalStart = async (req: Request, res: Response) => {
     },
   };
 
-  const quest = await QuestSheet.findOne({ mQuestID: req.body.mst_quest_id });
+  const quest = await QuestSheet.findOne({ mQuestID: String(mst_quest_id) });
   const blocks = quest?.mBlocks || [];
 
   if (blocks.length === 0) {
@@ -184,9 +186,10 @@ export const eventTicketStart = async (req: Request, res: Response) => {
   power_up: 0
 }
   */
-  const startedQuest = req.body.mst_quest_id;
+  const { mst_quest_id } = req.body as EventStartInput;
+  const startedQuest = mst_quest_id;
 
-  const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
+  const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
   const data = {
     instance_data: {
       block_list: [] as BlockListItem[],
@@ -207,7 +210,7 @@ export const eventTicketStart = async (req: Request, res: Response) => {
       ],
       instance_id: 0,
       mission_message: 'start',
-      mst_quest_id: req.body.mst_quest_id,
+      mst_quest_id,
       multi_leave_check_time: 0,
       point_info: {
         armor_skill_value: 0,
@@ -272,9 +275,10 @@ export const eventScoreStart = async (req: Request, res: Response) => {
         "select_fix_equipment_idx": -1
 }
   */
-  const startedQuest = req.body.mst_quest_id;
+  const { mst_quest_id } = req.body as EventStartInput;
+  const startedQuest = mst_quest_id;
 
-  const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
+  const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
   const data = {
     instance_data: {
       block_list: [] as BlockListItem[],
@@ -295,7 +299,7 @@ export const eventScoreStart = async (req: Request, res: Response) => {
       ],
       instance_id: 0,
       mission_message: 'start',
-      mst_quest_id: req.body.mst_quest_id,
+      mst_quest_id,
       multi_leave_check_time: 0,
       point_info: {
         armor_skill_value: 0,
@@ -356,9 +360,10 @@ export const eternalStart = async (req: Request, res: Response) => {
 
 }
   */
-  const startedQuest = req.body.mst_quest_id;
+  const { mst_quest_id } = req.body as EternalStartInput;
+  const startedQuest = mst_quest_id;
 
-  const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
+  const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
   const data = {
     instance_data: {
       block_list: [] as BlockListItem[],
@@ -372,7 +377,7 @@ export const eternalStart = async (req: Request, res: Response) => {
       enemy_point_list: [],
       instance_id: 0,
       mission_message: 'start',
-      mst_quest_id: req.body.mst_quest_id,
+      mst_quest_id,
       multi_leave_check_time: 0,
       point_info: {
         armor_skill_value: 0,
@@ -659,12 +664,13 @@ export const eternalAll = (req: Request, res: Response) => {
 };
 
 export const islandStart = async (req: Request, res: Response) => {
-  const startedQuest = req.body.mst_quest_id;
-  const filter = { current_session: req.body.session_id };
+  const { mst_quest_id, session_id } = req.body as IslandStartInput;
+  const startedQuest = mst_quest_id;
+  const filter = { current_session: session_id };
 
   const doc = await User.findOne(filter);
 
-  const quest = await QuestSheet.findOne({ mQuestID: startedQuest });
+  const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
 
   if (!doc) {
     return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
@@ -747,10 +753,11 @@ export const islandStart = async (req: Request, res: Response) => {
 
 export const islandEnd = async (req: Request, res: Response) => {
   //TODO update quest in cleared_quests with complete time
-  const cleared_quest = req.body.mst_quest_id;
-  const clearTime = req.body.clear_time;
-  const filter = { current_session: req.body.session_id };
-  const quest = await QuestSheet.findOne({ mQuestID: cleared_quest });
+  const { mst_quest_id, clear_time, session_id } = req.body as IslandEndInput;
+  const cleared_quest = mst_quest_id;
+  const clearTime = clear_time;
+  const filter = { current_session: session_id };
+  const quest = await QuestSheet.findOne({ mQuestID: String(cleared_quest) });
   log.debug('Rewards: %o', quest?.mRewardItemList);
   const doc = await User.findOne(filter);
   if (!doc) {
@@ -1325,7 +1332,8 @@ export async function enrichOceanData(
 }
 
 export const islandMapAll = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  const { session_id } = req.body as IslandMapAllInput;
+  const filter = { current_session: session_id };
 
   const doc = await User.findOne(filter);
   if (!doc) {

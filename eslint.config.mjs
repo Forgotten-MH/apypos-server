@@ -30,7 +30,7 @@ export default tseslint.config(
         'error',
         { checksVoidReturn: { arguments: false } },
       ],
-      // Express req.body is typed as `any` — fixing properly requires a validation library
+      // Controllers now use Zod validation + typed casts; remaining `any` in services/server needs typing
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-argument': 'off',
       '@typescript-eslint/no-unsafe-assignment': 'off',

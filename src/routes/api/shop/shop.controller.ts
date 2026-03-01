@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import type { ShopBuyInput } from './shop.schema.js';
 
 export const karidamaInfo = (req: Request, res: Response) => {
   const data = {
@@ -191,7 +192,7 @@ export const buy = (req: Request, res: Response) => {
     amount: _amount,
     mst_shop_id: _mst_shop_id,
     mst_shop_item_id: _mst_shop_item_id,
-  } = req.body;
+  } = req.body as ShopBuyInput;
   const data = {
     item_contents: {
       materials: [

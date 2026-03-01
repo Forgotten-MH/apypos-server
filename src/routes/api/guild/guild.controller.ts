@@ -4,6 +4,7 @@ import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import * as guildService from '../../../services/guildService.js';
 import User from '../../../model/user.js';
 import { createLogger } from '../../../middleware/logger.js';
+import type { SessionOnlyInput, CreateInput, SearchIdInput, ApplyInput, SearchInput, ChatSendInput, MemberListInput } from './guild.schema.js';
 const log = createLogger('guild');
 
 interface EquipPiece {
@@ -55,7 +56,8 @@ interface GuildMemberData {
 }
 
 const getUserFromSession = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  const { session_id } = req.body as SessionOnlyInput;
+  const filter = { current_session: session_id };
   const user = await User.findOne(filter);
 
   if (!user || !user.uu_id) {
@@ -217,7 +219,7 @@ export const create = async (req: Request, res: Response) => {
     if (!user) return;
 
     const uid = user.uu_id;
-    const name = req.body.name;
+    const { name, auto_recruit, chat_freq, explusion_rule, free_comment, login_freq, mood, recruit, timezone, yarikomi } = req.body as CreateInput;
 
     if (!name || name.trim() === '') {
       return encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Guild name cannot be empty');
@@ -229,15 +231,15 @@ export const create = async (req: Request, res: Response) => {
     }
 
     const guild = await guildService.createGuild(uid, name, {
-      auto_recruit: req.body.auto_recruit || 0,
-      chat_freq: req.body.chat_freq || 0,
-      explusion_rule: req.body.explusion_rule || 0,
-      free_comment: req.body.free_comment || '',
-      login_freq: req.body.login_freq || 0,
-      mood: req.body.mood || 0,
-      recruit: req.body.recruit || 0,
-      timezone: req.body.timezone || 0,
-      yarikomi: req.body.yarikomi || 0,
+      auto_recruit: auto_recruit || 0,
+      chat_freq: chat_freq || 0,
+      explusion_rule: explusion_rule || 0,
+      free_comment: free_comment || '',
+      login_freq: login_freq || 0,
+      mood: mood || 0,
+      recruit: recruit || 0,
+      timezone: timezone || 0,
+      yarikomi: yarikomi || 0,
     });
 
     const data = {
@@ -404,7 +406,7 @@ export const searchId = async (req: Request, res: Response) => {
     const user = await getUserFromSession(req, res);
     if (!user) return;
 
-    const searchId = req.body.id;
+    const { id: searchId } = req.body as SearchIdInput;
 
     log.debug('Request Body:', req.body);
 
@@ -466,7 +468,7 @@ export const apply = async (req: Request, res: Response) => {
     if (!user) return;
 
     const uid = user.uu_id;
-    const gid = req.body.gid;
+    const { gid } = req.body as ApplyInput;
 
     if (!gid) {
       return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Missing guild ID');
@@ -566,14 +568,15 @@ export const search = async (req: Request, res: Response) => {
     const user = await getUserFromSession(req, res);
     if (!user) return;
 
+    const { name, mood, login_freq, chat_freq, yarikomi, timezone, recruit } = req.body as SearchInput;
     const filters = {
-      name: req.body.name,
-      mood: req.body.mood,
-      login_freq: req.body.login_freq,
-      chat_freq: req.body.chat_freq,
-      yarikomi: req.body.yarikomi,
-      timezone: req.body.timezone,
-      recruit: req.body.recruit,
+      name,
+      mood,
+      login_freq,
+      chat_freq,
+      yarikomi,
+      timezone,
+      recruit,
     };
 
     const guilds = await guildService.searchGuilds(filters);
@@ -626,8 +629,8 @@ export const chatSend = async (req: Request, res: Response) => {
     if (!user) return;
 
     const uid = user.uu_id;
-    const gid = req.body.gid;
-    const message = req.body.message || req.body.text;
+    const { gid, message: rawMessage, text } = req.body as ChatSendInput;
+    const message = rawMessage || text;
     const characterName = user.character_name || 'Unnamed';
 
     if (!gid) {
@@ -806,7 +809,7 @@ export const memberList = async (req: Request, res: Response) => {
     if (!user) return;
 
     const uid = user.uu_id;
-    const gid = req.body.gid;
+    const { gid } = req.body as MemberListInput;
 
     let targetGid = gid;
     if (!targetGid) {

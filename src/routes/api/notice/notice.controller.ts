@@ -4,10 +4,11 @@ import { ERROR_CODE } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import Present from '../../../model/presents.js';
+import type { SessionOnlyInput } from './notice.schema.js';
 const log = createLogger('notice');
 
 export const get = async (req: Request, res: Response) => {
-  const { session_id } = req.body;
+  const { session_id } = req.body as SessionOnlyInput;
   const userDoc = await User.findOne({ current_session: session_id });
   if (!userDoc) {
     return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated

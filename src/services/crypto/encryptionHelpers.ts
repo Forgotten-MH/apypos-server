@@ -151,7 +151,9 @@ export function encryptAndSend(
   quickCleanupCheck();
 
   const now = Date.now();
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const userId = req.body?.user_id || req.query?.user_id;
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
   const clientSessionToken = req.body?.session_id;
 
   log.debug(
@@ -179,6 +181,7 @@ export function encryptAndSend(
         last_accessed: now,
         user_agent: req.get('User-Agent'),
         account_id: userId,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         game_id: req.body?.game_id,
         ip_address: req.ip || req.socket.remoteAddress || 'unknown',
         device_fingerprint: req.get('User-Agent')
@@ -204,7 +207,9 @@ export function encryptAndSend(
         created_at: now,
         last_accessed: now,
         user_agent: req.get('User-Agent'),
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         account_id: req.body?.user_id || req.query?.user_id,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         game_id: req.body?.game_id,
         ip_address: req.ip || req.socket.remoteAddress || 'unknown',
         device_fingerprint: req.get('User-Agent')
@@ -221,7 +226,9 @@ export function encryptAndSend(
       created_at: now,
       last_accessed: now,
       user_agent: req.get('User-Agent'),
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       account_id: req.body?.user_id || req.query?.user_id,
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       game_id: req.body?.game_id,
       ip_address: req.ip || req.socket.remoteAddress || 'unknown',
       device_fingerprint: req.get('User-Agent')

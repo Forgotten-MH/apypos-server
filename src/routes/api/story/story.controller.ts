@@ -3,6 +3,7 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 import { ERROR_CODE } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
+import type { StoryEndInput } from './story.schema.js';
 import type {
   Ocean,
   OceanPart,
@@ -146,11 +147,7 @@ export const updatePartNoteState = (
 };
 
 export const end = async (req: Request, res: Response) => {
-  const mst_node_id = req.body.mst_node_id;
-  const mst_note_content_id = req.body.mst_note_content_id;
-  const mst_ocean_id = req.body.mst_ocean_id;
-  const mst_part_id = req.body.mst_part_id;
-  const mst_story_id = req.body.mst_story_id;
+  const { session_id, mst_node_id, mst_note_content_id, mst_ocean_id, mst_part_id, mst_story_id } = req.body as StoryEndInput;
   // Use the above values to determine how to increment the island....
 
   const data = {
@@ -173,7 +170,7 @@ export const end = async (req: Request, res: Response) => {
     data.pop_list.push();
     data.open_list.open_node.push({ mst_node_id: 2278830943 });
     data.mst_part_id = 3815380063;
-    const filter = { current_session: req.body.session_id };
+    const filter = { current_session: session_id };
     const doc = await User.findOne(filter);
     const newNode = {
       is_collection_node: 1,
@@ -229,7 +226,7 @@ export const end = async (req: Request, res: Response) => {
     });
 
     data.mst_part_id = mst_part_id;
-    const filter = { current_session: req.body.session_id };
+    const filter = { current_session: session_id };
     const doc = await User.findOne(filter);
 
     if (!doc) {

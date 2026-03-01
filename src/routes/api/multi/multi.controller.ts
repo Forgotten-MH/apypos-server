@@ -1,9 +1,11 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import type { RoomReserveInput, RoomSearchInput, RoomJoinInput, RoomCreateInput, RoomQuickInput, RoomGetInput, MemberInfoInput } from './multi.schema.js';
 import { IP } from '../../../config.js';
 const server = 'http://' + IP + '/';
 
 export const roomReserve = (req: Request, res: Response) => {
+  const { quest_id, quick_match, reserve, restart } = req.body as RoomReserveInput;
   const data = {
     rooms: {
       _id: '1',
@@ -17,10 +19,10 @@ export const roomReserve = (req: Request, res: Response) => {
       members: ['member1'],
       name: 'test_name',
       phase: 0,
-      quest_id: req.body.quest_id,
-      quick_match: req.body.quick_match,
-      reserve_members: req.body.reserve,
-      restart: req.body.restart,
+      quest_id: quest_id,
+      quick_match: quick_match,
+      reserve_members: reserve,
+      restart: restart,
       room_id: 0,
       server_url: server,
       tag: 0,
@@ -30,6 +32,7 @@ export const roomReserve = (req: Request, res: Response) => {
   encryptAndSend(data, res, req);
 };
 export const roomReserveJoin = (req: Request, res: Response) => {
+  const { quest_id, quick_match, reserve, restart } = req.body as RoomReserveInput;
   const data = {
     rooms: {
       _id: '1',
@@ -43,10 +46,10 @@ export const roomReserveJoin = (req: Request, res: Response) => {
       members: ['member1'],
       name: 'test_name',
       phase: 0,
-      quest_id: req.body.quest_id,
-      quick_match: req.body.quick_match,
-      reserve_members: req.body.reserve,
-      restart: req.body.restart,
+      quest_id: quest_id,
+      quick_match: quick_match,
+      reserve_members: reserve,
+      restart: restart,
       room_id: 0,
       server_url: server,
       tag: 0,
@@ -57,25 +60,26 @@ export const roomReserveJoin = (req: Request, res: Response) => {
 };
 
 export const roomSearch = (req: Request, res: Response) => {
+  const { auto_flag, kick, quest_id, quick_match, restart } = req.body as RoomSearchInput;
   const members = ['Rsey', 'Rse1y'];
   const data = {
     rooms: [
       {
         _id: '1',
-        auto_flag: req.body.auto_flag,
+        auto_flag: auto_flag,
         created: Math.floor(Date.now() / 1000),
         host_id: '123',
         hose_name: 'Rsey',
         is_locked: 0,
-        kick: req.body.kick,
+        kick: kick,
         member_count: members.length,
         members: members,
         name: 'Rsey',
         phase: 0,
-        quest_id: req.body.quest_id,
-        quick_match: req.body.quick_match,
+        quest_id: quest_id,
+        quick_match: quick_match,
         reserve_members: members,
-        restart: req.body.restart,
+        restart: restart,
         room_id: 3,
         server_url: server,
         tag: 20,
@@ -86,24 +90,25 @@ export const roomSearch = (req: Request, res: Response) => {
   encryptAndSend(data, res, req);
 };
 export const roomJoin = (req: Request, res: Response) => {
+  const { auto_flag, kick, quest_id, quick_match, reserve, restart, room_id } = req.body as RoomJoinInput;
   const data = {
     rooms: {
       _id: '1',
-      auto_flag: req.body.auto_flag,
+      auto_flag: auto_flag,
       created: Math.floor(Date.now() / 1000),
       host_id: 'sdsdsdsdsdsdsdsdsdsdsdsds',
       hose_name: 'name',
       is_locked: 0,
-      kick: req.body.kick,
+      kick: kick,
       member_count: 1,
       members: ['member1'],
       name: 'test_name',
       phase: 6,
-      quest_id: req.body.quest_id,
-      quick_match: req.body.quick_match,
-      reserve_members: req.body.reserve,
-      restart: req.body.restart,
-      room_id: req.body.room_id ? req.body.room_id : 1,
+      quest_id: quest_id,
+      quick_match: quick_match,
+      reserve_members: reserve,
+      restart: restart,
+      room_id: room_id ? room_id : 1,
       server_url: server,
       tag: 0,
       type: 1,
@@ -113,26 +118,27 @@ export const roomJoin = (req: Request, res: Response) => {
 };
 
 export const roomQuick = (req: Request, res: Response) => {
+  const { auto_flag, kick, name, quest_id, quick_match, reserve, restart, tag } = req.body as RoomQuickInput;
   const data = {
     rooms: {
       _id: '1',
-      auto_flag: req.body.auto_flag,
+      auto_flag: auto_flag,
       created: Math.floor(Date.now() / 1000),
       host_id: '1',
       host_name: 'name',
       is_locked: 0,
-      kick: req.body.kick,
+      kick: kick,
       member_count: 0,
       members: [],
-      name: req.body.name,
+      name: name,
       phase: 0,
-      quest_id: req.body.quest_id,
-      quick_match: req.body.quick_match,
-      reserve_members: req.body.reserve,
-      restart: req.body.restart,
+      quest_id: quest_id,
+      quick_match: quick_match,
+      reserve_members: reserve,
+      restart: restart,
       room_id: 1,
       server_url: server,
-      tag: req.body.tag,
+      tag: tag,
       type: 1,
     },
   };
@@ -140,6 +146,7 @@ export const roomQuick = (req: Request, res: Response) => {
 };
 
 export const roomGet = (req: Request, res: Response) => {
+  const { quest_id, room_id } = req.body as RoomGetInput;
   const data = {
     check_join: 1,
     rooms: {
@@ -154,11 +161,11 @@ export const roomGet = (req: Request, res: Response) => {
       members: ['member'],
       name: 'req.body.name',
       phase: 6,
-      quest_id: req.body.quest_id,
+      quest_id: quest_id,
       quick_match: 0,
       reserve_members: [],
       restart: 0,
-      room_id: req.body.room_id,
+      room_id: room_id,
       server_url: server,
       tag: 20,
       type: 1,
@@ -168,26 +175,27 @@ export const roomGet = (req: Request, res: Response) => {
 };
 
 export const roomCreate = (req: Request, res: Response) => {
+  const { auto_flag, kick, name, quest_id, quick_match, reserve, restart, tag } = req.body as RoomCreateInput;
   const data = {
     rooms: {
       _id: '0',
-      auto_flag: req.body.auto_flag,
+      auto_flag: auto_flag,
       created: 0, //fine
       host_id: 'sdsdsdsdsdsdsdsdsdsdsdsds',
-      host_name: req.body.name.replace('の部屋', ''), //fine
+      host_name: name.replace('の部屋', ''), //fine
       is_locked: 1, //fine
-      kick: req.body.kick, //fine
+      kick: kick, //fine
       member_count: 1, //fine
       members: ['member'],
-      name: req.body.name,
+      name: name,
       phase: 7,
-      quest_id: req.body.quest_id, //fine
-      quick_match: req.body.quick_match, //fine
-      reserve_members: req.body.reserve,
-      restart: req.body.restart,
+      quest_id: quest_id, //fine
+      quick_match: quick_match, //fine
+      reserve_members: reserve,
+      restart: restart,
       room_id: 400000000, //fine
       server_url: server,
-      tag: req.body.tag, //fine
+      tag: tag, //fine
       type: 1,
     },
   };
@@ -220,6 +228,7 @@ export const inviteList = (req: Request, res: Response) => {
 };
 
 export const memberInfo = (req: Request, res: Response) => {
+  const { sequence } = req.body as MemberInfoInput;
   const data = {
     free: [], //numbers
     group: [], //numbers
@@ -342,7 +351,7 @@ export const memberInfo = (req: Request, res: Response) => {
     ],
     reserve: [], //numbers
     reserve_order: [], //strings
-    sequence: req.body.sequence,
+    sequence: sequence,
   };
   encryptAndSend(data, res, req);
 };

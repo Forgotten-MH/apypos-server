@@ -3,6 +3,7 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import User from '../../../model/user.js';
 import { createLogger } from '../../../middleware/logger.js';
+import type { MigrationReadyInput, MigrationAuthInput, RegistInput, LoginInput } from './account.schema.js';
 const log = createLogger('account');
 
 function generateToken(length: number) {
@@ -17,12 +18,7 @@ function generateToken(length: number) {
 
 export const migrationReady = async (req: Request, res: Response) => {
   try {
-    const login_id = req.body.login_id;
-    const secret_id = req.body.secret_id;
-    //himitsu = security question
-    const mst_himitsu_question_id = req.body.mst_himitsu_question_id;
-    const himitsu_answer = req.body.himitsu_answer;
-    const migration_pass = req.body.migration_pass;
+    const { login_id, secret_id, mst_himitsu_question_id, himitsu_answer, migration_pass } = req.body as MigrationReadyInput;
     const migration_id = generateToken(8);
     const filter = { login_id: login_id, secret_id: secret_id };
     const update = {
@@ -50,10 +46,7 @@ export const migrationReady = async (req: Request, res: Response) => {
 
 export const migrationAuth = async (req: Request, res: Response) => {
   try {
-    const migration_id = req.body.migration_id;
-    const migration_pass = req.body.migration_pass;
-    const secret_id = req.body.secret_id; //vBoXkQhwGEPI
-    const uu_id = req.body.uu_id; //0F5D39CF3EA1F0A0_
+    const { migration_id, migration_pass, secret_id, uu_id } = req.body as MigrationAuthInput;
 
     const filter = {
       'transfer.migration_id': migration_id,
@@ -81,8 +74,7 @@ export const migrationAuth = async (req: Request, res: Response) => {
 
 export const registerAccount = async (req: Request, res: Response) => {
   try {
-    const uu_id = req.body.uu_id;
-    const secret_id = req.body.secret_id;
+    const { uu_id, secret_id, session_id } = req.body as RegistInput;
 
     //TODO: Generate random login,user and game ids
     const newUser = new User({
@@ -91,7 +83,7 @@ export const registerAccount = async (req: Request, res: Response) => {
       login_id: generateToken(8),
       user_id: generateToken(24),
       game_id: generateToken(8),
-      current_session: req.body.session_id,
+      current_session: session_id,
       tutorial_step: 110,
     });
 
@@ -151,17 +143,18 @@ export const registerAccount = async (req: Request, res: Response) => {
 
 export const loginAccount = async (req: Request, res: Response) => {
   try {
+    const { uu_id, secret_id, session_id } = req.body as LoginInput;
     //1. Does user exist?
-    const filter = { uu_id: req.body.uu_id };
+    const filter = { uu_id };
     let doc = await User.findOne(filter);
     if (!doc) {
       return encryptAndSend({}, res, req, ERROR_CODE.LOGIN_FAILED); //Login failed. Would you like to create another account?
     }
-    if (doc.secret_id !== req.body.secret_id) {
+    if (doc.secret_id !== secret_id) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
     //3. Create Session
-    const update = { current_session: req.body.session_id };
+    const update = { current_session: session_id };
     doc = await User.findOneAndUpdate(filter, update, {
       new: true,
     });

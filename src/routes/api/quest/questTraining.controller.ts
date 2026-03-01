@@ -5,6 +5,7 @@ import { createLogger } from '../../../middleware/logger.js';
 import { calcMstId } from '../../../services/defineService.js';
 import User from '../../../model/user.js';
 import Present from '../../../model/presents.js';
+import type { TrainingEndInput, TrainingStartInput, TrainingListInput } from './questTraining.schema.js';
 const log = createLogger('questTraining');
 const getRewardItemByQuestId = (questId: number) => {
   switch (questId) {
@@ -88,10 +89,11 @@ const getRewardItemByQuestId = (questId: number) => {
   }
 };
 export const trainingEnd = async (req: Request, res: Response) => {
-  const reward = getRewardItemByQuestId(req.body.mst_quest_id);
-  const cleared_quest = req.body.mst_quest_id;
-  const clearTime = req.body.clear_time;
-  const filter = { current_session: req.body.session_id };
+  const { mst_quest_id, clear_time, session_id } = req.body as TrainingEndInput;
+  const reward = getRewardItemByQuestId(mst_quest_id);
+  const cleared_quest = mst_quest_id;
+  const clearTime = clear_time;
+  const filter = { current_session: session_id };
 
   const doc = await User.findOne(filter);
   if (!doc) {
@@ -140,7 +142,7 @@ export const trainingEnd = async (req: Request, res: Response) => {
   await trainingPresent.save();
 
   const data = {
-    mst_quest_id: req.body.mst_quest_id,
+    mst_quest_id,
     pop_list: [
       {
         pop_id: 1,
@@ -207,7 +209,7 @@ export const trainingStart = (req: Request, res: Response) => {
       ],
       instance_id: 0,
       mission_message: 'start',
-      mst_quest_id: req.body.mst_quest_id,
+      mst_quest_id: (req.body as TrainingStartInput).mst_quest_id,
       multi_leave_check_time: 0,
       point_info: {
         armor_skill_value: 0,
@@ -233,7 +235,8 @@ const isTrainingCleared = (cleared_quests: { mst_quest_id: number }[], questID: 
 };
 
 export const trainingList = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  const { session_id } = req.body as TrainingListInput;
+  const filter = { current_session: session_id };
 
   const doc = await User.findOne(filter);
   if (!doc) {

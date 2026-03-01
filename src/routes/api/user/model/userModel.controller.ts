@@ -3,13 +3,14 @@ import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers.js
 import { ERROR_CODE, ERROR_CATEGORY } from '../../../../constants/error.codes.js';
 import User from '../../../../model/user.js';
 import { createLogger } from '../../../../middleware/logger.js';
+import type { ModelCreateInput, ModelSetInput } from './userModel.schema.js';
 const log = createLogger('userModel');
 
 export const modelCreate = async (req: Request, res: Response) => {
   try {
-    const model_info = req.body.model_info;
+    const { model_info, session_id } = req.body as ModelCreateInput;
     const tutorial_step = 210;
-    const filter = { current_session: req.body.session_id };
+    const filter = { current_session: session_id };
     const update = { model_info: model_info, tutorial_step: tutorial_step };
     const doc = await User.findOneAndUpdate(filter, update, {
       new: true,
@@ -34,9 +35,10 @@ export const modelCreate = async (req: Request, res: Response) => {
 
 export const modelSet = async (req: Request, res: Response) => {
   try {
-    const filter = { current_session: req.body.session_id };
-    const update = { model_info: req.body.model_info };
-    if (req.body.model_info.gender == -1) {
+    const { session_id, model_info } = req.body as ModelSetInput;
+    const filter = { current_session: session_id };
+    const update = { model_info };
+    if (model_info.gender == -1) {
       update.model_info.gender = 0;
     }
     const doc = await User.findOneAndUpdate(filter, update, {
