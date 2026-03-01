@@ -26,9 +26,7 @@ import hardEvents from './json/hard_events.json';
 import forbEvents from './json/forb_events.json';
 
 import { readFileSync } from 'fs';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const Server = require('socket.io');
-// import { Server } from "socket.io"; wont work TypeError: (0 , socket_io_1.Server) is not a function
+import { Server } from 'socket.io';
 import Event from './model/events';
 import QuestSheet from './model/questSheet';
 
@@ -90,37 +88,29 @@ mongoose
       ? https.createServer(credentials, app)
       : http.createServer(app);
 
-    const io = Server(server, {
-      allowEIO3: true, // false by default
+    const io = new Server(server, {
+      allowEIO3: true,
+      cors: { origin: '*' },
     });
 
     io.use((socket, next) => {
       console.log(`Incoming connection: ${socket.id}`);
       console.log(` ${socket.data}`);
 
-      next(); // Call next to proceed with the connection
-    });
-
-    io.use((socket, next) => {
-      const originalOnevent = socket.onevent;
-      socket.onevent = function (packet) {
-        const eventName = packet.data[0];
-        const args = packet.data.slice(1);
-        // console.log("Intercepted event:", eventName, args[0]);
-        if (Buffer.isBuffer(args[0])) {
-          // If it's a buffer, log as hex for inspection
+      socket.onAny((eventName, arg) => {
+        if (Buffer.isBuffer(arg)) {
           console.log(
             `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
-              args[0].toString('hex')
+              arg.toString('hex')
           );
         } else {
           console.log(
             `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
-              args[0]
+              arg
           );
         }
-        originalOnevent.call(this, packet);
-      };
+      });
+
       next();
     });
 

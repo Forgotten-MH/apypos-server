@@ -29,7 +29,7 @@ docker-compose up          # Start all services
 ```
 Client (Android/iOS)
   ↕ Blowfish ECB encrypted HTTP (application/octet-stream)
-  ↕ Socket.IO 2.3.0 binary packets (multiplayer)
+  ↕ Socket.IO 4.x binary packets (multiplayer, allowEIO3 for client compat)
 Express Server
   ├─ Decrypt middleware (Blowfish ECB → JSON)
   ├─ Input sanitization (strips MongoDB $ operators)
@@ -81,7 +81,7 @@ Copy `.env.example` to `.env`. Key variables: `IP`, `PORT`, `DB_*` (MongoDB conn
 
 - Node.js >= 20 required. The `--openssl-legacy-provider` flag is needed for crypto compatibility.
 - Game resource FPK files must be manually placed in `src/public/res/download/`; only v0282 is supported.
-- Socket.IO is pinned to v2.3.0 to match the original game client.
+- Socket.IO v4 with `allowEIO3: true` for backward compatibility with the original game client (Engine.IO v3).
 - Blowfish encryption key is hardcoded in `src/services/encryptionService.ts`.
 - `frida/` contains Frida scripts for runtime reverse engineering of the game client (not part of the server).
 - `scripts/` contains offline data conversion tools (XFS binary templates, XML→JSON, FPK packing).

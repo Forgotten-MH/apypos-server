@@ -1,3 +1,4 @@
+import { Socket } from 'socket.io';
 import {
   createMaintenancePacket,
   createChatPacket,
@@ -9,7 +10,7 @@ import {
 //Server Sends: data, notice, entry, entry_ok, entry_ng, cancel, cancel_ok, cancel_ng,
 //  match, match_ok, terminate, terminate_ok, lock, lock_ok, lock_ng, unlock, unlock_ok, host_change
 
-export function onConnect(socket) {
+export function onConnect(socket: Socket) {
   console.log('Client connected:', socket.id);
 
   socket.setMaxListeners(50); // or however many you need
