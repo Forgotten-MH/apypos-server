@@ -1,21 +1,33 @@
-node_modules
-.env
-*.env
-.DS_STORE
+node_modules/
 dist/
-config
 .vscode/
-package-lock.json
-data
-yarn-error.log
 .yalc/
 yalc.lock
-yarn.lock
-src/public
+
+# Environment and secrets
+.env
+*.env
 src/ipconfig.ts
-*.list
+
+# OS files
+.DS_STORE
+
+# Lock files (keep yarn.lock for reproducible builds)
+package-lock.json
+yarn-error.log
+
+# Game resource files (large binaries, not in repo)
+src/public/
 *.fpk
 
+# Generated download lists
+*.list
+
+# MongoDB data directory (docker-compose volume)
+/data/
+
+# Patcher output
 scripts/patcher/out/
 
+# Website
 /website/
