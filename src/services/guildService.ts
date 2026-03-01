@@ -380,13 +380,13 @@ export const leaveGuild = async (uid: string) => {
 
   if (guild.member.leader.uid === uid) {
     if (guild.member.sub.length > 0) {
-      const newLeader = guild.member.sub[0];
+      const newLeader = guild.member.sub[0]!;
       guild.member.leader.uid = newLeader.uid;
       guild.member.leader.created = newLeader.created;
       guild.member.leader.last_login = newLeader.last_login;
       guild.member.sub.splice(0, 1);
     } else if (guild.member.normal.length > 0) {
-      const newLeader = guild.member.normal[0];
+      const newLeader = guild.member.normal[0]!;
       guild.member.leader.uid = newLeader.uid;
       guild.member.leader.created = newLeader.created;
       guild.member.leader.last_login = newLeader.last_login;

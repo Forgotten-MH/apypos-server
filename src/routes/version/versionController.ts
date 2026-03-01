@@ -4,7 +4,7 @@ import { createLogger } from '../../middleware/logger';
 const log = createLogger('version');
 
 export const getVersionData = (req: Request, res: Response) => {
-  const versionNumber = (req.params as Record<string, string[]>).splat[0];
+  const versionNumber = (req.params as Record<string, string[]>).splat?.[0];
   const http = PORT === 443 ? 'https' : 'http';
   const portSuffix = PORT === 80 || PORT === 443 ? '' : `:${PORT}`;
   let version = {};

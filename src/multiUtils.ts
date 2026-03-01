@@ -191,7 +191,7 @@ export function createInfoPacket() {
   //8 setSelectedFixedEquipID
   //9 ?? some float?
   const allowed = [0, 2, 3, 4, 5, 6, 7, 8, 9];
-  const msgType = allowed[Math.floor(Math.random() * allowed.length)];
+  const msgType = allowed[Math.floor(Math.random() * allowed.length)]!;
   const playerId = Math.floor(Math.random() * 4);
   log.debug('msg', msgType, 'pId', playerId);
   const { data, pktId } = createInfo(msgType); // 0 to 9 (0x0 to 0x09)

@@ -234,7 +234,10 @@ export const equipLevelup = async (req: Request, res: Response) => {
     }
 
     // Apply level up
-    const equipment = doc.box.equipments![equipmentIndex];
+    const equipment = doc.box.equipments?.[equipmentIndex];
+    if (!equipment) {
+      return encryptAndSend({}, res, req, 2001, 0, 'equipment not found');
+    }
     const currentLevel = Number(equipment.elv || 0);
     const newLevel = currentLevel + steps;
     equipment.elv = newLevel;

@@ -178,7 +178,7 @@ export function onConnect(socket: Socket) {
         const command = message.split(' ')[0];
         switch (command) {
           case '/chat':
-            socket.emit('data', createChatPacket(header.roomNumber, message.split(' ')[1]));
+            socket.emit('data', createChatPacket(header.roomNumber, message.split(' ')[1] ?? ''));
             break;
           case '/maintenance':
             socket.emit('data', createMaintenancePacket({ durationSecondsTill: 4000 }));

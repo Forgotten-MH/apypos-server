@@ -19,7 +19,8 @@ describe('questService', () => {
 
   describe('lookupValueFromFile', () => {
     it('returns the matching value for a given key', async () => {
-      vi.mocked(fs.readFile).mockImplementation((_path, _enc, cb) => {
+      vi.mocked(fs.readFile).mockImplementation((...args: unknown[]) => {
+        const cb = args[2];
         (cb as (err: NodeJS.ErrnoException | null, data: string) => void)(null, SAMPLE_CSV);
       });
 
@@ -28,7 +29,8 @@ describe('questService', () => {
     });
 
     it('returns null when key is not found', async () => {
-      vi.mocked(fs.readFile).mockImplementation((_path, _enc, cb) => {
+      vi.mocked(fs.readFile).mockImplementation((...args: unknown[]) => {
+        const cb = args[2];
         (cb as (err: NodeJS.ErrnoException | null, data: string) => void)(null, SAMPLE_CSV);
       });
 
@@ -37,7 +39,8 @@ describe('questService', () => {
     });
 
     it('rejects when column name is invalid', async () => {
-      vi.mocked(fs.readFile).mockImplementation((_path, _enc, cb) => {
+      vi.mocked(fs.readFile).mockImplementation((...args: unknown[]) => {
+        const cb = args[2];
         (cb as (err: NodeJS.ErrnoException | null, data: string) => void)(null, SAMPLE_CSV);
       });
 
@@ -47,7 +50,8 @@ describe('questService', () => {
     });
 
     it('rejects when file read fails', async () => {
-      vi.mocked(fs.readFile).mockImplementation((_path, _enc, cb) => {
+      vi.mocked(fs.readFile).mockImplementation((...args: unknown[]) => {
+        const cb = args[2];
         (cb as (err: NodeJS.ErrnoException | null, data: string) => void)(
           new Error('ENOENT') as NodeJS.ErrnoException,
           '',

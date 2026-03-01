@@ -227,7 +227,7 @@ function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
 
       case 'monument_mlv':
         if (key && Object.prototype.hasOwnProperty.call(item_list.monument.mlv, key)) {
-          item_list.monument.mlv[key] += value;
+          item_list.monument.mlv[key] = (item_list.monument.mlv[key] ?? 0) + value;
         }
         break;
 

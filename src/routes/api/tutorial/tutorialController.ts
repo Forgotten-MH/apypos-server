@@ -493,7 +493,7 @@ export const TutorialQuestEnd = async (req: Request, res: Response) => {
       if (!data.tutorial_rewards.tutorial_normal_reward.item_list[key]) {
         data.tutorial_rewards.tutorial_normal_reward.item_list[key] = [];
       }
-      data.tutorial_rewards.tutorial_normal_reward.item_list[key].push({
+      data.tutorial_rewards.tutorial_normal_reward.item_list[key]!.push({
         amount: obj.amount,
         [idField]: obj.id,
       });

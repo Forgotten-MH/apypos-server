@@ -16,7 +16,9 @@ export function lookupValueFromFile(
 
       try {
         const rows = data.split('\n').map((row) => row.trim());
-        const headers = rows[0].split(',');
+        const headerRow = rows[0];
+        if (!headerRow) return reject('Empty CSV file');
+        const headers = headerRow.split(',');
 
         const keyIndex = headers.indexOf(keyColumn);
         const valueIndex = headers.indexOf(valueColumn);
@@ -26,8 +28,8 @@ export function lookupValueFromFile(
         }
 
         for (let i = 1; i < rows.length; i++) {
-          const cells = rows[i].split(',');
-          if (cells[keyIndex] == lookupKey) {
+          const cells = rows[i]?.split(',');
+          if (cells?.[keyIndex] == lookupKey) {
             return resolve(cells[valueIndex]);
           }
         }
@@ -66,7 +68,9 @@ function lookupValuesByPattern(
 
       try {
         const rows = data.split('\n').map((row) => row.trim());
-        const headers = rows[0].split(',');
+        const headerRow = rows[0];
+        if (!headerRow) return reject('Empty CSV file');
+        const headers = headerRow.split(',');
 
         const keyIndex = headers.indexOf(keyColumn);
         const valueIndex = headers.indexOf(valueColumn);
@@ -86,9 +90,11 @@ function lookupValuesByPattern(
           const pattern = new RegExp(`^l${level}_.+_.+_${paddedSuffix}$`);
           log.debug(`Trying pattern: ${pattern}`);
           for (let i = 1; i < rows.length; i++) {
-            const cells = rows[i].split(',');
-            if (pattern.test(cells[keyIndex])) {
-              results.push(parseInt(cells[valueIndex]));
+            const cells = rows[i]?.split(',');
+            const keyCell = cells?.[keyIndex] ?? '';
+            const valueCell = cells?.[valueIndex] ?? '0';
+            if (pattern.test(keyCell)) {
+              results.push(parseInt(valueCell));
             }
           }
           if (results.length === 0) {
@@ -111,21 +117,25 @@ function lookupValuesByPattern(
   });
 }
 
-function parseString(input: string) {
-  let match;
+function parseString(
+  input: string,
+): { prefix: string; level: string; name: string } | { prefix: string; level: string; combinedName: string } {
   if (input.startsWith('QUEST')) {
     // For QUEST format  QUEST 001 0205
-
-    match = input.match(/^([A-Z]+)(\d{3})(\d+)$/);
+    const match = input.match(/^([A-Z]+)(\d{3})(\d+)$/);
     if (!match) throw new Error('Invalid QUEST format');
-    const [, prefix, level, name] = match;
+    const prefix = match[1] ?? '';
+    const level = match[2] ?? '';
+    const name = match[3] ?? '';
     log.debug(prefix, level, name);
     return { prefix, level, name };
   } else if (input.startsWith('EVENT')) {
     // For EVENT format
-    match = input.match(/^([A-Z]+)(\d{2})(\d+)$/);
+    const match = input.match(/^([A-Z]+)(\d{2})(\d+)$/);
     if (!match) throw new Error('Invalid EVENT format');
-    const [, prefix, level, remaining] = match;
+    const prefix = match[1] ?? '';
+    const level = match[2] ?? '';
+    const remaining = match[3] ?? '';
 
     // Split remaining digits into part1 and part2
     log.debug(remaining);
@@ -158,29 +168,33 @@ export const getBlockHashsFromQuestHash = async (
   log.debug('Quest Name Found:', questName);
   if (questName.startsWith('QUEST')) {
     //TODO Quest Look up works... just needs reversing...
-    const { prefix, level, name } = parseString(questName);
-    log.debug('prefix', prefix, 'level', level, 'name');
+    const parsed = parseString(questName);
+    log.debug('prefix', parsed.prefix, 'level', parsed.level);
 
-    return (await lookupValuesByPattern(
-      csvFilePath,
-      'mName',
-      'Hash',
-      formatNumber(level),
-      name!,
-    )) as number[];
+    if ('name' in parsed) {
+      return (await lookupValuesByPattern(
+        csvFilePath,
+        'mName',
+        'Hash',
+        formatNumber(parsed.level),
+        parsed.name,
+      )) as number[];
+    }
   } else if (questName.startsWith('EVENT')) {
     //EVENT 92 99 001
     //EVENT 92 15 6002
     //EVENT 92 19 1001
-    const { prefix: _prefix, level, combinedName } = parseString(questName);
+    const parsed = parseString(questName);
 
-    return (await lookupValuesByPattern(
-      csvFilePath,
-      'mName',
-      'Hash',
-      level,
-      combinedName!.toString().padStart(4, '0'),
-    )) as number[];
+    if ('combinedName' in parsed) {
+      return (await lookupValuesByPattern(
+        csvFilePath,
+        'mName',
+        'Hash',
+        parsed.level,
+        parsed.combinedName.toString().padStart(4, '0'),
+      )) as number[];
+    }
   }
   return undefined;
 };

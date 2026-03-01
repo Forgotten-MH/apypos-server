@@ -336,8 +336,8 @@ export function getSessionStats(): {
   };
 
   for (const [key, session] of sessionStore.entries()) {
-    const type = key.split('_')[0];
-    stats.byType[type] = (stats.byType[type] || 0) + 1;
+    const type = key.split('_')[0] ?? 'unknown';
+    stats.byType[type] = (stats.byType[type] ?? 0) + 1;
     stats.oldest = Math.min(stats.oldest, session.created_at);
     stats.newest = Math.max(stats.newest, session.created_at);
   }

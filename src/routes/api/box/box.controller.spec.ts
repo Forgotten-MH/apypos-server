@@ -113,7 +113,7 @@ describe('box.controller', () => {
 
       await equipLevelup(req, res);
 
-      expect(mockEquipments[0].elv).toBe(8);
+      expect(mockEquipments[0]!.elv).toBe(8);
       expect(encryptAndSend).toHaveBeenCalledWith(
         expect.objectContaining({
           levelup: { equipment: expect.objectContaining({ elv: 8 }) },

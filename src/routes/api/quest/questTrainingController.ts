@@ -105,7 +105,7 @@ export const trainingEnd = async (req: Request, res: Response) => {
     cleared_quests.push({ mst_quest_id: cleared_quest, clear_time: clearTime });
   } else {
     log.debug('Updated clear_time...');
-    cleared_quests[questIndex].clear_time = clearTime;
+    cleared_quests[questIndex]!.clear_time = clearTime;
   }
 
   const update = { cleared_quests: cleared_quests };
