@@ -1,61 +1,20 @@
 import {
   createMaintenancePacket,
   createChatPacket,
-  createInfoPacket,
-  createActivityPacket,
   parseHeader,
   createHeader,
 } from './multiUtils';
 
-//Client Sends...
-const recv = [
-  'host_change_request',
-  //"leave",
-  //"create",
-  //  "join",
-  'lock',
-  'unlock',
-  'kick',
-  'entry',
-  'cancel',
-  'data',
-];
-//Server Sends...
-const events = [
-  //   "entry",
-  'data',
-  'notice',
-  //   "create_ok",
-  //   "create_ng",
-  //   "join",
-  //   "join_ok",
-  //   "join_ng",
-  'entry',
-  'entry_ok',
-  'entry_ng',
-  'cancel',
-  'cancel_ok',
-  'cancel_ng',
-  'match',
-  'match_ok',
-  'terminate',
-  'terminate_ok',
-  'lock',
-  'lock_ok',
-  'lock_ng',
-  'unlock',
-  'unlock_ok',
-  //   "leave",
-  //   "leave_ok",
-  'host_change',
-];
+//Client Sends: host_change_request, lock, unlock, kick, entry, cancel, data
+//Server Sends: data, notice, entry, entry_ok, entry_ng, cancel, cancel_ok, cancel_ng,
+//  match, match_ok, terminate, terminate_ok, lock, lock_ok, lock_ng, unlock, unlock_ok, host_change
 
 export function onConnect(socket) {
   console.log('Client connected:', socket.id);
 
   socket.setMaxListeners(50); // or however many you need
 
-  socket.on('heartbeat', (date) => {
+  socket.on('heartbeat', (_date) => {
     setTimeout(() => {
       console.log('sending heartbeat emit');
       socket.emit('heartbeat', Date.now());
@@ -88,10 +47,7 @@ export function onConnect(socket) {
     //socket.emit("create_ng", data);
   });
   socket.on('join', (data) => {
-    const { header, payload } = parseHeader(data);
-
-   
-    const dataSent = Buffer.from([0x00]);
+    const { header: _header, payload: _payload } = parseHeader(data);
     // socket.emit(
     //   "join_ok",
     //   Buffer.concat([
@@ -232,7 +188,7 @@ export function onConnect(socket) {
           'playerId',
           header.playerId
         );
-        const user = payload.toString('ascii', 0, payload.indexOf(0, 0));
+        const _user = payload.toString('ascii', 0, payload.indexOf(0, 0));
         const message = payload.toString(
           'ascii',
           payload.indexOf(0x2f),

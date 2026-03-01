@@ -1,6 +1,4 @@
-import { parse } from 'path';
-
-const fs = require('fs');
+import fs from 'fs';
 
 export function lookupValueFromFile(
   csvFilePath,
@@ -153,7 +151,7 @@ export const getQuestNameFromQuestHash = async (questHash) => {
 export const getBlockHashsFromQuestHash = async (questHash) => {
   const csvFilePath = './src/csv/blocks.csv';
   console.log('Quest Hash Inserted:', questHash);
-  const questName: any = await getQuestNameFromQuestHash(questHash);
+  const questName = await getQuestNameFromQuestHash(questHash) as string;
   console.log('Quest Name Found:', questName);
   if (questName.startsWith('QUEST')) {
     //TODO Quest Look up works... just needs reversing...
@@ -171,7 +169,7 @@ export const getBlockHashsFromQuestHash = async (questHash) => {
     //EVENT 92 99 001
     //EVENT 92 15 6002
     //EVENT 92 19 1001
-    const { prefix, level, combinedName } = parseString(questName);
+    const { prefix: _prefix, level, combinedName } = parseString(questName);
 
     return await lookupValuesByPattern(
       csvFilePath,

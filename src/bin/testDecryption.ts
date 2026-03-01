@@ -1,7 +1,6 @@
 import crypto from 'crypto';
 import fs from 'fs';
 
-const key = 'FFFFFFFF00000000FFFFFFFF000000006E7900002D5700004F3F2D5600000000';
 const cacheKey = 'K@HW`wQ=O_fAHSoy/bV'
 
 

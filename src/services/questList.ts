@@ -4,8 +4,10 @@ import {
 } from './questService';
 import * as fs from 'fs/promises';
 const path = '.\\Projects\\Boromir\\src\\json\\questDB\\event.json'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const questSheets = require(path);
 const originalLen = questSheets.rQuestSheet.mQuestDataList.length
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function condenseAutoDeleteArrays(obj: any) {
   if (Array.isArray(obj)) {
     obj.forEach(condenseAutoDeleteArrays);
@@ -43,7 +45,7 @@ async function enrichAndPersist() {
   for (const obj of questSheets.rQuestSheet.mQuestDataList) {
     try {
       
-      const blocks:any = await getBlockHashsFromQuestHash(obj.mQuestID);
+      const blocks: unknown[] = await getBlockHashsFromQuestHash(obj.mQuestID) as unknown[];
       obj.mBlocks = blocks;
       blocks.map((block)=>{
         allBlocks.push(block)

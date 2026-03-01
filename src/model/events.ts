@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
-const QuestSchema = new Schema({
+const _QuestSchema = new Schema({
   clear_time: { type: Number, default: 0 },
   limited_amount: { type: Number, default: 0 }, //amount needed
   mst_limited_id: { type: Number, required: true }, //limited points

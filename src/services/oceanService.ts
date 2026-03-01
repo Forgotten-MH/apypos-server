@@ -1,5 +1,4 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
 
 function parseCSV(csvContent) {
   const lines = csvContent.trim().split('\n');
@@ -214,6 +213,7 @@ function parseDramaCSV(
       const nodeMap = new Map(part.node_list.map((n) => [n.mst_node_id, n]));
 
       for (const [nodeHash, questHashList] of nodeQuestMap) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const node = nodeMap.get(nodeHash) as any;
         if (node) {
           for (const {questHash,isCollectionQuest,isKeyQuest} of questHashList) {

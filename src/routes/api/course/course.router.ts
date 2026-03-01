@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as notImplementedController from '../notImplementedController';
+// notImplementedController available for unimplemented routes
 import { premiumList } from './course.controller.';
 
 const courseRouter = Router();

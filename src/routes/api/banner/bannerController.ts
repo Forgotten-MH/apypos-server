@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { promises as fs } from 'fs';
 import path from 'path';

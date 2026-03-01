@@ -11,21 +11,22 @@ import {
   DB_PORT,
   DEBUG,
 } from './config';
-const normalTutorialQuestSheets = require('./json/questDB/normal.extended.complete.json');
-const trainingQuestSheets = require('./json/questDB/training.extended.complete.json');
-const scoreQuestSheets = require('./json/questDB/score.extended.complete.json');
-const eternalQuestSheets = require('./json/questDB/eternal.extended.complete.json');
-const ticketQuestSheets = require('./json/questDB/ticket.extended.complete.json');
-const eventQuestSheets = require('./json/questDB/event.extended.blank.json');
-const ticketEvents = require('./json/ticket_events.json');
-const coevEvents = require('./json/coev_events.json');
+import normalTutorialQuestSheets from './json/questDB/normal.extended.complete.json';
+import trainingQuestSheets from './json/questDB/training.extended.complete.json';
+import scoreQuestSheets from './json/questDB/score.extended.complete.json';
+import eternalQuestSheets from './json/questDB/eternal.extended.complete.json';
+import ticketQuestSheets from './json/questDB/ticket.extended.complete.json';
+import eventQuestSheets from './json/questDB/event.extended.blank.json';
+import ticketEvents from './json/ticket_events.json';
+import coevEvents from './json/coev_events.json';
 
-const easyEvents = require('./json/easy_events.json');
-const normEvents = require('./json/norm_events.json');
-const hardEvents = require('./json/hard_events.json');
-const forbEvents = require('./json/forb_events.json');
+import easyEvents from './json/easy_events.json';
+import normEvents from './json/norm_events.json';
+import hardEvents from './json/hard_events.json';
+import forbEvents from './json/forb_events.json';
 
 import { readFileSync } from 'fs';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const Server = require('socket.io');
 // import { Server } from "socket.io"; wont work TypeError: (0 , socket_io_1.Server) is not a function
 import Event from './model/events';
@@ -36,7 +37,10 @@ import AssualtEvents from './model/events/assualts';
 import TicketEvents from './model/events/tickets';
 import ScoreEvents from './model/events/score';
 
-let createServer;
+import http from 'http';
+import https from 'https';
+
+let createServer: typeof http.createServer;
 const credentials = false
   ? {
       key: readFileSync('../keys/private.key'),
@@ -45,13 +49,8 @@ const credentials = false
     }
   : {};
 if (PORT === 443) {
-  // For HTTPS, load the https module and SSL credentials
-  const https = require('https');
-
   createServer = https.createServer;
 } else {
-  // For HTTP, load the http module
-  const http = require('http');
   createServer = http.createServer;
 }
 
@@ -92,7 +91,8 @@ mongoose
       });
     }
 
-    const server = createServer(PORT === 443 ? credentials : {}, app);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const server = createServer(PORT === 443 ? credentials as any : {}, app);
 
     const io = Server(server, {
       allowEIO3: true, // false by default

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import User from '../../../model/user';
-import { calcMstId } from '../../../services/defineService';
+import { calcMstId as _calcMstId } from '../../../services/defineService';
 
 export const get = async (req: Request, res: Response) => {
   const filter = { current_session: req.body.session_id };
@@ -34,7 +34,7 @@ export const storageInfo = (req: Request, res: Response) => {
 };
 
 export const storageGet = (req: Request, res: Response) => {
-  const { target_idx } = req.body;
+  const { target_idx: _target_idx } = req.body;
 
   const data = {
     storage_info: {
@@ -279,7 +279,7 @@ export const equipLevelup = async (req: Request, res: Response) => {
   encryptAndSend(data, res, req);
 };
 export const awake = async (req: Request, res: Response) => {
-  const { use_karidama, resource_equipment_ids, base_equipment_id } = req.body;
+  const { use_karidama: _use_karidama, resource_equipment_ids: _resource_equipment_ids, base_equipment_id: _base_equipment_id } = req.body;
 
   const data = {
     //TODO
@@ -288,7 +288,7 @@ export const awake = async (req: Request, res: Response) => {
 };
 
 export const potentialupAutoSet = async (req: Request, res: Response) => {
-  const { eqp_obj_infos } = req.body;
+  const { eqp_obj_infos: _eqp_obj_infos } = req.body;
   //todo make real data
   const data = {
     base_equipment: {
@@ -352,7 +352,7 @@ export const potentialupAutoSet = async (req: Request, res: Response) => {
 };
 
 export const sale = async (req: Request, res: Response) => {
-  const { eqp_obj_ids } = req.body;
+  const { eqp_obj_ids: _eqp_obj_ids } = req.body;
   //todo real data
   const data = {
     equip_sell: {

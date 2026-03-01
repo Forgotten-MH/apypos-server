@@ -5,16 +5,13 @@
 //10006 The quest is already in progress
 //10007 Quest not unlocked
 import path from 'path';
-
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import User from '../../../model/user';
 import Event from '../../../model/events';
 import AssualtEvents from '../../../model/events/assualts';
 
-const full_island = require(
-  path.resolve(__dirname, '../../../json/full_enabled_state.json')
-);
+import full_island from '../../../json/full_enabled_state.json';
 
 import { readFile } from 'fs/promises';
 import QuestSheet from '../../../model/questSheet';
@@ -1192,18 +1189,18 @@ type Node = {
   mst_node_id: number
   day_quest_list?: QuestObject[]
   night_quest_list?: QuestObject[]
-  [key: string]: any
+  [key: string]: unknown
 };
 
 type Part = {
   node_list?: Node[]
-  [key: string]: any
+  [key: string]: unknown
 };
 
 type Ocean = {
   mst_ocean_id: number
   part_list: Part[]
-  [key: string]: any
+  [key: string]: unknown
 };
 
 // --- CSV Parser ---

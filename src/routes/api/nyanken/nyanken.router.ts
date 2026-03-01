@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import * as nyankanController from './nyankenController';
-import * as notImplementedController from '../notImplementedController';
+// import * as notImplementedController from '../notImplementedController';
 
 const nyankanRouter = Router();
 

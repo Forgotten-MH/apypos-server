@@ -146,7 +146,7 @@ export const searchGuilds = async (filters: {
   timezone?: number
   recruit?: number
 }) => {
-  const query: any = {};
+  const query: Record<string, unknown> = {};
 
   if (filters.name) {
     query.name = { $regex: filters.name, $options: 'i' };
@@ -309,14 +309,23 @@ export const inviteUserToGuild = async (gid: string, uid: string) => {
   return { success: true, requestId };
 };
 
-export const getMemberType = (guild: any, uid: string): number => {
+interface GuildMember { uid: string }
+interface GuildDoc {
+  member: {
+    leader: GuildMember
+    sub: GuildMember[]
+    normal: GuildMember[]
+  }
+}
+
+export const getMemberType = (guild: GuildDoc, uid: string): number => {
   if (guild.member.leader.uid === uid) {
     return 3; // Leader
   }
-  if (guild.member.sub.some((m: any) => m.uid === uid)) {
+  if (guild.member.sub.some((m) => m.uid === uid)) {
     return 2; // Sub
   }
-  if (guild.member.normal.some((m: any) => m.uid === uid)) {
+  if (guild.member.normal.some((m) => m.uid === uid)) {
     return 1; // Normal
   }
   return 0; // Not a member
@@ -408,11 +417,11 @@ export const leaveGuild = async (uid: string) => {
       return { success: true, disbanded: true };
     }
   } else {
-    const normalMember = guild.member.normal.find((m: any) => m.uid === uid);
+    const normalMember = guild.member.normal.find((m: { uid: string }) => m.uid === uid);
     if (normalMember) {
       guild.member.normal.pull(normalMember);
     }
-    const subMember = guild.member.sub.find((m: any) => m.uid === uid);
+    const subMember = guild.member.sub.find((m: { uid: string }) => m.uid === uid);
     if (subMember) {
       guild.member.sub.pull(subMember);
     }
@@ -437,7 +446,7 @@ export const leaveGuild = async (uid: string) => {
   return { success: true, disbanded: false };
 };
 
-export const updateGuild = async (gid: string, updates: any) => {
+export const updateGuild = async (gid: string, updates: Record<string, unknown> & { name?: string; rank?: number }) => {
   const guild = await Guild.findOne({ gid });
   if (!guild) {
     throw new Error('Guild not found');
@@ -448,7 +457,7 @@ export const updateGuild = async (gid: string, updates: any) => {
   await guild.save();
 
   if (updates.name || updates.rank) {
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     if (updates.name) {
       updateData['guild_info.name'] = updates.name;
     }

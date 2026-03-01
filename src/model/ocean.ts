@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
-const { Schema, model } = mongoose;
-const QUEST_STATE = { //0 =? 1 = New 2= ? 3= Clear (S A B C based on clear_time)
+const { Schema } = mongoose;
+const _QUEST_STATE = { //0 =? 1 = New 2= ? 3= Clear (S A B C based on clear_time)
   UNKNOWN:0,  //possible non value
   NEW: 1,
   UNKNOWN3:2,
@@ -34,18 +34,9 @@ const PART_STATE = { // Part state (1 = Open, 0 = Closed 2 ==? 3== gingira_node 
   GINGIRA_SPARKLE: 3, // When `gingira_node_id` is set
 };
 
-const QuestSubtargetSchema = new Schema({
+const _QuestSubtargetSchema = new Schema({
   mst_subtarget_id: Number, //What Subtarget is cleared this needs to be matched with internals 
   state: Number, //0 Non Cleared //1 Cleared
-});
-
-const QuestSchema = new Schema({
-  clear_time: Number, // Time taken to clear quest
-  is_collection_quest: Number,
-  is_key_quest: Number,
-  mst_quest_id: Number,
-  quest_subtargets: [QuestSubtargetSchema],
-  state: { type: Number, enum: Object.values(QUEST_STATE) }, //0 =? 1 = New 2= ? 3= Clear (S A B C based on clear_time)
 });
 
 const NodeSchema = new Schema({ //TODO remove day/night quests and collection replace with a databse lookup in places it is needed against a completed quests database

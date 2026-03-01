@@ -114,7 +114,8 @@ export const trainingEnd = async (req: Request, res: Response) => {
   await User.findOneAndUpdate(filter, update, { new: true });
   const trainingPresent = new Present();
   trainingPresent.uu_id = doc.uu_id;
-  trainingPresent.content = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (trainingPresent as any).content = {
     equipments: [
       {
         ...reward,

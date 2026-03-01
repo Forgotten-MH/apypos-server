@@ -97,7 +97,7 @@ function findSessionByToken(sessionToken: string): { key: string; session: Sessi
 }
 
 function generateSessionKey(req: Request): string {
-  const ip = req.ip || req.connection.remoteAddress || 'unknown';
+  const _ip = req.ip || req.connection.remoteAddress || 'unknown';
   const userAgent = req.get('User-Agent') || 'unknown';
   const userAgentHash = Buffer.from(userAgent).toString('base64').slice(0, 8);
   return `device_${userAgentHash}`;

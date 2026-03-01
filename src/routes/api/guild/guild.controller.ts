@@ -623,7 +623,7 @@ export const chatGet = async (req: Request, res: Response) => {
 
     const now = Math.floor(Date.now() / 1000);
 
-    const chat_logs = getMessages.map((msg: any, index: number) => ({
+    const chat_logs = getMessages.map((msg: { message?: string; timestamp?: number; uid?: string }, index: number) => ({
       comment: msg.message || '',
       created: msg.timestamp || now,
       message_id: index + 1,
@@ -633,12 +633,12 @@ export const chatGet = async (req: Request, res: Response) => {
 
     const recent_logs = chat_logs.slice(-20);
 
-    const uniqueUserIds = [...new Set(getMessages.map((msg: any) => msg.uid))];
+    const uniqueUserIds = [...new Set(getMessages.map((msg: { uid?: string }) => msg.uid))];
     
     const users = await User.find({ uu_id: { $in: uniqueUserIds } });
     
     const chatUserInfos = uniqueUserIds.map((userId: string) => {
-      const userData = users.find((u: any) => u.uu_id === userId);
+      const userData = users.find((u) => u.uu_id === userId);
       return {
         model_info: {
           face: userData?.model_info?.face || 0,
@@ -755,7 +755,7 @@ export const memberList = async (req: Request, res: Response) => {
 
     const now = Math.floor(Date.now() / 1000);
 
-    const buildEquipInfo = (equipData: any) => ({
+    const buildEquipInfo = (equipData: { hash?: number; level?: number; potential?: number; skill_level?: number }) => ({
       equip_info: {
         hash: equipData?.hash || 0,
         level: equipData?.level || 0,
@@ -771,6 +771,7 @@ export const memberList = async (req: Request, res: Response) => {
         return null;
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const memberData = memberUser as any;
 
       return {
@@ -859,15 +860,17 @@ export const memberList = async (req: Request, res: Response) => {
     const subDetailsList = [];
     const normalDetailsList = [];
 
-    if ((memberList as any)?.leader?.uid) {
-      const leaderMemberDetails = await buildMemberDetails((memberList as any).leader.uid, 0);
+    const members = memberList as { leader?: { uid: string }; sub?: { uid: string }[]; normal?: { uid: string }[] };
+
+    if (members?.leader?.uid) {
+      const leaderMemberDetails = await buildMemberDetails(members.leader.uid, 0);
       if (leaderMemberDetails) {
         leaderDetails = leaderMemberDetails;
       }
     }
-    
-    if ((memberList as any)?.sub) {
-      for (const subMember of (memberList as any).sub) {
+
+    if (members?.sub) {
+      for (const subMember of members.sub) {
         if (subMember.uid) {
           const subMemberDetails = await buildMemberDetails(subMember.uid, 1);
           if (subMemberDetails) {
@@ -876,9 +879,9 @@ export const memberList = async (req: Request, res: Response) => {
         }
       }
     }
-    
-    if ((memberList as any)?.normal) {
-      for (const normalMember of (memberList as any).normal) {
+
+    if (members?.normal) {
+      for (const normalMember of members.normal) {
         if (normalMember.uid) {
           const memberDetails = await buildMemberDetails(normalMember.uid, 2);
           if (memberDetails) {

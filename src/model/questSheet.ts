@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const BossSchema = new mongoose.Schema(
   {
@@ -63,7 +63,7 @@ const RewardItemTableSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const RewardDataSchema = new mongoose.Schema(
+const _RewardDataSchema = new mongoose.Schema(
   {
     mFixedItemTableID: String,
     mRewardItemTable: RewardItemTableSchema,

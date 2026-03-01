@@ -6,13 +6,13 @@ import winston from 'winston';
 import { decryptAndParse } from './services/crypto/encryptionHelpers';
 import { DEBUG } from './config';
 
-function sanitize(obj: any): any {
+function sanitize(obj: unknown): unknown {
   if (Array.isArray(obj)) {
     return obj.map(sanitize);
   }
   if (obj !== null && typeof obj === 'object') {
-    const clean: any = {};
-    for (const key of Object.keys(obj)) {
+    const clean: Record<string, unknown> = {};
+    for (const key of Object.keys(obj as Record<string, unknown>)) {
       if (!key.startsWith('$')) {
         clean[key] = sanitize(obj[key]);
       }
@@ -71,7 +71,7 @@ app.use(
     expressFormat: true,
     colorize: true,
 
-    dynamicMeta: (req, res) => {
+    dynamicMeta: (req, _res) => {
       return {
         body: req.body,
       };

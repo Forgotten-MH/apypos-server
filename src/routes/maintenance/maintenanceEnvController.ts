@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../services/crypto/encryptionHelpers';
-import { IP } from '../../config';
+// import { IP } from '../../config';
 
 export const getMaintenanceEnvSchedule = (req: Request, res: Response) => {
   const data = {

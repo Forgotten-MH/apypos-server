@@ -402,7 +402,7 @@ export const partnerGet = async (req: Request, res: Response) => {
   encryptAndSend(data, res, req);
 };
 export const searchId = async (req: Request, res: Response) => {
-  const { uids } = req.body;
+  const { uids: _uids } = req.body;
   //TODO search by uid loop over then produce below...
   const data = {
     capacity_eqp_set: 1,
@@ -509,7 +509,7 @@ export const searchId = async (req: Request, res: Response) => {
   encryptAndSend(data, res, req);
 };
 export const gameId = async (req: Request, res: Response) => {
-  const { gameIds } = req.body;
+  const { gameIds: _gameIds } = req.body;
   //TODO search by gameIds loop over then produce below...
   const data = {
     capacity_eqp_set: 3,

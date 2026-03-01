@@ -251,7 +251,7 @@ export function createSessionPacket() {
   return Buffer.concat([header, data]);
 }
 
-function createRandomBuffer(minLength = 50, maxLength = 300) {
+function _createRandomBuffer(minLength = 50, maxLength = 300) {
   const length =
     Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
   const buffer = Buffer.alloc(length);

@@ -1,20 +1,21 @@
- export type Box = {
+ // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Box = {
   capacity?: { [key: string]: number }
-  equipments?: any[]
-  growth_items?: any[]
-  limiteds?: any[]
-  matatabis?: any[]
-  materials?: any[]
+  equipments?: unknown[]
+  growth_items?: unknown[]
+  limiteds?: unknown[]
+  matatabis?: unknown[]
+  materials?: unknown[]
   monument?: {
-    augite?: any[]
+    augite?: unknown[]
     hr?: number
     mlv?: { atk: number; def: number; hp: number; sp: number }
   }
-  otomos?: any[]
-  partners?: any[]
-  payments?: any[]
-  points?: any[]
-  powers?: any[]
+  otomos?: unknown[]
+  partners?: unknown[]
+  payments?: unknown[]
+  points?: unknown[]
+  powers?: unknown[]
   zeny?: number
 };
 
@@ -28,12 +29,12 @@ export class BoxService {
     }
   }
 
-  static removeItem<T>(box: Box, field: keyof Box, matcher: Partial<T>): void {
+  static removeItem<T extends Record<string, unknown>>(box: Box, field: keyof Box, matcher: Partial<T>): void {
     const list = box[field] as T[];
     if (Array.isArray(list)) {
-      box[field] = list.filter(item => {
-        return !Object.entries(matcher).every(([k, v]) => (item as any)[k] === v);
-      }) as any;
+      (box as Record<string, unknown>)[field as string] = list.filter(item => {
+        return !Object.entries(matcher).every(([k, v]) => item[k] === v);
+      });
     } else {
       throw new Error(`Field '${field}' is not an array`);
     }

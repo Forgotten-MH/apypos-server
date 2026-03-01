@@ -187,7 +187,7 @@ export const list = (req: Request, res: Response) => {
   encryptAndSend(data, res, req);
 };
 export const buy = (req: Request, res: Response) => {
-  const { amount, mst_shop_id, mst_shop_item_id } = req.body;
+  const { amount: _amount, mst_shop_id: _mst_shop_id, mst_shop_item_id: _mst_shop_item_id } = req.body;
   const data = {
     item_contents: {
       materials: [

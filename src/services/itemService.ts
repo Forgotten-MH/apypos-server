@@ -1,4 +1,5 @@
-function buildExtendedItemList(rewardEntries) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function _buildExtendedItemList(rewardEntries: any[]) {
   const item_list = {
     collections: [
       // {

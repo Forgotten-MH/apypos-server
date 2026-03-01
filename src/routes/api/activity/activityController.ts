@@ -1,21 +1,9 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 
-const ActivityID = {
-  LOGIN: 1,
-  LOGOUT: 2,
-  CHAT: 3,
-  JOIN_QUEST: 4,
-  FIND_HUNTING_PARTY: 5,
-};
-
-const ActivityType = {
-  WHITE: 1,
-  YELLOW: 2,
-  BLUE: 3,
-  RED: 4,
-  GREEN: 5,
-};
+// Game protocol constants for reference
+// ActivityID: LOGIN=1, LOGOUT=2, CHAT=3, JOIN_QUEST=4, FIND_HUNTING_PARTY=5
+// ActivityType: WHITE=1, YELLOW=2, BLUE=3, RED=4, GREEN=5
 
 export const activityGet = (req: Request, res: Response) => {
   const ExamplesFoundFromVideos = [

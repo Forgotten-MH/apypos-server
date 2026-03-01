@@ -10,7 +10,7 @@ import powerSchema from './items/power';
 import otomoSchema from './sidekicks/otomo';
 import partnerSchema from './sidekicks/partner';
 
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const ContentSchema = new mongoose.Schema(
   {
