@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import * as questController from './questController';
-import * as questForestController from './questForestController';
-import * as questTrainingController from './questTrainingController';
+import * as questController from './quest.controller';
+import * as questForestController from './questForest.controller';
+import * as questTrainingController from './questTraining.controller';
 
-import * as notImplemented from '../notImplementedController';
+import * as notImplemented from '../notImplemented.controller';
 
 const questRouter = Router();
 

@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import * as nyankanController from './nyankenController';
-// import * as notImplementedController from '../notImplementedController';
+import * as nyankenController from './nyanken.controller';
+// import * as notImplementedController from '../notImplemented.controller';
 
-const nyankanRouter = Router();
+const nyankenRouter = Router();
 
-nyankanRouter.post('/progress', nyankanController.progress);
-nyankanRouter.post('/historyGet', nyankanController.historyGet);
-nyankanRouter.post('/questlist', nyankanController.QuestList);
-// nyankanRouter.post("/start", notImplementedController.blankResponseEncrypted);
-nyankanRouter.post('/islandInfoGet', nyankanController.islandInfoGet);
+nyankenRouter.post('/progress', nyankenController.progress);
+nyankenRouter.post('/historyGet', nyankenController.historyGet);
+nyankenRouter.post('/questlist', nyankenController.QuestList);
+// nyankenRouter.post("/start", notImplementedController.blankResponseEncrypted);
+nyankenRouter.post('/islandInfoGet', nyankenController.islandInfoGet);
 
-export default nyankanRouter;
+export default nyankenRouter;

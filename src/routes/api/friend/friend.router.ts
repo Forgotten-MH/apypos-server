@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as notImplementedController from '../notImplementedController';
+import * as notImplementedController from '../notImplemented.controller';
 import { capacityInfo } from './friend.controller';
 
 const friendRouter = Router();

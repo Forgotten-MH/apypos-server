@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as popupController from './popupController';
+import * as popupController from './popup.controller';
 
 const popupRouter = Router();
 

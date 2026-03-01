@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as notImplementedController from '../notImplementedController';
+import * as notImplementedController from '../notImplemented.controller';
 
 const systemRouter = Router();
 // SEEEMS TO ONLY ACTIVATE WHEN IN MULTIPLAYER....

@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import * as maintenanceEnvController from './maintenanceEnvController';
-import * as webController from '../web/webController';
+import * as maintenanceEnvController from './maintenanceEnv.controller';
+import * as webController from '../web/web.controller';
 
 const maintenanceEnvRouter = Router();
 

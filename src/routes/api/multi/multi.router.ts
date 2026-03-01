@@ -1,17 +1,17 @@
 import { Router } from 'express';
-import * as multiReserveRoomController from './multiReserveRoomController';
+import * as multiController from './multi.controller';
 
-const MultiReserveRoom = Router();
-MultiReserveRoom.post('/room/reserve', multiReserveRoomController.roomReserve);
+const multiRouter = Router();
+multiRouter.post('/room/reserve', multiController.roomReserve);
 
-MultiReserveRoom.post('/room/reserve/join', multiReserveRoomController.roomReserveJoin);
-MultiReserveRoom.post('/room/search', multiReserveRoomController.roomSearch);
-MultiReserveRoom.post('/room/join', multiReserveRoomController.roomJoin);
-MultiReserveRoom.post('/room/create', multiReserveRoomController.roomCreate);
-MultiReserveRoom.post('/room/quick', multiReserveRoomController.roomQuick);
-MultiReserveRoom.post('/room/get', multiReserveRoomController.roomGet);
-MultiReserveRoom.post('/member/info', multiReserveRoomController.memberInfo);
-MultiReserveRoom.post('/invite/targets', multiReserveRoomController.inviteList); //todo
+multiRouter.post('/room/reserve/join', multiController.roomReserveJoin);
+multiRouter.post('/room/search', multiController.roomSearch);
+multiRouter.post('/room/join', multiController.roomJoin);
+multiRouter.post('/room/create', multiController.roomCreate);
+multiRouter.post('/room/quick', multiController.roomQuick);
+multiRouter.post('/room/get', multiController.roomGet);
+multiRouter.post('/member/info', multiController.memberInfo);
+multiRouter.post('/invite/targets', multiController.inviteList); //todo
 
-MultiReserveRoom.post('/invite/list', multiReserveRoomController.inviteList);
-export default MultiReserveRoom;
+multiRouter.post('/invite/list', multiController.inviteList);
+export default multiRouter;

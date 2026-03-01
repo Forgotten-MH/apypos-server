@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import { createLogger } from '../../../middleware/logger';
 import User from '../../../model/user';
-import { updatePartNoteState } from '../story/storyController';
+import { updatePartNoteState } from '../story/story.controller';
 import type { Box } from '../../../types/game';
 import { addItem } from '../../../services/boxService';
 const log = createLogger('tutorial');

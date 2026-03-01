@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as notImplementedController from '../notImplementedController';
+import * as notImplementedController from '../notImplemented.controller';
 import { purchaseList } from './purchase.controller';
 
 const purchaseRouter = Router();

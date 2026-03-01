@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import * as checkController from './checkController';
+import * as checkController from './check.controller';
 
 const checkRouter = Router();
 

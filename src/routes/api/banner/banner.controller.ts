@@ -29,7 +29,7 @@ const readFilesFromDir = async (
     }
   } catch (err) {
     log.error('Error reading files from directory:', err);
-    throw err; // Optionally rethrow the error
+    // Don't throw - return empty list if directory doesn't exist
   }
 };
 
@@ -59,6 +59,7 @@ export const getDlList = async (req: Request, res: Response) => {
 
     encryptAndSend(data, res, req);
   } catch (_error) {
-    res.status(500);
+    // Return empty download list if banner directory is missing
+    encryptAndSend(data, res, req);
   }
 };

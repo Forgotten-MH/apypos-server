@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import * as ticketShopController from './ticketShopController';
+import * as ticketController from './ticket.controller';
 
 const ticketRouter = Router();
 
-ticketRouter.post('/list', ticketShopController.list);
+ticketRouter.post('/list', ticketController.list);
 
 export default ticketRouter;
