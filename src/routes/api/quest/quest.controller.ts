@@ -1332,7 +1332,6 @@ export const islandMapAll = async (req: Request, res: Response) => {
   }
 
   // let final_ocean = await enrichOceanData(doc.ocean_list.toObject());
-  // console.log("FINAL",final_ocean)
   // const data = {
   //   ocean_list: final_ocean,
   // };

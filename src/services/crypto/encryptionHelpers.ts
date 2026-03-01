@@ -249,15 +249,8 @@ export function encryptAndSend(
     now_time: timeService.getNowTime(),
     relogin_time: timeService.getRelogTime(),
   };
-  console.log(
-    `\n>>> RESPONSE ${req.method} ${req.originalUrl}:`,
-    JSON.stringify(responseData),
-    '<<<\n',
-  );
-  const encryptedData = encryptionService.encrypt(JSON.stringify(responseData));
-  // console.log("now_time:",responseData.now_time)
-  // console.log("relogin_time:",responseData.relogin_time)
   log.debug('Response Body:\n%s', JSON.stringify(responseData, null, '\t'));
+  const encryptedData = encryptionService.encrypt(JSON.stringify(responseData));
 
   res.status(status).header('Content-Type', 'application/octet-stream').send(encryptedData);
 }

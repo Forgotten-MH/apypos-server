@@ -42,11 +42,6 @@ app.use((req, res, next) => {
       try {
         const decryptedBody = decryptAndParse(rawBody);
         req.body = decryptedBody;
-        console.log(
-          `\n>>> DECRYPTED ${req.method} ${req.originalUrl}:`,
-          JSON.stringify(req.body),
-          '<<<\n',
-        );
         log.debug('Request Body:\n%s', JSON.stringify(req.body, null, '\t'));
       } catch (err) {
         log.error('Failed to decrypt request body:', err);
@@ -102,7 +97,7 @@ app.use('/', routes);
 app.use('/', express.static(__dirname + '/public'));
 // Catch-all 404 handler to log unmatched routes
 app.use((req, res, next) => {
-  console.log(`\n>>> 404 UNMATCHED: ${req.method} ${req.originalUrl} <<<\n`);
+  log.warn('404 UNMATCHED: %s %s', req.method, req.originalUrl);
   next();
 });
 // Error logger middleware
