@@ -4,16 +4,21 @@ import User from '../../../model/user';
 import { calcMstId as _calcMstId } from '../../../services/defineService';
 
 export const get = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const filter = { current_session: req.body.session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); //Not authenticated
+    }
+    const data = {
+      box: doc.box,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in box get:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Get box failed');
   }
-  const data = {
-    box: doc.box,
-  };
-  encryptAndSend(data, res, req);
 };
 export const storageInfo = (req: Request, res: Response) => {
   const data = {
@@ -74,16 +79,21 @@ export const storageGet = (req: Request, res: Response) => {
 };
 
 export const otomoGet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const filter = { current_session: req.body.session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); //Not authenticated
+    }
+    const data = {
+      otomos: doc.box.otomos,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in otomoGet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Get otomo box failed');
   }
-  const data = {
-    otomos: doc.box.otomos,
-  };
-  encryptAndSend(data, res, req);
 };
 
 export const equipCapacityInfo = (req: Request, res: Response) => {
@@ -197,94 +207,75 @@ export const PaymentGet = (req: Request, res: Response) => {
 };
 
 export const equipLevelup = async (req: Request, res: Response) => {
-  // Authenticate by session
-  const filter = { current_session: req.body.session_id };
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); // Not authenticated
+  try {
+    // Authenticate by session
+    const filter = { current_session: req.body.session_id };
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); // Not authenticated
+    }
+
+    const equipmentId: string = req.body.eqp_obj_id;
+    const steps: number = Math.max(1, Number(req.body.num || 1));
+
+    // Find equipment in user's box
+    const equipmentIndex = doc.box.equipments.findIndex(
+      (eq) => eq.equipment_id === equipmentId,
+    );
+
+    if (equipmentIndex === -1) {
+      // Equipment not found
+      return encryptAndSend({}, res, req, 2001, 0, 'equipment not found');
+    }
+
+    // Apply level up
+    const equipment = doc.box.equipments[equipmentIndex];
+    const currentLevel = Number(equipment.elv || 0);
+    const newLevel = currentLevel + steps;
+    equipment.elv = newLevel;
+
+    // Optional: handle zenny/material consumption when is_use_reinforcement == 2
+    // Not fully implemented due to pricing tables/material ids pending in repo
+
+    // Persist
+    await User.findByIdAndUpdate(doc.id, { box: doc.box });
+
+    const data = {
+      levelup: {
+        equipment: equipment,
+      },
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in equipLevelup:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Equipment level up failed');
   }
-
-  const equipmentId: string = req.body.eqp_obj_id;
-  const steps: number = Math.max(1, Number(req.body.num || 1));
-
-  // Find equipment in user's box
-  const equipmentIndex = doc.box.equipments.findIndex(
-    (eq) => eq.equipment_id === equipmentId,
-  );
-
-  if (equipmentIndex === -1) {
-    // Equipment not found
-    return encryptAndSend({}, res, req, 2001, 0, 'equipment not found');
-  }
-
-  // Apply level up
-  const equipment = doc.box.equipments[equipmentIndex];
-  const currentLevel = Number(equipment.elv || 0);
-  const newLevel = currentLevel + steps;
-  equipment.elv = newLevel;
-
-  // Optional: handle zenny/material consumption when is_use_reinforcement == 2
-  // Not fully implemented due to pricing tables/material ids pending in repo
-
-  // Persist
-  await User.findByIdAndUpdate(doc.id, { box: doc.box });
-
-  const data = {
-    levelup: {
-      equipment: equipment,
-      // materials: [],
-      // payments: [],
-      // zenny: doc.box.zeny,
-    },
-  };
-
-  // const data = {
-  //   levelup: {
-  //     equipment: {
-  //       auto_potential_composite: 0,
-  //       awaked: 0,
-  //       created: 0,
-  //       elv: 1,
-  //       endAwakeCount: 0,
-  //       endAwakeRemain: 0,
-  //       end_remain: 0,
-  //       equipment_id: req.body.eqp_obj_id,
-  //       evolve_start_time: 0,
-  //       favorite: 0,
-  //       is_awake: 0,
-  //       is_complete_auto_potential_composite: 0,
-  //       mst_equipment_id: calcMstId(req.body.eqp_obj_id),
-  //       potential: 0,
-  //       slv: 0,
-  //       start_remain: 0,
-  //     },
-  //     // materials: [
-  //     //   // {
-  //     //   //   amount:0,
-  //     //   //   mst_material_id:0
-  //     //   // }
-  //     // ],
-  //     // payments: [
-  //     //   // {
-  //     //   //   amount: 50,
-  //     //   //   mst_payment_id: 1573159746,
-  //     //   // },
-  //     // ],
-  //     //zenny: 0,
-  //     equipment: equipment,
-  //     // materials: [],
-  //     // payments: [],
-  //     // zenny: doc.box.zeny,
-  //   },
-  encryptAndSend(data, res, req);
 };
+// TODO: Equipment awakening is not implemented. Requires knowledge of awakening
+// mechanics (karidama consumption, resource equipment merging, stat changes).
+// Currently returns the session-authenticated user's equipment unchanged.
 export const awake = async (req: Request, res: Response) => {
-  const { use_karidama: _use_karidama, resource_equipment_ids: _resource_equipment_ids, base_equipment_id: _base_equipment_id } = req.body;
+  try {
+    const filter = { current_session: req.body.session_id };
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); // Not authenticated
+    }
 
-  const data = {
-    //TODO
-  };
-  encryptAndSend(data, res, req);
+    const { base_equipment_id } = req.body;
+    const equipment = doc.box.equipments.find(
+      (eq) => eq.equipment_id === base_equipment_id,
+    );
+
+    const data = {
+      equipment: equipment ?? {},
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in awake:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Equipment awake failed');
+  }
 };
 
 export const potentialupAutoSet = async (req: Request, res: Response) => {
@@ -396,52 +387,62 @@ export const favoriteSet = async (req: Request, res: Response) => {
 };
 
 export const leveupAuto = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
-  const doc = await User.findOne(filter);
-  let targetIndex;
-  switch (req.body.type) {
-    case 'hp':
-      // Increment HP
-      doc.box.monument.mlv.hp = doc.box.monument.mlv.hp + 1;
-      // Increase HR
-      doc.box.monument.hr = doc.box.monument.hr + 1;
-      // Find the index of the augite item
-      targetIndex = doc.box.monument.augite.findIndex(
-        (item) => item.mst_augite_id === 2047024966
-      );
+  try {
+    const filter = { current_session: req.body.session_id };
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); // Not authenticated
+    }
+    let targetIndex;
+    switch (req.body.type) {
+      case 'hp':
+        // Increment HP
+        doc.box.monument.mlv.hp = doc.box.monument.mlv.hp + 1;
+        // Increase HR
+        doc.box.monument.hr = doc.box.monument.hr + 1;
+        // Find the index of the augite item
+        targetIndex = doc.box.monument.augite.findIndex(
+          (item) => item.mst_augite_id === 2047024966
+        );
 
-      // Replace the item in the array
-      doc.box.monument.augite[targetIndex].amount = Math.max(
-        doc.box.monument.augite[targetIndex].amount - 10,
-        0
-      );
-      
-      break;
-    case 'atk':
-      doc.box.monument.mlv.atk = doc.box.monument.mlv.atk + 1;
-      // Increase HR
-      doc.box.monument.hr = doc.box.monument.hr + 1;
-      break;
-    case 'def':
-      doc.box.monument.mlv.def = doc.box.monument.mlv.def + 1;
-      // Increase HR
-      doc.box.monument.hr = doc.box.monument.hr + 1;
-      break;
-    case 'sp':
-      doc.box.monument.mlv.sp = doc.box.monument.mlv.sp + 1;
-      // Increase HR
-      doc.box.monument.hr = doc.box.monument.hr + 1;
-      break;
+        // Replace the item in the array
+        if (targetIndex !== -1) {
+          doc.box.monument.augite[targetIndex].amount = Math.max(
+            doc.box.monument.augite[targetIndex].amount - 10,
+            0
+          );
+        }
 
+        break;
+      case 'atk':
+        doc.box.monument.mlv.atk = doc.box.monument.mlv.atk + 1;
+        // Increase HR
+        doc.box.monument.hr = doc.box.monument.hr + 1;
+        break;
+      case 'def':
+        doc.box.monument.mlv.def = doc.box.monument.mlv.def + 1;
+        // Increase HR
+        doc.box.monument.hr = doc.box.monument.hr + 1;
+        break;
+      case 'sp':
+        doc.box.monument.mlv.sp = doc.box.monument.mlv.sp + 1;
+        // Increase HR
+        doc.box.monument.hr = doc.box.monument.hr + 1;
+        break;
+
+    }
+    const update = { box: doc.box };
+
+    await User.findByIdAndUpdate(doc.id, update);
+    const data = {
+      monument_levelup: {
+        capacity: doc.box.capacity,
+        monument: doc.box.monument,
+      },
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in leveupAuto:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Monument level up failed');
   }
-  const update = { box: doc.box };
-
-  await User.findByIdAndUpdate(doc.id, update);
-  const data = {
-    monument_levelup: {
-      capacity: doc.box.capacity,
-      monument: doc.box.monument,
-    },
-  };
-  encryptAndSend(data, res, req);
 };

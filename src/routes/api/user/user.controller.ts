@@ -3,118 +3,137 @@ import { encryptAndSend } from '../../../services/crypto/encryptionHelpers';
 import User from '../../../model/user';
 
 export const rename = async (req: Request, res: Response) => {
-  const name = req.body.name;
-  const filter = { current_session: req.body.session_id };
-  const update = { character_name: name };
-  const doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
+  try {
+    const name = req.body.name;
+    const filter = { current_session: req.body.session_id };
+    const update = { character_name: name };
+    const doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
 
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); //Not authenticated
+    }
+
+    // Set name in db
+    // Send request back
+    const data = {
+      name: doc.character_name,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in rename:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Rename failed');
   }
-
-  // Set name in db
-  // Send request back
-  const data = {
-    name: doc.character_name,
-  };
-  encryptAndSend(data, res, req);
 };
 
 export const get = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const filter = { current_session: req.body.session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); //Not authenticated
+    }
+
+    const selectedOtomoTeam = doc.otomoteam.otomo_team.find(
+      (team) => team.index === doc.otomoteam.selected_index
+    );
+    const data = {
+      payment_model_info: {
+        face: {
+          man: [],
+          woman: [],
+        },
+      },
+      user_info: {
+        capacity_eqp_set: doc.equipset.capacity_eqp_set,
+        caplink_id: 'caplnk',
+        comment: doc.comment,
+        equip_sets: doc.equipset.equip_sets,
+        game_id: doc.game_id,
+        model_info: doc.model_info,
+        name: doc.character_name,
+        otomo_team: {
+          main: doc.box.otomos.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[0]
+          ),
+          sub: doc.box.otomos.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[1]
+          ),
+        },
+        parameter: {
+          //POSSIBLY NEED TO SEPERATE THESE OUT IN THE DB DUE TO BOX AND THIS BEING SEPERATE THINGS!?
+          attack: doc.box.monument.mlv.atk,
+          defence: doc.box.monument.mlv.def,
+          hp: doc.box.monument.mlv.hp,
+          rank: doc.box.monument.hr,
+          sp: doc.box.monument.mlv.sp,
+        },
+        selected_equip_set_index: doc.equipset.selected_equip_set_index,
+        selected_partner: {
+          main_partner_id: doc.selected_partner.main_partner_id,
+          quest_partner_id: doc.selected_partner.quest_partner_id,
+        },
+        social_equip: {
+          social_arm: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_body: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_head: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_leg: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_waist: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+        },
+        title: {
+          mst_title_id: 0,
+        },
+        use_social_equip: -1,
+        user_id: doc.user_id,
+      },
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in user get:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Get user failed');
   }
-
-  const selectedOtomoTeam = doc.otomoteam.otomo_team.find(
-    (team) => team.index === doc.otomoteam.selected_index
-  );
-  const data = {
-    payment_model_info: {
-      face: {
-        man: [],
-        woman: [],
-      },
-    },
-    user_info: {
-      capacity_eqp_set: doc.equipset.capacity_eqp_set,
-      caplink_id: 'caplnk',
-      comment: doc.comment,
-      equip_sets: doc.equipset.equip_sets,
-      game_id: doc.game_id,
-      model_info: doc.model_info,
-      name: doc.character_name,
-      otomo_team: {
-        main: doc.box.otomos.find(
-          (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[0]
-        ),
-        sub: doc.box.otomos.find(
-          (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[1]
-        ),
-      },
-      parameter: {
-        //POSSIBLY NEED TO SEPERATE THESE OUT IN THE DB DUE TO BOX AND THIS BEING SEPERATE THINGS!?
-        attack: doc.box.monument.mlv.atk,
-        defence: doc.box.monument.mlv.def,
-        hp: doc.box.monument.mlv.hp,
-        rank: doc.box.monument.hr,
-        sp: doc.box.monument.mlv.sp,
-      },
-      selected_equip_set_index: doc.equipset.selected_equip_set_index,
-      selected_partner: {
-        main_partner_id: doc.selected_partner.main_partner_id,
-        quest_partner_id: doc.selected_partner.quest_partner_id,
-      },
-      social_equip: {
-        social_arm: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-        social_body: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-        social_head: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-        social_leg: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-        social_waist: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-      },
-      title: {
-        mst_title_id: 0,
-      },
-      use_social_equip: -1,
-      user_id: doc.user_id,
-    },
-  };
-
-  encryptAndSend(data, res, req);
 };
 
 export const commentSet = async (req: Request, res: Response) => {
-  const comment = req.body.comment;
-  const filter = { current_session: req.body.session_id };
-  const update = { comment: comment };
-  const doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
+  try {
+    const comment = req.body.comment;
+    const filter = { current_session: req.body.session_id };
+    const update = { comment: comment };
+    const doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
 
-  const data = {
-    comment: doc.comment,
-  };
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); // Not authenticated
+    }
 
-  encryptAndSend(data, res, req);
+    const data = {
+      comment: doc.comment,
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in commentSet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Set comment failed');
+  }
 };
 
 export const navigationNews = async (req: Request, res: Response) => {
@@ -310,96 +329,109 @@ export const titleNews = (req: Request, res: Response) => {
 };
 
 export const titleSet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const filter = { current_session: req.body.session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); //Not authenticated
+    }
+    const selectedOtomoTeam = doc.otomoteam.otomo_team.find(
+      (team) => team.index === doc.otomoteam.selected_index
+    );
+    const data = {
+      user_info: {
+        capacity_eqp_set: doc.equipset.capacity_eqp_set,
+        caplink_id: 'caplnk',
+        comment: doc.comment,
+        equip_sets: doc.equipset.equip_sets,
+        game_id: doc.game_id,
+        model_info: doc.model_info,
+        name: doc.character_name,
+        otomo_team: {
+          main: doc.box.otomos.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[0]
+          ),
+          sub: doc.box.otomos.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[1]
+          ),
+        },
+        parameter: {
+          attack: 1,
+          defence: 1,
+          hp: 1,
+          rank: 1,
+          sp: 1,
+        },
+        selected_equip_set_index: 1,
+        selected_partner: {
+          main_partner_id: doc.selected_partner.main_partner_id,
+          quest_partner_id: doc.selected_partner.quest_partner_id,
+        },
+        social_equip: {
+          social_arm: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_body: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_head: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_leg: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_waist: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+        },
+        title: {
+          mst_title_id: req.body.mst_title_id,
+        },
+        use_social_equip: -1,
+        user_id: doc.user_id,
+      },
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in titleSet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Set title failed');
   }
-  const selectedOtomoTeam = doc.otomoteam.otomo_team.find(
-    (team) => team.index === doc.otomoteam.selected_index
-  );
-  const data = {
-    user_info: {
-      capacity_eqp_set: doc.equipset.capacity_eqp_set,
-      caplink_id: 'caplnk',
-      comment: doc.comment,
-      equip_sets: doc.equipset.equip_sets,
-      game_id: doc.game_id,
-      model_info: doc.model_info,
-      name: doc.character_name,
-      otomo_team: {
-        main: doc.box.otomos.find(
-          (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[0]
-        ),
-        sub: doc.box.otomos.find(
-          (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[1]
-        ),
-      },
-      parameter: {
-        attack: 1,
-        defence: 1,
-        hp: 1,
-        rank: 1,
-        sp: 1,
-      },
-      selected_equip_set_index: 1,
+};
+
+export const partnerGet = async (req: Request, res: Response) => {
+  try {
+    const filter = { current_session: req.body.session_id };
+
+    let doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004); // Not authenticated
+    }
+    doc.selected_partner.main_partner_id = req.body.main_partner_id;
+    doc.selected_partner.quest_partner_id = req.body.quest_partner_id;
+
+    const update = { selected_partner: doc.selected_partner };
+    doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+
+    const data = {
       selected_partner: {
         main_partner_id: doc.selected_partner.main_partner_id,
         quest_partner_id: doc.selected_partner.quest_partner_id,
       },
-      social_equip: {
-        social_arm: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-        social_body: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-        social_head: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-        social_leg: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-        social_waist: {
-          equipment_id: 'NO_EQUIP',
-          mst_equipment_id: 0,
-        },
-      },
-      title: {
-        mst_title_id: req.body.mst_title_id,
-      },
-      use_social_equip: -1,
-      user_id: doc.user_id,
-    },
-  };
-  encryptAndSend(data, res, req);
-};
+    };
 
-export const partnerGet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
-
-  let doc = await User.findOne(filter);
-  doc.selected_partner.main_partner_id = req.body.main_partner_id;
-  doc.selected_partner.quest_partner_id = req.body.quest_partner_id;
-
-  const update = { selected_partner: doc.selected_partner };
-  doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
-
-  const data = {
-    selected_partner: {
-      main_partner_id: doc.selected_partner.main_partner_id,
-      quest_partner_id: doc.selected_partner.quest_partner_id,
-    },
-  };
-
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    console.error('Error in partnerGet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Get partner failed');
+  }
 };
 export const searchId = async (req: Request, res: Response) => {
   const { uids: _uids } = req.body;

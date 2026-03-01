@@ -24,7 +24,7 @@ export function enrichEvent(eventList: EventEntry[]): EventEntry[] {
     const nodeId = event.mst_event_node_id ?? event.mst_score_node_id;
 
     const node = event_nodes.find(
-      (node) => parseInt(node.mEventNodeHash) === nodeId
+      (node) => parseInt(node.mEventNodeHash, 10) === nodeId
     );
 
     if (!node) {
@@ -41,7 +41,7 @@ export function enrichEvent(eventList: EventEntry[]): EventEntry[] {
         clear_time: 0,
         limited_amount: 0,
         mst_limited_id: 0,
-        mst_quest_id: parseInt(questId),
+        mst_quest_id: parseInt(questId, 10),
         quest_subtargets: [],
         state: 1,
       });
