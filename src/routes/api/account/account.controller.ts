@@ -31,6 +31,9 @@ export const migrationReady = async (req: Request, res: Response) => {
   const doc = await User.findOneAndUpdate(filter, update, {
     new: true,
   });
+  if (!doc) {
+    return encryptAndSend({}, res, req, 4004);
+  }
   const responseData = {
     migration_id: doc.migration_id,
   };
@@ -50,6 +53,9 @@ export const migrationAuth = async (req: Request, res: Response) => {
     new: true,
   });
 
+  if (!doc) {
+    return encryptAndSend({}, res, req, 4004);
+  }
   const responseData = {
     login_id: doc.login_id,
     user_id: doc.user_id,

@@ -220,7 +220,7 @@ export const eventTicketStart = async (req: Request, res: Response) => {
   };
   //Get Quest: From Hash -> QuestName req.body.mst_quest_id
   //Split Quest Name
-  const blocks = quest.mBlocks;
+  const blocks = quest?.mBlocks || [];
   if (blocks.length === 0) {
     return encryptAndSend({}, res, req, 10001);
   }
@@ -314,7 +314,7 @@ export const eventScoreStart = async (req: Request, res: Response) => {
   };
   //Get Quest: From Hash -> QuestName req.body.mst_quest_id
   //Split Quest Name
-  const blocks = quest.mBlocks;
+  const blocks = quest?.mBlocks || [];
   if (blocks.length === 0) {
     return encryptAndSend({}, res, req, 10001);
   }
@@ -395,7 +395,7 @@ export const eternalStart = async (req: Request, res: Response) => {
       subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
     },
   };
-  const blocks = quest.mBlocks;
+  const blocks = quest?.mBlocks || [];
   if (blocks.length === 0) {
     return encryptAndSend({}, res, req, 10001);
   }
@@ -742,7 +742,7 @@ export const islandStart = async (req: Request, res: Response) => {
     },
   };
 
-  const blocks = quest.mBlocks;
+  const blocks = quest?.mBlocks || [];
   if (blocks.length === 0) {
     return encryptAndSend({}, res, req, 10001);
   }
@@ -771,7 +771,7 @@ export const islandEnd = async (req: Request, res: Response) => {
   const clearTime = req.body.clear_time;
   const filter = { current_session: req.body.session_id };
   const quest = await QuestSheet.findOne({ mQuestID: cleared_quest });
-  console.log("Rewards:", quest.mRewardItemList);
+  console.log("Rewards:", quest?.mRewardItemList);
   const doc = await User.findOne(filter);
   if (!doc) {
     return encryptAndSend({}, res, req, 2004); //Not authenticated
