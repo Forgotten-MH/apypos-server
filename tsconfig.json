@@ -10,10 +10,11 @@
     "lib": [
       "ES2022"
     ],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "strictNullChecks": true,
-    "noImplicitAny": true,
     "skipLibCheck": true
   },
   "include": [
