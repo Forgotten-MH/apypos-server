@@ -11,7 +11,7 @@ Apypos is a Monster Hunter Explore (MHXR) private server emulator (AGPL-3.0). MH
 ```bash
 yarn install               # Install dependencies
 yarn build                 # Clean + tsc → dist/
-yarn start                 # Production: node --openssl-legacy-provider dist/server.js
+yarn start                 # Production: node dist/server.js
 yarn run start:dev         # Dev mode: nodemon with ts-node (auto-reload on .ts changes)
 yarn lint                  # ESLint on src/**/*.ts
 yarn format                # Prettier on src/**/*.ts
@@ -47,7 +47,7 @@ All API requests arrive as `application/octet-stream` Blowfish-encrypted bodies.
 
 ### Session Management
 
-Sessions are managed in-memory in `encryptionHelpers.ts` (not MongoDB). Key parameters: 24h timeout, 5-minute cleanup interval, max 1000 sessions before forced cleanup. Sessions are keyed by UUID tokens and track user ID, IP, and User-Agent.
+Sessions are managed in-memory in `encryptionHelpers.ts` with MongoDB persistence (restored on startup). Key parameters: 24h timeout, 5-minute cleanup interval, max 1000 sessions before forced cleanup. Sessions are keyed by UUID tokens and track user ID, IP, and User-Agent.
 
 ### Multiplayer (Socket.IO)
 
@@ -79,7 +79,7 @@ Copy `.env.example` to `.env`. Key variables: `IP`, `PORT`, `DB_*` (MongoDB conn
 
 ## Key Notes
 
-- Node.js >= 20 required. The `--openssl-legacy-provider` flag is needed for crypto compatibility.
+- Node.js >= 20 required. Blowfish ECB uses `egoroof-blowfish` (pure JS), no OpenSSL legacy provider needed.
 - Game resource FPK files must be manually placed in `src/public/res/download/`; only v0282 is supported.
 - Socket.IO v4 with `allowEIO3: true` for backward compatibility with the original game client (Engine.IO v3).
 - Blowfish encryption key is hardcoded in `src/services/encryptionService.ts`.
