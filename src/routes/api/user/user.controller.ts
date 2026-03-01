@@ -138,90 +138,110 @@ export const commentSet = async (req: Request, res: Response) => {
 };
 
 export const navigationNews = async (req: Request, res: Response) => {
-  const data: {
-    navigations: {
-      close_at: number;
-      end_at: number;
-      explain: string;
-      is_clear: number;
-      is_reward: number;
-      item_list: Record<string, never>;
-      limited_flag: number;
-      mst_navigation_id: number;
-      name: string;
-      progress: number;
-      progress_max: number;
-      start_at: number;
-    }[];
-  } = {
-    navigations: [],
-  };
-  if (false as boolean) {
-    // TODO: enable when navigation is implemented
-    data.navigations.push({
-      close_at: 3600,
-      end_at: 3600,
-      explain: 'explain',
-      is_clear: 0,
-      is_reward: 0,
-      item_list: {},
-      limited_flag: 0,
-      mst_navigation_id: 1,
-      name: 'Achivement Name',
-      progress: 0,
-      progress_max: 99,
-      start_at: 1,
-    });
-  }
+  try {
+    const data: {
+      navigations: {
+        close_at: number;
+        end_at: number;
+        explain: string;
+        is_clear: number;
+        is_reward: number;
+        item_list: Record<string, never>;
+        limited_flag: number;
+        mst_navigation_id: number;
+        name: string;
+        progress: number;
+        progress_max: number;
+        start_at: number;
+      }[];
+    } = {
+      navigations: [],
+    };
+    if (false as boolean) {
+      // TODO: enable when navigation is implemented
+      data.navigations.push({
+        close_at: 3600,
+        end_at: 3600,
+        explain: 'explain',
+        is_clear: 0,
+        is_reward: 0,
+        item_list: {},
+        limited_flag: 0,
+        mst_navigation_id: 1,
+        name: 'Achivement Name',
+        progress: 0,
+        progress_max: 99,
+        start_at: 1,
+      });
+    }
 
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in navigationNews:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Get navigation news failed');
+  }
 };
 
 export const achievementNews = async (req: Request, res: Response) => {
-  const data = {
-    achievements: [],
-    apple_achievements: [],
-    google_achievements: [],
-  };
+  try {
+    const data = {
+      achievements: [],
+      apple_achievements: [],
+      google_achievements: [],
+    };
 
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in achievementNews:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Get achievement news failed');
+  }
 };
 
 export const achievementAll = async (req: Request, res: Response) => {
-  const data = {
-    achievements: [
-      // {is_clear:0,
-      //   is_reward:0,
-      //   mst_achievement_id:0,
-      //   progress:0,
-      //   progress_max:100
-      // }
-    ],
-  };
+  try {
+    const data = {
+      achievements: [
+        // {is_clear:0,
+        //   is_reward:0,
+        //   mst_achievement_id:0,
+        //   progress:0,
+        //   progress_max:100
+        // }
+      ],
+    };
 
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in achievementAll:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Get all achievements failed');
+  }
 };
 
 export const OfferCheck = async (req: Request, res: Response) => {
-  const data = {
-    offer_products: [
-      {
-        additional_point: 0,
-        additional_state: 0,
-        amount: 1,
-        banner: 'coev_04480',
-        explain: 'Explain offer...',
-        id: 0,
-        is_started: 1,
-        name: 'Offer Name',
-        remain: 3600,
-        start: 0,
-        state: 1,
-      },
-    ],
-  };
+  try {
+    const data = {
+      offer_products: [
+        {
+          additional_point: 0,
+          additional_state: 0,
+          amount: 1,
+          banner: 'coev_04480',
+          explain: 'Explain offer...',
+          id: 0,
+          is_started: 1,
+          name: 'Offer Name',
+          remain: 3600,
+          start: 0,
+          state: 1,
+        },
+      ],
+    };
 
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in OfferCheck:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Offer check failed');
+  }
 };
 
 export const navigationAll = (req: Request, res: Response) => {
@@ -449,215 +469,225 @@ export const partnerGet = async (req: Request, res: Response) => {
   }
 };
 export const searchId = async (req: Request, res: Response) => {
-  const { uids: _uids } = req.body;
-  //TODO search by uid loop over then produce below...
-  const data = {
-    capacity_eqp_set: 1,
+  try {
+    const { uids: _uids } = req.body;
+    //TODO search by uid loop over then produce below...
+    const data = {
+      capacity_eqp_set: 1,
 
-    player_details: [
-      {
-        comment: '<string>',
-        created: 12345,
+      player_details: [
+        {
+          comment: '<string>',
+          created: 12345,
 
-        equip_arm: {
-          equip_info: {
-            hash: 3325982510,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
+          equip_arm: {
+            equip_info: {
+              hash: 3325982510,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
           },
-        },
 
-        equip_body: {
-          equip_info: {
-            hash: 1801022340,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
+          equip_body: {
+            equip_info: {
+              hash: 1801022340,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
           },
-        },
 
-        equip_head: {
-          equip_info: {
-            hash: 69277598,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
+          equip_head: {
+            equip_info: {
+              hash: 69277598,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
           },
-        },
 
-        equip_leg: {
-          equip_info: {
-            hash: 3353202438,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
+          equip_leg: {
+            equip_info: {
+              hash: 3353202438,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
           },
-        },
 
-        equip_secret_weapon: {
-          equip_info: {
-            hash: 2006810019,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
+          equip_secret_weapon: {
+            equip_info: {
+              hash: 2006810019,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
           },
-        },
 
-        // equip_talisman: {
-        //   equip_info: {
-        //     hash: 1701921942,
-        //     level: 1,
-        //     potential: 1,
-        //     skill_level: 1,
-        //   },
-        // },
+          // equip_talisman: {
+          //   equip_info: {
+          //     hash: 1701921942,
+          //     level: 1,
+          //     potential: 1,
+          //     skill_level: 1,
+          //   },
+          // },
 
-        is_awake: 0,
-        is_enable: 0,
+          is_awake: 0,
+          is_enable: 0,
 
-        equip_waist: {
-          equip_info: {
-            hash: 62957325,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
+          equip_waist: {
+            equip_info: {
+              hash: 62957325,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
           },
-        },
 
-        equip_weapon: {
-          equip_info: {
-            hash: 2006810019,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
+          equip_weapon: {
+            equip_info: {
+              hash: 2006810019,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
           },
+
+          friend_at: 1,
+          game_id: '<string>',
+
+          guild_info: {
+            gid: '<string>',
+            is_guild: 1,
+            is_same: 1,
+            member_type: 1,
+            name: '<string>',
+            rank: 1,
+          },
+
+          is_captomo: 1,
+          is_friend: 1,
+          last_access_at: 12,
+          login_freq: 1,
         },
-
-        friend_at: 1,
-        game_id: '<string>',
-
-        guild_info: {
-          gid: '<string>',
-          is_guild: 1,
-          is_same: 1,
-          member_type: 1,
-          name: '<string>',
-          rank: 1,
-        },
-
-        is_captomo: 1,
-        is_friend: 1,
-        last_access_at: 12,
-        login_freq: 1,
-      },
-    ],
-  };
-  encryptAndSend(data, res, req);
+      ],
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in searchId:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Search by ID failed');
+  }
 };
 export const gameId = async (req: Request, res: Response) => {
-  const { gameIds: _gameIds } = req.body;
-  //TODO search by gameIds loop over then produce below...
-  const data = {
-    capacity_eqp_set: 3,
-    player_details: [
-      {
-        comment: 'test',
-        created: 0,
-        equip_arm: {
-          equip_info: {
-            hash: 794677787,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
+  try {
+    const { gameIds: _gameIds } = req.body;
+    //TODO search by gameIds loop over then produce below...
+    const data = {
+      capacity_eqp_set: 3,
+      player_details: [
+        {
+          comment: 'test',
+          created: 0,
+          equip_arm: {
+            equip_info: {
+              hash: 794677787,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
           },
-        },
-        equip_body: {
-          equip_info: {
-            hash: 2184892081,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
+          equip_body: {
+            equip_info: {
+              hash: 2184892081,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
           },
-        },
-        equip_head: {
-          equip_info: {
-            hash: 3980571307,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
+          equip_head: {
+            equip_info: {
+              hash: 3980571307,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
           },
-        },
-        equip_leg: {
-          equip_info: {
-            hash: 784230963,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
+          equip_leg: {
+            equip_info: {
+              hash: 784230963,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
           },
-        },
-        equip_secret_weapon: {
-          equip_info: {
-            hash: 133663020,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
+          equip_secret_weapon: {
+            equip_info: {
+              hash: 133663020,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
           },
-        },
-        // equip_talisman: {
-        //   equip_info: {
-        //     hash: 1701921942,
-        //     level: 0,
-        //     potential: 0,
-        //     skill_level: 0,
-        //   },
-        // },
-        is_awake: 1,
-        is_enable: 1,
-        equip_waist: {
-          equip_info: {
-            hash: 3936551480,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
+          // equip_talisman: {
+          //   equip_info: {
+          //     hash: 1701921942,
+          //     level: 0,
+          //     potential: 0,
+          //     skill_level: 0,
+          //   },
+          // },
+          is_awake: 1,
+          is_enable: 1,
+          equip_waist: {
+            equip_info: {
+              hash: 3936551480,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
           },
-        },
-        equip_weapon: {
-          equip_info: {
-            hash: 133663020,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
+          equip_weapon: {
+            equip_info: {
+              hash: 133663020,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
           },
+          friend_at: 1,
+          game_id: 'abcdef1234567890',
+          guild_info: {
+            gid: '5f8e7a2b9a1b3c1d2e3f4a5b',
+            is_guild: 1,
+            is_same: 1,
+            member_type: 1,
+            name: 'Guild of Heroes',
+            rank: 54,
+          },
+          is_captomo: 1,
+          is_friend: 1,
+          last_access_at: 1,
+          login_freq: 1,
+          player_id: 'abcdef1234567890',
+          player_name: 'test',
+          player_rank: 1,
+          player_rank_point: 1,
+          player_s_flag: 1,
+          player_search_rank: 1,
+          player_skin_hash: 1,
+          player_skin_level: 1,
+          player_skin_potential: 1,
+          player_skin_skill_level: 1,
+          player_total_score: 1,
         },
-        friend_at: 1,
-        game_id: 'abcdef1234567890',
-        guild_info: {
-          gid: '5f8e7a2b9a1b3c1d2e3f4a5b',
-          is_guild: 1,
-          is_same: 1,
-          member_type: 1,
-          name: 'Guild of Heroes',
-          rank: 54,
-        },
-        is_captomo: 1,
-        is_friend: 1,
-        last_access_at: 1,
-        login_freq: 1,
-        player_id: 'abcdef1234567890',
-        player_name: 'test',
-        player_rank: 1,
-        player_rank_point: 1,
-        player_s_flag: 1,
-        player_search_rank: 1,
-        player_skin_hash: 1,
-        player_skin_level: 1,
-        player_skin_potential: 1,
-        player_skin_skill_level: 1,
-        player_total_score: 1,
-      },
-    ],
-  };
+      ],
+    };
 
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in gameId:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Search by game ID failed');
+  }
 };

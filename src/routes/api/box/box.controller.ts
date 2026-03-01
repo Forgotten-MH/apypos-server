@@ -289,101 +289,21 @@ export const awake = async (req: Request, res: Response) => {
 };
 
 export const potentialupAutoSet = async (req: Request, res: Response) => {
-  const { eqp_obj_infos: _eqp_obj_infos } = req.body;
-  //todo make real data
-  const data = {
-    base_equipment: {
-      auto_potential_composite: 12345,
-      awaked: 1,
-      created: 1700000000,
-      elv: 5,
-      endAwakeCount: 10,
-      endAwakeRemain: 3,
-      end_remain: 100,
-      equipment_id: 'EQP_ABC123',
-      evolve_start_time: 1700001234,
-      favorite: 0,
-      is_awake: 1,
-      is_complete_auto_potential_composite: 0,
-      mst_equipment_id: 987654,
-      potential: 222,
-      slv: 3,
-      start_remain: 200,
-    },
-    payments: [
-      {
-        amount: 500,
-        mst_payment_id: 1001,
-      },
-    ],
-    resource_equipments: [
-      {
-        auto_potential_composite: 123,
-        awaked: 0,
-        created: 1699999999,
-        elv: 2,
-        endAwakeCount: 5,
-        endAwakeRemain: 1,
-        end_remain: 50,
-        equipment_id: 'EQP_XYZ999',
-        evolve_start_time: 1700001111,
-        favorite: 1,
-        is_awake: 1,
-        is_complete_auto_potential_composite: 0,
-        mst_equipment_id: 444444,
-        potential: 333,
-        slv: 2,
-        start_remain: 75,
-      },
-    ],
-    resource_materials: [
-      {
-        amount: 20,
-        mst_material_id: 3001,
-      },
-      {
-        amount: 50,
-        mst_material_id: 3002,
-      },
-    ],
-    zeny: 999999,
-  };
-
-  encryptAndSend(data, res, req);
-};
-
-export const sale = async (req: Request, res: Response) => {
-  const { eqp_obj_ids: _eqp_obj_ids } = req.body;
-  //todo real data
-  const data = {
-    equip_sell: {
-      eqp_obj_ids: ['EQP_OBJ_12345', 'EQP_OBJ_67890', 'EQP_OBJ_ABCDE'],
-      point: {
-        amount: 2500,
-        mst_event_point_id: 42,
-      },
-      zeny: 750000,
-    },
-  };
-  encryptAndSend(data, res, req);
-};
-
-export const favoriteSet = async (req: Request, res: Response) => {
-  const { is_favorite, eqp_obj_id } = req.body;
-  //todo real data
-  const data = {
-    favorite_set: {
-      equipment: {
-        auto_potential_composite: 123,
+  try {
+    const { eqp_obj_infos: _eqp_obj_infos } = req.body;
+    //todo make real data
+    const data = {
+      base_equipment: {
+        auto_potential_composite: 12345,
         awaked: 1,
         created: 1700000000,
         elv: 5,
         endAwakeCount: 10,
         endAwakeRemain: 3,
         end_remain: 100,
-        equipment_id: eqp_obj_id,
+        equipment_id: 'EQP_ABC123',
         evolve_start_time: 1700001234,
-        favorite: is_favorite,
+        favorite: 0,
         is_awake: 1,
         is_complete_auto_potential_composite: 0,
         mst_equipment_id: 987654,
@@ -391,9 +311,104 @@ export const favoriteSet = async (req: Request, res: Response) => {
         slv: 3,
         start_remain: 200,
       },
-    },
-  };
-  encryptAndSend(data, res, req);
+      payments: [
+        {
+          amount: 500,
+          mst_payment_id: 1001,
+        },
+      ],
+      resource_equipments: [
+        {
+          auto_potential_composite: 123,
+          awaked: 0,
+          created: 1699999999,
+          elv: 2,
+          endAwakeCount: 5,
+          endAwakeRemain: 1,
+          end_remain: 50,
+          equipment_id: 'EQP_XYZ999',
+          evolve_start_time: 1700001111,
+          favorite: 1,
+          is_awake: 1,
+          is_complete_auto_potential_composite: 0,
+          mst_equipment_id: 444444,
+          potential: 333,
+          slv: 2,
+          start_remain: 75,
+        },
+      ],
+      resource_materials: [
+        {
+          amount: 20,
+          mst_material_id: 3001,
+        },
+        {
+          amount: 50,
+          mst_material_id: 3002,
+        },
+      ],
+      zeny: 999999,
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in potentialupAutoSet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Potential up auto set failed');
+  }
+};
+
+export const sale = async (req: Request, res: Response) => {
+  try {
+    const { eqp_obj_ids: _eqp_obj_ids } = req.body;
+    //todo real data
+    const data = {
+      equip_sell: {
+        eqp_obj_ids: ['EQP_OBJ_12345', 'EQP_OBJ_67890', 'EQP_OBJ_ABCDE'],
+        point: {
+          amount: 2500,
+          mst_event_point_id: 42,
+        },
+        zeny: 750000,
+      },
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in sale:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Equipment sale failed');
+  }
+};
+
+export const favoriteSet = async (req: Request, res: Response) => {
+  try {
+    const { is_favorite, eqp_obj_id } = req.body;
+    //todo real data
+    const data = {
+      favorite_set: {
+        equipment: {
+          auto_potential_composite: 123,
+          awaked: 1,
+          created: 1700000000,
+          elv: 5,
+          endAwakeCount: 10,
+          endAwakeRemain: 3,
+          end_remain: 100,
+          equipment_id: eqp_obj_id,
+          evolve_start_time: 1700001234,
+          favorite: is_favorite,
+          is_awake: 1,
+          is_complete_auto_potential_composite: 0,
+          mst_equipment_id: 987654,
+          potential: 222,
+          slv: 3,
+          start_remain: 200,
+        },
+      },
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in favoriteSet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Set favorite failed');
+  }
 };
 
 export const leveupAuto = async (req: Request, res: Response) => {

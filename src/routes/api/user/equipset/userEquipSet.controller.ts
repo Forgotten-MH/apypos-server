@@ -1,113 +1,82 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../../services/crypto/encryptionHelpers';
 import User from '../../../../model/user';
+import { createLogger } from '../../../../middleware/logger';
+const log = createLogger('equipSet');
 
 export const equipSetGet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const filter = { current_session: req.body.session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004);
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004);
+    }
+    const data = { ...doc.equipset } as object;
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in equipSetGet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Get equip set failed');
   }
-  const data = { ...doc.equipset } as object;
-  encryptAndSend(data, res, req);
 };
 
 export const equipSetSet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
-  const doc = await User.findOne(filter);
-  if (!doc?.equipset) {
-    return encryptAndSend({}, res, req, 2004);
-  }
-  if (req.body.equip_sets.length > 0) {
-    doc.equipset.equip_sets = req.body.equip_sets;
-    doc.equipset.selected_equip_set_index = req.body.selected_equip_set_index;
-    doc.equipset.capacity_eqp_set = req.body.capacity_eqp_set;
-    const update = { equipset: doc.equipset };
+  try {
+    const filter = { current_session: req.body.session_id };
+    const doc = await User.findOne(filter);
+    if (!doc?.equipset) {
+      return encryptAndSend({}, res, req, 2004);
+    }
+    if (req.body.equip_sets.length > 0) {
+      doc.equipset.equip_sets = req.body.equip_sets;
+      doc.equipset.selected_equip_set_index = req.body.selected_equip_set_index;
+      doc.equipset.capacity_eqp_set = req.body.capacity_eqp_set;
+      const update = { equipset: doc.equipset };
 
-    await User.findByIdAndUpdate(doc.id, update);
+      await User.findByIdAndUpdate(doc.id, update);
+    }
+    const data = { ...doc.equipset } as object;
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in equipSetSet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Set equip set failed');
   }
-  const data = { ...doc.equipset } as object;
-  encryptAndSend(data, res, req);
 };
 
 export const equipSetSocialGet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004);
+  try {
+    const filter = { current_session: req.body.session_id };
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004);
+    }
+    const data = {
+      social_equip_sets: doc.social_equip_sets,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in equipSetSocialGet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Get social equip set failed');
   }
-  const data = {
-    social_equip_sets: doc.social_equip_sets,
-  };
-  encryptAndSend(data, res, req);
 };
 export const equipSetSocialSet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004);
-  }
-  if (req.body.social_equip_sets.length > 0) {
-    doc.social_equip_sets = req.body.social_equip_sets;
+  try {
+    const filter = { current_session: req.body.session_id };
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, 2004);
+    }
+    if (req.body.social_equip_sets.length > 0) {
+      doc.social_equip_sets = req.body.social_equip_sets;
 
-    const update = { social_equip_sets: doc.social_equip_sets };
+      const update = { social_equip_sets: doc.social_equip_sets };
 
-    await User.findByIdAndUpdate(doc.id, update);
+      await User.findByIdAndUpdate(doc.id, update);
+    }
+    const data = doc.social_equip_sets ?? [];
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in equipSetSocialSet:', error);
+    encryptAndSend({}, res, req, 1, 2, 'Set social equip set failed');
   }
-  const data = doc.social_equip_sets ?? [];
-  // const data = {
-  //   social_equip_sets: [
-  //     {
-  //       gunner: {
-  //         social_arm: {
-  //           equipment_id: "NO_EQUIP",
-  //         mst_equipment_id: 0,
-  //         },
-  //         social_body: {
-  //           equipment_id: "NO_EQUIP",
-  //           mst_equipment_id: 0,
-  //         },
-  //         social_head: {
-  //           equipment_id: "NO_EQUIP",
-  //           mst_equipment_id: 0,
-  //         },
-  //         social_leg: {
-  //           equipment_id: "NO_EQUIP",
-  //         mst_equipment_id: 0,
-  //         },
-  //         social_waist: {
-  //           equipment_id: "NO_EQUIP",
-  //           mst_equipment_id: 0,
-  //         },
-  //       },
-  //       is_used: 0,
-  //       knight: {
-  //         social_arm: {
-  //           equipment_id: "NO_EQUIP",
-  //         mst_equipment_id: 0,
-  //         },
-  //         social_body: {
-  //           equipment_id: "NO_EQUIP",
-  //           mst_equipment_id: 0,
-  //         },
-  //         social_head: {
-  //           equipment_id: "NO_EQUIP",
-  //           mst_equipment_id: 0,
-  //         },
-  //         social_leg: {
-  //           equipment_id: "NO_EQUIP",
-  //         mst_equipment_id: 0,
-  //         },
-  //         social_waist: {
-  //           equipment_id: "NO_EQUIP",
-  //           mst_equipment_id: 0,
-  //         },
-  //       },
-  //       mst_partner_id: 0,
-  //     },
-  //     // Additional sets if there are more
-  //   ],
-  // };
-  encryptAndSend(data, res, req);
 };
