@@ -3,6 +3,6 @@ import * as versionController from './versionController';
 
 const versionRouter = Router();
 
-versionRouter.get('/*.json', versionController.getVersionData);
+versionRouter.get('/*splat.json', versionController.getVersionData);
 
 export default versionRouter;

@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 
 // Load environment variables from .env file
-dotenv.config();
+dotenv.config({ quiet: true });
 
 export const IP = process.env.IP || '127.0.0.1';
 export const WEB_URL = process.env.WEB_URL || 'http://127.0.0.1/web';

@@ -140,7 +140,7 @@ function findSessionByToken(
 }
 
 function generateSessionKey(req: Request): string {
-  const _ip = req.ip || req.connection.remoteAddress || 'unknown';
+  const _ip = req.ip || req.socket.remoteAddress || 'unknown';
   const userAgent = req.get('User-Agent') || 'unknown';
   const userAgentHash = Buffer.from(userAgent).toString('base64').slice(0, 8);
   return `device_${userAgentHash}`;
@@ -180,7 +180,7 @@ export function encryptAndSend(
       sessionInfo = existingSession;
       sessionInfo.last_accessed = now;
       sessionInfo.ip_address =
-        req.ip || req.connection.remoteAddress || 'unknown';
+        req.ip || req.socket.remoteAddress || 'unknown';
       sessionStore.set(sessionKey, sessionInfo);
     } else {
       const session_token = generateSessionToken();
@@ -191,7 +191,7 @@ export function encryptAndSend(
         user_agent: req.get('User-Agent'),
         account_id: userId,
         game_id: req.body?.game_id,
-        ip_address: req.ip || req.connection.remoteAddress || 'unknown',
+        ip_address: req.ip || req.socket.remoteAddress || 'unknown',
         device_fingerprint: req.get('User-Agent')
           ? Buffer.from(req.get('User-Agent')!).toString('base64').slice(0, 8)
           : undefined,
@@ -209,7 +209,7 @@ export function encryptAndSend(
       sessionInfo = existingSession.session;
       sessionInfo.last_accessed = now;
       sessionInfo.ip_address =
-        req.ip || req.connection.remoteAddress || 'unknown';
+        req.ip || req.socket.remoteAddress || 'unknown';
       sessionStore.set(sessionKey, sessionInfo);
     } else {
       sessionKey = `client_${clientSessionToken}`;
@@ -221,7 +221,7 @@ export function encryptAndSend(
         user_agent: req.get('User-Agent'),
         account_id: req.body?.user_id || req.query?.user_id,
         game_id: req.body?.game_id,
-        ip_address: req.ip || req.connection.remoteAddress || 'unknown',
+        ip_address: req.ip || req.socket.remoteAddress || 'unknown',
         device_fingerprint: req.get('User-Agent')
           ? Buffer.from(req.get('User-Agent')!).toString('base64').slice(0, 8)
           : undefined,
@@ -238,7 +238,7 @@ export function encryptAndSend(
       user_agent: req.get('User-Agent'),
       account_id: req.body?.user_id || req.query?.user_id,
       game_id: req.body?.game_id,
-      ip_address: req.ip || req.connection.remoteAddress || 'unknown',
+      ip_address: req.ip || req.socket.remoteAddress || 'unknown',
       device_fingerprint: req.get('User-Agent')
         ? Buffer.from(req.get('User-Agent')!).toString('base64').slice(0, 8)
         : undefined,
@@ -265,9 +265,7 @@ export function encryptAndSend(
     now_time: timeService.getNowTime(),
     relogin_time: timeService.getRelogTime(),
   };
-  // console.log("Current Time Japan",timeService.getJapanTime())
-  // console.log("Response: \n ############")
-  // console.log(responseData)
+  console.log(`\n>>> RESPONSE ${req.method} ${req.originalUrl}:`, JSON.stringify(responseData), '<<<\n');
   const encryptedData = encryptionService.encrypt(JSON.stringify(responseData));
   // console.log("now_time:",responseData.now_time)
   // console.log("relogin_time:",responseData.relogin_time)

@@ -775,7 +775,11 @@ export const chatGet = async (req: Request, res: Response) => {
     const recent_logs = chat_logs.slice(-20);
 
     const uniqueUserIds = [
-      ...new Set(getMessages.map((msg: { uid?: string }) => msg.uid)),
+      ...new Set(
+        getMessages
+          .map((msg: { uid?: string }) => msg.uid)
+          .filter((uid): uid is string => uid !== undefined),
+      ),
     ];
 
     const users = await User.find({ uu_id: { $in: uniqueUserIds } });

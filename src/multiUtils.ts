@@ -58,7 +58,6 @@ ubyte array[pktlength];
   header.writeUInt16LE(pktlen, offset);
   offset += 2;
   header.writeUInt32LE(flag2, offset);
-  offset += 4;
   return header;
 }
 

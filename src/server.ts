@@ -229,20 +229,24 @@ mongoose
         .then((count) => {
           log.info(`Number of Quests: ${count}`);
           if (count === 0) {
-            void QuestSheet.create(
+            void QuestSheet.insertMany(
               normalTutorialQuestSheets.rQuestSheet.mQuestDataList,
             );
-            void QuestSheet.create(
+            void QuestSheet.insertMany(
               trainingQuestSheets.rQuestSheet.mQuestDataList,
             );
-            void QuestSheet.create(scoreQuestSheets.rQuestSheet.mQuestDataList);
-            void QuestSheet.create(
+            void QuestSheet.insertMany(
+              scoreQuestSheets.rQuestSheet.mQuestDataList,
+            );
+            void QuestSheet.insertMany(
               eternalQuestSheets.rQuestSheet.mQuestDataList,
             );
-            void QuestSheet.create(
+            void QuestSheet.insertMany(
               ticketQuestSheets.rQuestSheet.mQuestDataList,
             );
-            void QuestSheet.create(eventQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(
+              eventQuestSheets.rQuestSheet.mQuestDataList,
+            );
 
             log.info('✅ Quest Data imported successfully.');
           } else {
