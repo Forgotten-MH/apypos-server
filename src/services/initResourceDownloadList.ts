@@ -25,7 +25,7 @@ function walkDir(dir: string, fileCallback: (filePath: string) => void) {
 
 export function makeDownloadList(type: string, os: string) {
   if (!fs.existsSync(folderPath + os + '/' + type + '/download.list')) {
-    const data: { filePath: string; crc: string; fileSize: number }[] = [];
+    const data: { filePath: string; crc: number; fileSize: number }[] = [];
 
     walkDir(folderPath + os + '/' + type, (filePath) => {
       if (path.extname(filePath) === '.fpk') {
@@ -33,10 +33,16 @@ export function makeDownloadList(type: string, os: string) {
         const fileData = fs.readFileSync(filePath);
         const fileSize = fs.statSync(filePath).size;
 
-        const jam = crcjam(fileData).toString(16);
+        const jam = crcjam(fileData);
 
         let parsedPath = filePath.replace(/\\/g, '/');
-        parsedPath = parsedPath.replace(path.posix.join('public', 'res', 'download', os), '');
+        // Strip everything up to and including the OS download directory
+        // e.g., .../res/download/android/tutorialDL/adrd/sound.01.fpk → /tutorialDL/adrd/sound.01.fpk
+        const osDir = '/res/download/' + os;
+        const osIndex = parsedPath.indexOf(osDir);
+        if (osIndex !== -1) {
+          parsedPath = parsedPath.substring(osIndex + osDir.length);
+        }
         parsedPath = parsedPath.replace('/v0282', '');
 
         data.push({ filePath: parsedPath, crc: jam, fileSize });
