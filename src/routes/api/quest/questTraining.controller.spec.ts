@@ -14,7 +14,6 @@ vi.mock('../../../middleware/logger', () => ({
 }));
 
 import User from '../../../model/user.js';
-import Present from '../../../model/presents.js';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { trainingEnd, trainingStart, trainingList } from './questTraining.controller.js';
