@@ -1,5 +1,8 @@
 # Apypos
 
+[![CI](https://github.com/Forgotten-MH/apypos-server/actions/workflows/ci.yml/badge.svg)](https://github.com/Forgotten-MH/apypos-server/actions/workflows/ci.yml)
+[![Docker](https://github.com/Forgotten-MH/apypos-server/actions/workflows/docker.yml/badge.svg)](https://github.com/Forgotten-MH/apypos-server/actions/workflows/docker.yml)
+
 A server emulator for **Monster Hunter Explore** (MHXR), the mobile-exclusive Monster Hunter title (iOS/Android) shut down by Capcom. Apypos handles Blowfish-encrypted HTTP API routes, real-time multiplayer via Socket.IO, and serves game resource files (FPK archives).
 
 > [!WARNING]
