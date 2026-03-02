@@ -6,6 +6,54 @@ import { createLogger } from '../../../middleware/logger.js';
 import type { RenameInput, CommentSetInput, TitleSetInput, PartnerSetInput, SearchUserIdInput, SearchGameIdInput, SessionOnlyInput } from './user.schema.js';
 const log = createLogger('user');
 
+const DEFAULT_SOCIAL_EQUIP = {
+  social_arm: { equipment_id: 'NO_EQUIP', mst_equipment_id: 0 },
+  social_body: { equipment_id: 'NO_EQUIP', mst_equipment_id: 0 },
+  social_head: { equipment_id: 'NO_EQUIP', mst_equipment_id: 0 },
+  social_leg: { equipment_id: 'NO_EQUIP', mst_equipment_id: 0 },
+  social_waist: { equipment_id: 'NO_EQUIP', mst_equipment_id: 0 },
+};
+
+const buildUserInfoResponse = (
+  doc: NonNullable<Awaited<ReturnType<typeof User.findOne>>>,
+  overrides: { parameter?: object; selected_equip_set_index?: number; title?: { mst_title_id: number } } = {},
+) => {
+  const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
+    (team) => team.index === doc.otomoteam?.selected_index,
+  );
+  return {
+    capacity_eqp_set: doc.equipset?.capacity_eqp_set,
+    caplink_id: 'caplnk',
+    comment: doc.comment,
+    equip_sets: doc.equipset?.equip_sets,
+    game_id: doc.game_id,
+    model_info: doc.model_info,
+    name: doc.character_name,
+    otomo_team: {
+      main: doc.box?.otomos?.find(
+        (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0],
+      ),
+      sub: doc.box?.otomos?.find((otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]),
+    },
+    parameter: overrides.parameter ?? {
+      attack: doc.box?.monument?.mlv?.atk,
+      defence: doc.box?.monument?.mlv?.def,
+      hp: doc.box?.monument?.mlv?.hp,
+      rank: doc.box?.monument?.hr,
+      sp: doc.box?.monument?.mlv?.sp,
+    },
+    selected_equip_set_index: overrides.selected_equip_set_index ?? doc.equipset?.selected_equip_set_index,
+    selected_partner: {
+      main_partner_id: doc.selected_partner?.main_partner_id,
+      quest_partner_id: doc.selected_partner?.quest_partner_id,
+    },
+    social_equip: DEFAULT_SOCIAL_EQUIP,
+    title: overrides.title ?? { mst_title_id: 0 },
+    use_social_equip: -1,
+    user_id: doc.user_id,
+  };
+};
+
 export const rename = async (req: Request, res: Response) => {
   try {
     const { name, session_id } = req.body as RenameInput;
@@ -41,70 +89,9 @@ export const get = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
 
-    const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
-      (team) => team.index === doc.otomoteam?.selected_index,
-    );
     const data = {
-      payment_model_info: {
-        face: {
-          man: [],
-          woman: [],
-        },
-      },
-      user_info: {
-        capacity_eqp_set: doc.equipset?.capacity_eqp_set,
-        caplink_id: 'caplnk',
-        comment: doc.comment,
-        equip_sets: doc.equipset?.equip_sets,
-        game_id: doc.game_id,
-        model_info: doc.model_info,
-        name: doc.character_name,
-        otomo_team: {
-          main: doc.box?.otomos?.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0],
-          ),
-          sub: doc.box?.otomos?.find((otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]),
-        },
-        parameter: {
-          attack: doc.box?.monument?.mlv?.atk,
-          defence: doc.box?.monument?.mlv?.def,
-          hp: doc.box?.monument?.mlv?.hp,
-          rank: doc.box?.monument?.hr,
-          sp: doc.box?.monument?.mlv?.sp,
-        },
-        selected_equip_set_index: doc.equipset?.selected_equip_set_index,
-        selected_partner: {
-          main_partner_id: doc.selected_partner?.main_partner_id,
-          quest_partner_id: doc.selected_partner?.quest_partner_id,
-        },
-        social_equip: {
-          social_arm: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-          social_body: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-          social_head: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-          social_leg: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-          social_waist: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-        },
-        title: {
-          mst_title_id: 0,
-        },
-        use_social_equip: -1,
-        user_id: doc.user_id,
-      },
+      payment_model_info: { face: { man: [], woman: [] } },
+      user_info: buildUserInfoResponse(doc),
     };
 
     encryptAndSend(data, res, req);
@@ -359,64 +346,12 @@ export const titleSet = async (req: Request, res: Response) => {
     if (!doc) {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
-    const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
-      (team) => team.index === doc.otomoteam?.selected_index,
-    );
     const data = {
-      user_info: {
-        capacity_eqp_set: doc.equipset?.capacity_eqp_set,
-        caplink_id: 'caplnk',
-        comment: doc.comment,
-        equip_sets: doc.equipset?.equip_sets,
-        game_id: doc.game_id,
-        model_info: doc.model_info,
-        name: doc.character_name,
-        otomo_team: {
-          main: doc.box?.otomos?.find(
-            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0],
-          ),
-          sub: doc.box?.otomos?.find((otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]),
-        },
-        parameter: {
-          attack: 1,
-          defence: 1,
-          hp: 1,
-          rank: 1,
-          sp: 1,
-        },
+      user_info: buildUserInfoResponse(doc, {
+        parameter: { attack: 1, defence: 1, hp: 1, rank: 1, sp: 1 },
         selected_equip_set_index: 1,
-        selected_partner: {
-          main_partner_id: doc.selected_partner?.main_partner_id,
-          quest_partner_id: doc.selected_partner?.quest_partner_id,
-        },
-        social_equip: {
-          social_arm: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-          social_body: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-          social_head: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-          social_leg: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-          social_waist: {
-            equipment_id: 'NO_EQUIP',
-            mst_equipment_id: 0,
-          },
-        },
-        title: {
-          mst_title_id,
-        },
-        use_social_equip: -1,
-        user_id: doc.user_id,
-      },
+        title: { mst_title_id },
+      }),
     };
     encryptAndSend(data, res, req);
   } catch (error) {

@@ -7,87 +7,52 @@ import User from '../../../model/user.js';
 import Present from '../../../model/presents.js';
 import type { TrainingEndInput, TrainingStartInput, TrainingListInput } from './questTraining.schema.js';
 const log = createLogger('questTraining');
-const getRewardItemByQuestId = (questId: number) => {
-  switch (questId) {
-    case calcMstId('TRAINING00001'):
-      return {
-        equipment_id: 'WD_SWORD002',
-        mst_equipment_id: calcMstId('WD_SWORD002'),
-      };
-    case calcMstId('TRAINING00002'):
-      return {
-        equipment_id: 'WD_WSWORD002',
-        mst_equipment_id: calcMstId('WD_WSWORD002'),
-      };
-    case calcMstId('TRAINING00003'):
-      return {
-        equipment_id: 'WD_LSWORD2002',
-        mst_equipment_id: calcMstId('WD_LSWORD2002'),
-      };
-    case calcMstId('TRAINING00004'):
-      return {
-        equipment_id: 'WD_LSWORD002',
-        mst_equipment_id: calcMstId('WD_LSWORD002'),
-      };
-    case calcMstId('TRAINING00005'):
-      return {
-        equipment_id: 'WD_PIPE002',
-        mst_equipment_id: calcMstId('WD_PIPE002'),
-      };
-    case calcMstId('TRAINING00006'):
-      return {
-        equipment_id: 'WD_HAMMER002',
-        mst_equipment_id: calcMstId('WD_HAMMER002'),
-      };
-    case calcMstId('TRAINING00007'):
-      return {
-        equipment_id: 'WD_LANCE002',
-        mst_equipment_id: calcMstId('WD_LANCE002'),
-      };
-    case calcMstId('TRAINING00008'):
-      return {
-        equipment_id: 'WD_GUNLANCE002',
-        mst_equipment_id: calcMstId('WD_GUNLANCE002'),
-      };
-    case calcMstId('TRAINING00009'):
-      return {
-        equipment_id: 'WD_AXE002',
-        mst_equipment_id: calcMstId('WD_AXE002'),
-      };
-    case calcMstId('TRAINING00010'):
-      return {
-        equipment_id: 'WD_CHAXE002',
-        mst_equipment_id: calcMstId('WD_CHAXE002'),
-      };
-    case calcMstId('TRAINING00011'):
-      return {
-        equipment_id: 'WD_LBOWGUN002',
-        mst_equipment_id: calcMstId('WD_LBOWGUN002'),
-      };
-    case calcMstId('TRAINING00012'):
-      return {
-        equipment_id: 'WD_HBOWGUN002',
-        mst_equipment_id: calcMstId('WD_HBOWGUN002'),
-      };
-    case calcMstId('TRAINING00013'):
-      return {
-        equipment_id: 'WD_BOW034',
-        mst_equipment_id: calcMstId('WD_BOW034'),
-      };
-    case calcMstId('TRAINING00014'):
-      return {
-        equipment_id: 'WD_STICK002',
-        mst_equipment_id: calcMstId('WD_STICK002'),
-      };
-    case calcMstId('TRAINING00015'):
-      return {
-        equipment_id: 'WD_ACAXE002',
-        mst_equipment_id: calcMstId('WD_ACAXE002'),
-      };
-    default:
-      return null;
-  }
-};
+
+const TRAINING_QUESTS = [
+  { equip_type: 1, questId: 'TRAINING00001', equipmentId: 'WD_SWORD002', rewardText: 'Sword & Shield' },
+  { equip_type: 11, questId: 'TRAINING00002', equipmentId: 'WD_WSWORD002', rewardText: 'Dual Blades' },
+  { equip_type: 7, questId: 'TRAINING00003', equipmentId: 'WD_LSWORD2002', rewardText: 'Long Sword' },
+  { equip_type: 0, questId: 'TRAINING00004', equipmentId: 'WD_LSWORD002', rewardText: 'Great Sword' },
+  { equip_type: 12, questId: 'TRAINING00005', equipmentId: 'WD_PIPE002', rewardText: 'Hunting Horn' },
+  { equip_type: 2, questId: 'TRAINING00006', equipmentId: 'WD_HAMMER002', rewardText: 'Hammer' },
+  { equip_type: 3, questId: 'TRAINING00007', equipmentId: 'WD_LANCE002', rewardText: 'Lance' },
+  { equip_type: 9, questId: 'TRAINING00008', equipmentId: 'WD_GUNLANCE002', rewardText: 'Gunlance' },
+  { equip_type: 8, questId: 'TRAINING00009', equipmentId: 'WD_AXE002', rewardText: 'Switch Axe' },
+  { equip_type: 14, questId: 'TRAINING00010', equipmentId: 'WD_CHAXE002', rewardText: 'Charge Blade' },
+  { equip_type: 6, questId: 'TRAINING00011', equipmentId: 'WD_LBOWGUN002', rewardText: 'Light Bowgun' },
+  { equip_type: 4, questId: 'TRAINING00012', equipmentId: 'WD_HBOWGUN002', rewardText: 'Heavy Bowgun' },
+  { equip_type: 10, questId: 'TRAINING00013', equipmentId: 'WD_BOW034', rewardText: 'Bow' },
+  { equip_type: 13, questId: 'TRAINING00014', equipmentId: 'WD_STICK002', rewardText: 'Insect Glaive' },
+  { equip_type: 15, questId: 'TRAINING00015', equipmentId: 'WD_ACAXE002', rewardText: 'Accel Axe' },
+] as const;
+
+const rewardByQuestId = new Map(
+  TRAINING_QUESTS.map((q) => [
+    calcMstId(q.questId),
+    { equipment_id: q.equipmentId, mst_equipment_id: calcMstId(q.equipmentId) },
+  ]),
+);
+
+const getRewardItemByQuestId = (questId: number) => rewardByQuestId.get(questId) ?? null;
+
+const emptyEquipmentEntry = (equipmentId: string) => ({
+  auto_potential_composite: 0,
+  awaked: 0,
+  created: 0,
+  elv: 0,
+  endAwakeCount: 0,
+  endAwakeRemain: 0,
+  end_remain: 0,
+  equipment_id: equipmentId,
+  evolve_start_time: 0,
+  favorite: 0,
+  is_awake: 0,
+  is_complete_auto_potential_composite: 0,
+  mst_equipment_id: calcMstId(equipmentId),
+  potential: 0,
+  slv: 0,
+  start_remain: 0,
+});
 export const trainingEnd = async (req: Request, res: Response) => {
   try {
     const { mst_quest_id, clear_time, session_id } = req.body as TrainingEndInput;
@@ -249,443 +214,13 @@ export const trainingList = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
     const data = {
-      training_list: [
-      {
-        equip_type: 1,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00001')),
-        mst_quest_id: calcMstId('TRAINING00001'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_SWORD002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_SWORD002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Sword & Shield',
-      },
-      {
-        equip_type: 11,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00002')),
-        mst_quest_id: calcMstId('TRAINING00002'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_WSWORD002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_WSWORD002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Dual Blades',
-      },
-      {
-        equip_type: 7,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00003')),
-        mst_quest_id: calcMstId('TRAINING00003'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_LSWORD2002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_LSWORD2002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Long Sword',
-      },
-      {
-        equip_type: 0,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00004')),
-        mst_quest_id: calcMstId('TRAINING00004'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_LSWORD002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_LSWORD002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Great Sword',
-      },
-      {
-        equip_type: 12,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00005')),
-        mst_quest_id: calcMstId('TRAINING00005'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_PIPE002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_PIPE002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Hunting Horn',
-      },
-      {
-        equip_type: 2,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00006')),
-        mst_quest_id: calcMstId('TRAINING00006'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_HAMMER002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_HAMMER002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Hammer',
-      },
-      {
-        equip_type: 3,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00007')),
-        mst_quest_id: calcMstId('TRAINING00007'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_LANCE002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_LANCE002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Lance',
-      },
-      {
-        equip_type: 9,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00008')),
-        mst_quest_id: calcMstId('TRAINING00008'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_GUNLANCE002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_GUNLANCE002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Gunlance',
-      },
-      {
-        equip_type: 8,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00009')),
-        mst_quest_id: calcMstId('TRAINING00009'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_AXE002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_AXE002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Switch Axe',
-      },
-      {
-        equip_type: 14,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00010')),
-        mst_quest_id: calcMstId('TRAINING00010'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_CHAXE002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_CHAXE002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Charge Blade',
-      },
-      {
-        equip_type: 6,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00011')),
-        mst_quest_id: calcMstId('TRAINING00011'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_LBOWGUN002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_LBOWGUN002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Light Bowgun',
-      },
-      {
-        equip_type: 4,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00012')),
-        mst_quest_id: calcMstId('TRAINING00012'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_HBOWGUN002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_HBOWGUN002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Heavy Bowgun',
-      },
-      {
-        equip_type: 10,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00013')),
-        mst_quest_id: calcMstId('TRAINING00013'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_BOW034',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_BOW034'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Bow',
-      },
-      {
-        equip_type: 13,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00014')),
-        mst_quest_id: calcMstId('TRAINING00014'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_STICK002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_STICK002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Insect Glaive',
-      },
-      {
-        equip_type: 15,
-        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00015')),
-        mst_quest_id: calcMstId('TRAINING00015'),
-        reward_item: {
-          //4002688025
-          equipments: [
-            {
-              auto_potential_composite: 0,
-              awaked: 0,
-              created: 0,
-              elv: 0,
-              endAwakeCount: 0,
-              endAwakeRemain: 0,
-              end_remain: 0,
-              equipment_id: 'WD_ACAXE002',
-              evolve_start_time: 0,
-              favorite: 0,
-              is_awake: 0,
-              is_complete_auto_potential_composite: 0,
-              mst_equipment_id: calcMstId('WD_ACAXE002'),
-              potential: 0,
-              slv: 0,
-              start_remain: 0,
-            },
-          ],
-        },
-        reward_text: 'Accel Axe',
-      },
-    ],
+      training_list: TRAINING_QUESTS.map((q) => ({
+        equip_type: q.equip_type,
+        is_clear: isTrainingCleared(doc.cleared_quests, calcMstId(q.questId)),
+        mst_quest_id: calcMstId(q.questId),
+        reward_item: { equipments: [emptyEquipmentEntry(q.equipmentId)] },
+        reward_text: q.rewardText,
+      })),
     };
     encryptAndSend(data, res, req);
   } catch (error) {

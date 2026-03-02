@@ -55,6 +55,100 @@ interface GuildMemberData {
   use_social_equip?: number;
 }
 
+interface UserGuildLike {
+  chat_freq?: number;
+  created?: number;
+  gid?: string;
+  joined?: number;
+  login_freq?: number;
+  mood?: number;
+  receive?: unknown[];
+  send?: unknown[];
+  timezone?: number;
+  uid?: string;
+  updated?: number;
+  waited?: number;
+  yarikomi?: number;
+}
+
+interface GuildLike {
+  auto_recruit?: number;
+  bingo?: unknown;
+  bonus_value?: number;
+  chat_freq?: number;
+  comment?: string;
+  created?: number;
+  exp?: number;
+  explusion_rule?: number;
+  free_comment?: string;
+  gid?: string;
+  holding_bingo_id?: unknown;
+  joined?: number;
+  login_freq?: number;
+  mark_box?: unknown;
+  member?: unknown;
+  mood?: number;
+  name?: string;
+  rank?: number;
+  receive?: unknown[];
+  recruit?: number;
+  search_id?: string;
+  send?: unknown[];
+  set_mark?: unknown;
+  timezone?: number;
+  updated?: number;
+  yarikomi?: number;
+}
+
+const buildUserGuildResponse = (userGuild: UserGuildLike | null, uid: string, version = 0) => ({
+  __v: version,
+  _id: userGuild?.gid || '',
+  chat_freq: userGuild?.chat_freq || 0,
+  created: userGuild?.created || 0,
+  gid: userGuild?.gid || '',
+  joined: userGuild?.joined || 0,
+  login_freq: userGuild?.login_freq || 0,
+  mood: userGuild?.mood || 0,
+  receive: userGuild?.receive || [],
+  send: userGuild?.send || [],
+  timezone: userGuild?.timezone || 0,
+  uid: userGuild?.uid || uid,
+  updated: userGuild?.updated || 0,
+  waited: userGuild?.waited || 0,
+  yarikomi: userGuild?.yarikomi || 0,
+});
+
+const buildGuildResponse = (guild: GuildLike, version = 5) => ({
+  __v: version,
+  _id: guild.gid || '',
+  auto_recruit: guild.auto_recruit,
+  bingo: guild.bingo,
+  bonus_value: guild.bonus_value,
+  chat_freq: guild.chat_freq,
+  comment: guild.comment,
+  created: guild.created,
+  exp: guild.exp,
+  explusion_rule: guild.explusion_rule,
+  free_comment: guild.free_comment,
+  holding_bingo_id: guild.holding_bingo_id,
+  mark_box: guild.mark_box,
+  member: guild.member,
+  gid: guild.gid,
+  joined: guild.joined,
+  login_freq: guild.login_freq,
+  mood: guild.mood,
+  name: guild.name,
+  rank: guild.rank,
+  receive: guild.receive,
+  recruit: guild.recruit,
+  search_id: guild.search_id,
+  send: guild.send,
+  set_mark: guild.set_mark,
+  timezone: guild.timezone,
+  updated: guild.updated,
+  yarikomi: guild.yarikomi,
+});
+
 const getUserFromSession = async (req: Request, res: Response) => {
   const { session_id } = req.body as SessionOnlyInput;
   const filter = { current_session: session_id };
@@ -82,49 +176,10 @@ export const userGet = async (req: Request, res: Response) => {
     const userGuild = await guildService.getUserGuildInfo(uid);
 
     if (!userGuild) {
-      const data = {
-        user_guild: {
-          __v: 0,
-          _id: '',
-          chat_freq: 0,
-          created: 0,
-          gid: '',
-          joined: 0,
-          login_freq: 0,
-          mood: 0,
-          receive: [],
-          send: [],
-          timezone: 0,
-          uid: uid,
-          updated: 0,
-          waited: 0,
-          yarikomi: 0,
-        },
-      };
-      return encryptAndSend(data, res, req);
+      return encryptAndSend({ user_guild: buildUserGuildResponse(null, uid) }, res, req);
     }
 
-    const data = {
-      user_guild: {
-        __v: 5,
-        _id: userGuild?.gid || '',
-        chat_freq: userGuild?.chat_freq || 0,
-        created: userGuild?.created || 0,
-        gid: userGuild?.gid || '',
-        joined: userGuild?.joined || 0,
-        login_freq: userGuild?.login_freq || 0,
-        mood: userGuild?.mood || 0,
-        receive: userGuild?.receive || [],
-        send: userGuild?.send || [],
-        timezone: userGuild?.timezone || 0,
-        uid: userGuild?.uid || uid,
-        updated: userGuild?.updated || 0,
-        waited: userGuild?.waited || 0,
-        yarikomi: userGuild?.yarikomi || 0,
-      },
-    };
-
-    encryptAndSend(data, res, req);
+    encryptAndSend({ user_guild: buildUserGuildResponse(userGuild, uid, 5) }, res, req);
   } catch (error) {
     log.error('Error in userGet:', error);
     encryptAndSend({ user_guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get user guild information failed');
@@ -142,27 +197,7 @@ export const userSetup = async (req: Request, res: Response) => {
 
     const uid = user.uu_id;
 
-    const data = {
-      user_guild: {
-        __v: 0,
-        _id: '',
-        chat_freq: 0,
-        created: 0,
-        gid: '',
-        joined: 0,
-        login_freq: 0,
-        mood: 0,
-        receive: [],
-        send: [],
-        timezone: 0,
-        uid: uid,
-        updated: 0,
-        waited: 0,
-        yarikomi: 0,
-      },
-    };
-
-    encryptAndSend(data, res, req);
+    encryptAndSend({ user_guild: buildUserGuildResponse(null, uid) }, res, req);
   } catch (error) {
     log.error('Error in userSetup:', error);
     encryptAndSend({ user_guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Initialize user guild settings failed');
@@ -182,27 +217,7 @@ export const searchResult = async (req: Request, res: Response) => {
 
     const userGuild = await guildService.getUserGuildInfo(uid);
 
-    const data = {
-      user_guild: {
-        __v: 5,
-        _id: userGuild?.gid || '',
-        chat_freq: userGuild?.chat_freq || 0,
-        created: userGuild?.created || 0,
-        gid: userGuild?.gid || '',
-        joined: userGuild?.joined || 0,
-        login_freq: userGuild?.login_freq || 0,
-        mood: userGuild?.mood || 0,
-        receive: userGuild?.receive || [],
-        send: userGuild?.send || [],
-        timezone: userGuild?.timezone || 0,
-        uid: uid,
-        updated: userGuild?.updated || 0,
-        waited: userGuild?.waited || 0,
-        yarikomi: userGuild?.yarikomi || 0,
-      },
-    };
-
-    encryptAndSend(data, res, req);
+    encryptAndSend({ user_guild: buildUserGuildResponse(userGuild, uid, 5) }, res, req);
   } catch (error) {
     log.error('Error in searchResult:', error);
     encryptAndSend({ user_guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Search guild failed');
@@ -242,39 +257,7 @@ export const create = async (req: Request, res: Response) => {
       yarikomi: yarikomi || 0,
     });
 
-    const data = {
-      guild: {
-        __v: 0,
-        _id: guild.gid || '',
-        auto_recruit: guild.auto_recruit,
-        bingo: guild.bingo,
-        bonus_value: guild.bonus_value,
-        chat_freq: guild.chat_freq,
-        comment: guild.comment,
-        created: guild.created,
-        exp: guild.exp,
-        explusion_rule: guild.explusion_rule,
-        free_comment: guild.free_comment,
-        holding_bingo_id: guild.holding_bingo_id,
-        mark_box: guild.mark_box,
-        member: guild.member,
-        gid: guild.gid,
-        joined: guild.joined,
-        login_freq: guild.login_freq,
-        mood: guild.mood,
-        name: guild.name,
-        rank: guild.rank,
-        receive: guild.receive,
-        recruit: guild.recruit,
-        search_id: guild.search_id,
-        set_mark: guild.set_mark,
-        timezone: guild.timezone,
-        updated: guild.updated,
-        yarikomi: guild.yarikomi,
-      },
-    };
-
-    encryptAndSend(data, res, req);
+    encryptAndSend({ guild: buildGuildResponse(guild, 0) }, res, req);
   } catch (error) {
     log.error('Error in create:', error);
     encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Create guild failed');
@@ -304,39 +287,7 @@ export const getUserGuild = async (req: Request, res: Response) => {
       return encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Guild not found');
     }
 
-    const data = {
-      guild: {
-        __v: 5,
-        _id: guild.gid || '',
-        auto_recruit: guild.auto_recruit,
-        bingo: guild.bingo,
-        bonus_value: guild.bonus_value,
-        chat_freq: guild.chat_freq,
-        comment: guild.comment,
-        created: guild.created,
-        exp: guild.exp,
-        explusion_rule: guild.explusion_rule,
-        free_comment: guild.free_comment,
-        holding_bingo_id: guild.holding_bingo_id,
-        mark_box: guild.mark_box,
-        member: guild.member,
-        gid: guild.gid,
-        joined: guild.joined,
-        login_freq: guild.login_freq,
-        mood: guild.mood,
-        name: guild.name,
-        rank: guild.rank,
-        receive: guild.receive,
-        recruit: guild.recruit,
-        search_id: guild.search_id,
-        set_mark: guild.set_mark,
-        timezone: guild.timezone,
-        updated: guild.updated,
-        yarikomi: guild.yarikomi,
-      },
-    };
-
-    encryptAndSend(data, res, req);
+    encryptAndSend({ guild: buildGuildResponse(guild) }, res, req);
   } catch (error) {
     log.error('Error in getUserGuild:', error);
     encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get guild information failed');
@@ -421,37 +372,7 @@ export const searchId = async (req: Request, res: Response) => {
       return encryptAndSend(data, res, req, ERROR_CODE.NOT_FOUND, ERROR_CATEGORY.ERROR_DIALOG, 'Guild not found');
     }
 
-    const data = {
-      guild: {
-        __v: 5,
-        _id: guild.gid || '',
-        auto_recruit: guild.auto_recruit,
-        bingo: guild.bingo,
-        bonus_value: guild.bonus_value,
-        chat_freq: guild.chat_freq,
-        comment: guild.comment,
-        created: guild.created,
-        exp: guild.exp,
-        explusion_rule: guild.explusion_rule,
-        free_comment: guild.free_comment,
-        holding_bingo_id: guild.holding_bingo_id,
-        mark_box: guild.mark_box,
-        member: guild.member,
-        mood: guild.mood,
-        name: guild.name,
-        rank: guild.rank,
-        receive: guild.receive,
-        recruit: guild.recruit,
-        search_id: guild.search_id,
-        send: guild.send,
-        set_mark: guild.set_mark,
-        timezone: guild.timezone,
-        updated: guild.updated,
-        yarikomi: guild.yarikomi,
-      },
-    };
-
-    encryptAndSend(data, res, req);
+    encryptAndSend({ guild: buildGuildResponse(guild) }, res, req);
   } catch (error) {
     log.error('Error in searchId:', error);
     encryptAndSend({ guild: null }, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Search guild failed');
@@ -505,50 +426,8 @@ export const apply = async (req: Request, res: Response) => {
     }
 
     const data = {
-      guild: {
-        __v: 0,
-        _id: guild.gid || '',
-        auto_recruit: guild.auto_recruit,
-        bingo: guild.bingo,
-        bonus_value: guild.bonus_value,
-        chat_freq: guild.chat_freq,
-        comment: guild.comment,
-        created: guild.created,
-        exp: guild.exp,
-        explusion_rule: guild.explusion_rule,
-        free_comment: guild.free_comment,
-        holding_bingo_id: guild.holding_bingo_id,
-        mark_box: guild.mark_box,
-        member: guild.member,
-        mood: guild.mood,
-        name: guild.name,
-        rank: guild.rank,
-        receive: guild.receive,
-        recruit: guild.recruit,
-        search_id: guild.search_id,
-        send: guild.send,
-        set_mark: guild.set_mark,
-        timezone: guild.timezone,
-        updated: guild.updated,
-        yarikomi: guild.yarikomi,
-      },
-      user_guild: {
-        __v: 0,
-        _id: userGuild.gid || '',
-        chat_freq: userGuild.chat_freq || 0,
-        created: userGuild.created || 0,
-        gid: userGuild.gid || '',
-        joined: userGuild.joined || 0,
-        login_freq: userGuild.login_freq || 0,
-        mood: userGuild.mood || 0,
-        receive: userGuild.receive || [],
-        send: userGuild.send || [],
-        timezone: userGuild.timezone || 0,
-        uid: userGuild.uid || uid,
-        updated: userGuild.updated || 0,
-        waited: userGuild.waited || 0,
-        yarikomi: userGuild.yarikomi || 0,
-      },
+      guild: buildGuildResponse(guild, 0),
+      user_guild: buildUserGuildResponse(userGuild, uid),
     };
 
     encryptAndSend(data, res, req);
@@ -581,36 +460,8 @@ export const search = async (req: Request, res: Response) => {
 
     const guilds = await guildService.searchGuilds(filters);
 
-    const guildList = guilds.map((guild) => ({
-      __v: 5,
-      _id: guild.gid || '',
-      auto_recruit: guild.auto_recruit,
-      bingo: guild.bingo,
-      bonus_value: guild.bonus_value,
-      chat_freq: guild.chat_freq,
-      comment: guild.comment,
-      created: guild.created,
-      exp: guild.exp,
-      explusion_rule: guild.explusion_rule,
-      free_comment: guild.free_comment,
-      holding_bingo_id: guild.holding_bingo_id,
-      mark_box: guild.mark_box,
-      member: guild.member,
-      mood: guild.mood,
-      name: guild.name,
-      rank: guild.rank,
-      receive: guild.receive,
-      recruit: guild.recruit,
-      search_id: guild.search_id,
-      send: guild.send,
-      set_mark: guild.set_mark,
-      timezone: guild.timezone,
-      updated: guild.updated,
-      yarikomi: guild.yarikomi,
-    }));
-
     const data = {
-      guild: guildList,
+      guild: guilds.map((guild) => buildGuildResponse(guild)),
     };
 
     encryptAndSend(data, res, req);
