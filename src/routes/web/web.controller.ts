@@ -27,6 +27,11 @@ export const getScheduleIndexOld = (req: Request, res: Response) => {
   res.sendFile(filePath);
 };
 
+export const getDownload = (req: Request, res: Response) => {
+  const filePath = path.join(__dirname, '..', '..', 'public', 'web-res', 'download.html');
+  res.sendFile(filePath);
+};
+
 export const getFirstDL = (req: Request, res: Response) => {
   const filePath = path.join(__dirname, '..', '..', 'public', 'web-res', 'first-dl.html');
   res.sendFile(filePath);
