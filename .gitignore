@@ -32,7 +32,7 @@ src/public/*
 /data/
 
 # Log files
-src/middleware/logs/
+logs/
 
 # Proxy recordings (large session captures)
 recordings/

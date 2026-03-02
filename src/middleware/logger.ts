@@ -1,8 +1,7 @@
-import { fileURLToPath } from 'node:url';
 import winston from 'winston';
 import * as path from 'path';
 
-const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
+const logDir = process.env.LOG_DIR ?? path.join(process.cwd(), 'logs');
 
 const level = process.env.DEBUG === 'true' ? 'debug' : 'info';
 
@@ -30,11 +29,11 @@ export const logger = winston.createLogger({
       ),
     }),
     new winston.transports.File({
-      filename: path.join(__dirname, 'logs/error.log'),
+      filename: path.join(logDir, 'error.log'),
       level: 'error',
     }),
     new winston.transports.File({
-      filename: path.join(__dirname, 'logs/combined.log'),
+      filename: path.join(logDir, 'combined.log'),
     }),
   ],
 });
