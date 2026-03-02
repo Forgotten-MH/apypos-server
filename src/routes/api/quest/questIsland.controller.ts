@@ -313,7 +313,6 @@ export const islandStart = async (req: Request, res: Response) => {
 
 export const islandEnd = async (req: Request, res: Response) => {
   try {
-    //TODO update quest in cleared_quests with complete time
     const { mst_quest_id, clear_time, session_id } = req.body as IslandEndInput;
     const cleared_quest = mst_quest_id;
     const clearTime = clear_time;

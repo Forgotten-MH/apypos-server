@@ -98,7 +98,7 @@ mongoose
     server.listen(PORT, () => {
       void seedDatabase(log);
 
-      //TODO Instatiate entire ocean map here.
+      //TODO Instantiate entire ocean map here.
 
       log.info(`Apypos Server Internal Test v0.0.12 started on ${IP}:${PORT}`);
     });
