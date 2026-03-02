@@ -13,6 +13,9 @@ src/ipconfig.ts
 # OS files
 .DS_STORE
 
+# Python
+__pycache__/
+
 # Lock files (keep yarn.lock for reproducible builds)
 package-lock.json
 yarn-error.log
