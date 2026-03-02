@@ -5,4 +5,11 @@ npm-debug.log
 .coverage
 .coverage.*
 .env
+.env.example
 **/src/public/
+recordings/
+frida/
+scripts/
+docs/
+*.md
+docker-compose.yml
