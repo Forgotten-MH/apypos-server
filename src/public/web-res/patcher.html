@@ -132,6 +132,29 @@
     .back-link a { color: #e94560; text-decoration: none; }
     .back-link a:hover { text-decoration: underline; }
 
+    .step-label {
+      font-size: 0.8rem;
+      color: #e94560;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .apk-sources {
+      background: #1a1a2e;
+      border: 1px solid #0f3460;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      line-height: 1.7;
+    }
+    .apk-sources a { color: #4ecca3; text-decoration: none; }
+    .apk-sources a:hover { text-decoration: underline; }
+    .apk-sources .note { color: #666; font-size: 0.75rem; }
+    .hash-ok { color: #4ecca3; font-size: 0.78rem; margin-top: 0.25rem; }
+    .hash-bad { color: #d29922; font-size: 0.78rem; margin-top: 0.25rem; }
+
     .hidden { display: none; }
   </style>
 </head>
@@ -140,9 +163,20 @@
     <h1>Monster Hunter Explore</h1>
     <p class="subtitle">In-Browser APK Patcher</p>
 
+    <p class="step-label">Step 1 — Get the original APK</p>
+    <div class="apk-sources">
+      Download MHXR v09.03.06 from:
+      <a href="https://mhxr.en.uptodown.com/android/download" target="_blank" rel="noopener">Uptodown</a> ·
+      <a href="https://apkpure.com/%E3%83%A2%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%8F%E3%83%B3%E3%82%BF%E3%83%BC-%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%97%E3%83%AD%E3%82%A2/jp.co.capcom.android.explore" target="_blank" rel="noopener">APKPure</a> ·
+      <a href="https://apkcombo.com/%E3%83%A2%E3%83%B3%E3%82%B9%E3%82%BF%E3%83%BC%E3%83%8F%E3%83%B3%E3%82%BF%E3%83%BC-%E3%82%A8%E3%82%AF%E3%82%B9%E3%83%97%E3%83%AD%E3%82%A2/jp.co.capcom.android.explore" target="_blank" rel="noopener">APKCombo</a>
+      <br><span class="note">~86 MB · package: jp.co.capcom.android.explore</span>
+    </div>
+
+    <p class="step-label">Step 2 — Upload &amp; patch</p>
     <div class="drop-zone" id="dropZone">
       <p>Drag &amp; drop your MHXR APK here, or click to browse</p>
       <p class="filename hidden" id="fileName"></p>
+      <p class="hidden" id="hashResult"></p>
       <input type="file" id="fileInput" accept=".apk">
     </div>
 
@@ -1168,6 +1202,7 @@ const progressBar = document.getElementById('progressBar');
 const logOutput = document.getElementById('logOutput');
 
 let selectedFile = null;
+const EXPECTED_SHA256 = '711db4e65a064f81a0c48c68bc2f26c4a90d76fd7f84fb8a70d000a019c7a6d5';
 
 // Auto-fill server address from current page
 (function() {
@@ -1189,13 +1224,31 @@ dropZone.addEventListener('drop', (e) => {
   if (e.dataTransfer.files.length > 0) selectFile(e.dataTransfer.files[0]);
 });
 
-function selectFile(file) {
+async function selectFile(file) {
   selectedFile = file;
   fileName.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
   fileName.classList.remove('hidden');
   dropZone.classList.add('has-file');
   dropZone.querySelector('p:first-child').textContent = 'APK selected:';
   updatePatchButton();
+
+  // Verify SHA-256
+  const hashResult = document.getElementById('hashResult');
+  hashResult.classList.remove('hidden');
+  hashResult.className = 'info';
+  hashResult.textContent = 'Verifying SHA-256...';
+  try {
+    const buf = await file.arrayBuffer();
+    const hash = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', buf)),
+      b => b.toString(16).padStart(2, '0')).join('');
+    if (hash === EXPECTED_SHA256) {
+      hashResult.className = 'hash-ok';
+      hashResult.textContent = 'SHA-256 verified — authentic MHXR v09.03.06';
+    } else {
+      hashResult.className = 'hash-bad';
+      hashResult.textContent = 'SHA-256 mismatch — not the expected v09.03.06 APK (may still work)';
+    }
+  } catch { hashResult.classList.add('hidden'); }
 }
 
 function updatePatchButton() {
