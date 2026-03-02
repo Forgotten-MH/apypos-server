@@ -14,12 +14,7 @@ interface QuestSheetFile {
   };
 }
 
-const questType = process.argv[2] || 'event';
-const questPath = path.join(__dirname, '..', 'json', 'questDB', `${questType}.json`);
-const questSheets = JSON.parse(readFileSync(questPath, 'utf-8')) as QuestSheetFile;
-const originalLen = questSheets.rQuestSheet.mQuestDataList.length;
-
-function condenseAutoDeleteArrays(obj: unknown) {
+export function condenseAutoDeleteArrays(obj: unknown) {
   if (Array.isArray(obj)) {
     obj.forEach(condenseAutoDeleteArrays);
   } else if (typeof obj === 'object' && obj !== null) {
@@ -51,9 +46,13 @@ function condenseAutoDeleteArrays(obj: unknown) {
   }
 }
 
-condenseAutoDeleteArrays(questSheets);
+export async function enrichQuestList(questType: string) {
+  const questPath = path.join(__dirname, '..', 'json', 'questDB', `${questType}.json`);
+  const questSheets = JSON.parse(readFileSync(questPath, 'utf-8')) as QuestSheetFile;
+  const originalLen = questSheets.rQuestSheet.mQuestDataList.length;
 
-async function enrichAndPersist() {
+  condenseAutoDeleteArrays(questSheets);
+
   const errors: Record<string, unknown>[] = [];
   const allBlocks: number[] = [];
   for (const obj of questSheets.rQuestSheet.mQuestDataList) {
@@ -100,4 +99,12 @@ async function enrichAndPersist() {
   await fs.writeFile(extendedPath, JSON.stringify(allBlocks, null, 2), 'utf-8');
 }
 
-void enrichAndPersist();
+// CLI entry point: yarn generate-questList
+const isDirectRun =
+  process.argv[1] &&
+  (process.argv[1].endsWith('/questList.ts') || process.argv[1].endsWith('/questList.js'));
+
+if (isDirectRun) {
+  const questType = process.argv[2] || 'event';
+  void enrichQuestList(questType);
+}

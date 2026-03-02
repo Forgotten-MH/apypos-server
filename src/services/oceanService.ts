@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { readFile, writeFile } from 'fs/promises';
 import { createLogger } from '../middleware/logger.js';
 import type { Campaign, OceanObject, RaidInfo } from '../types/game.js';
 const log = createLogger('oceanService');
@@ -39,13 +39,13 @@ interface OceanPart {
   state: number;
 }
 
-interface OceanData {
+export interface OceanData {
   ocean_name: string;
   mst_ocean_id: number;
   part_list: OceanPart[];
 }
 
-function parseCSV(csvContent: string) {
+export function parseCSV(csvContent: string) {
   const lines = csvContent.trim().split('\n');
   const headers = lines.shift()!.split(',');
   const data: Record<string, OceanData> = {};
@@ -95,7 +95,7 @@ function parseCSV(csvContent: string) {
   return Object.values(data);
 }
 
-function parsePartCSV(csvContent: string, oceanData: OceanData[]) {
+export function parsePartCSV(csvContent: string, oceanData: OceanData[]) {
   const lines = csvContent.trim().split('\n');
   const headers = lines.shift()!.split(',');
   const partNodeMap: Record<number, Record<number, number>> = {};
@@ -136,7 +136,7 @@ function parsePartCSV(csvContent: string, oceanData: OceanData[]) {
   return partNodeMap;
 }
 
-function parseDramaCSV(
+export function parseDramaCSV(
   dramaCsv: string,
   storyData: string,
   noteData: string,
@@ -331,88 +331,44 @@ function parseDramaCSV(
   }
 }
 
-fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
-  if (err) {
-    log.error('Error reading ocean file:', err);
-    return;
-  }
-  let parsedOceanData: OceanData[] = parseCSV(oceanData);
+export async function generateOceanData(csvDir: string, outputPath: string) {
+  const oceanCsv = await readFile(`${csvDir}/1-oceans.csv`, 'utf8');
+  const partCsv = await readFile(`${csvDir}/parts/1-parts.csv`, 'utf8');
+  const dramaCsv = await readFile(`${csvDir}/parts/2-dramas.csv`, 'utf8');
+  const storyCsv = await readFile(`${csvDir}/parts/3-story.csv`, 'utf8');
+  const noteCsv = await readFile(`${csvDir}/parts/4-notes.csv`, 'utf8');
+  const nodeQuestCsv = await readFile(`${csvDir}/parts/nodes/2-node-quests.csv`, 'utf8');
+  const questCsv = await readFile(`${csvDir}/../questData.csv`, 'utf8');
+  const questSubtargetCsv = await readFile(`${csvDir}/../questSubtargetSet.csv`, 'utf8');
 
-  fs.readFile('./src/csv/oceans/parts/1-parts.csv', 'utf8', (err, partData) => {
-    if (err) {
-      log.error('Error reading part file:', err);
-      return;
-    }
+  let parsedOceanData = parseCSV(oceanCsv);
+  const partNodeMap = parsePartCSV(partCsv, parsedOceanData);
 
-    fs.readFile('./src/csv/oceans/parts/2-dramas.csv', 'utf8', (err, dramaData) => {
-      if (err) {
-        log.error('Error reading drama file:', err);
-        return;
-      }
+  parseDramaCSV(
+    dramaCsv,
+    storyCsv,
+    noteCsv,
+    nodeQuestCsv,
+    questCsv,
+    questSubtargetCsv,
+    partNodeMap,
+    parsedOceanData,
+  );
 
-      fs.readFile('./src/csv/oceans/parts/3-story.csv', 'utf8', (err, storyData) => {
-        if (err) {
-          log.error('Error reading story file:', err);
-          return;
-        }
-        fs.readFile('./src/csv/oceans/parts/4-notes.csv', 'utf8', (err, noteData) => {
-          if (err) {
-            log.error('Error reading notes file:', err);
-            return;
-          }
-          fs.readFile(
-            './src/csv/oceans/parts/nodes/2-node-quests.csv',
-            'utf8',
-            (err, noteQuestData) => {
-              if (err) {
-                log.error('Error reading story file:', err);
-                return;
-              }
+  log.debug(JSON.stringify(parsedOceanData, null, 2));
 
-              fs.readFile('./src/csv/questData.csv', 'utf8', (err, questData) => {
-                if (err) {
-                  log.error('Error reading questData file:', err);
-                  return;
-                }
+  //lazyfix reverse
+  parsedOceanData = parsedOceanData.reverse();
 
-                fs.readFile('./src/csv/questSubtargetSet.csv', 'utf8', (err, questSubtargetSet) => {
-                  if (err) {
-                    log.error('Error reading questSubtargetSet file:', err);
-                    return;
-                  }
+  await writeFile(outputPath, JSON.stringify(parsedOceanData), 'utf8');
+  log.info('complete');
+}
 
-                  const partNodeMap = parsePartCSV(partData, parsedOceanData);
+// CLI entry point: yarn generate-island
+const isDirectRun =
+  process.argv[1] &&
+  (process.argv[1].endsWith('/oceanService.ts') || process.argv[1].endsWith('/oceanService.js'));
 
-                  parseDramaCSV(
-                    dramaData,
-                    storyData,
-                    noteData,
-                    noteQuestData,
-                    questData,
-                    questSubtargetSet,
-                    partNodeMap,
-                    parsedOceanData,
-                  );
-                  //lazyfix reverse
-                  log.debug(JSON.stringify(parsedOceanData, null, 2));
-
-                  parsedOceanData = parsedOceanData.reverse();
-
-                  fs.writeFile(
-                    'myjsonfile.json',
-                    JSON.stringify(parsedOceanData),
-                    'utf8',
-                    (err) => {
-                      if (err) throw err;
-                      log.info('complete');
-                    },
-                  );
-                });
-              });
-            },
-          );
-        });
-      });
-    });
-  });
-});
+if (isDirectRun) {
+  void generateOceanData('./src/csv/oceans', 'myjsonfile.json');
+}
