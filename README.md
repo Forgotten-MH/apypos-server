@@ -55,14 +55,17 @@ A server emulator for **Monster Hunter Explore** (MHXR), the mobile-exclusive Mo
 
 ## Configuration
 
-Copy `.env.example` to `.env` and adjust the values as needed:
+Copy `.env.example` to `.env` and adjust the values as needed.
+
+> [!IMPORTANT]
+> `IP`, `RES_URL`, and `WEB_URL` must be set to an IP address reachable by the game client (e.g. your LAN IP). The client runs on a mobile device or emulator and cannot reach `127.0.0.1` on the host machine.
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `IP` | `127.0.0.1` | Server bind address |
+| `IP` | `0.0.0.0` | Server bind address |
 | `PORT` | `80` | Server port |
-| `WEB_URL` | `http://127.0.0.1/web` | Web interface URL |
-| `RES_URL` | `http://127.0.0.1/` | Resource files base URL |
+| `WEB_URL` | `http://127.0.0.1/web` | Web interface URL sent to the client — **set to your LAN IP** |
+| `RES_URL` | `http://127.0.0.1/` | Resource files base URL sent to the client — **set to your LAN IP** |
 | `DB_IP` | `127.0.0.1` | MongoDB host |
 | `DB_PORT` | `27017` | MongoDB port |
 | `DB_NAME` | `apypos` | MongoDB database name |
