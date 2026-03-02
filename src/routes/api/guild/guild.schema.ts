@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { sessionIdSchema } from '../../../schemas/common.schema.js';
+import { sessionIdSchema, commonRequestFields } from '../../../schemas/common.schema.js';
 
 export { SessionOnlySchema, type SessionOnlyInput } from '../../../schemas/common.schema.js';
 
@@ -16,6 +16,7 @@ export const CreateSchema = z
     recruit: z.number().int().optional(),
     timezone: z.number().int().optional(),
     yarikomi: z.number().int().optional(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -25,6 +26,7 @@ export const SearchIdSchema = z
   .object({
     session_id: sessionIdSchema,
     id: z.string(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -34,6 +36,7 @@ export const ApplySchema = z
   .object({
     session_id: sessionIdSchema,
     gid: z.string(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -49,6 +52,7 @@ export const SearchSchema = z
     yarikomi: z.number().int().optional(),
     timezone: z.number().int().optional(),
     recruit: z.number().int().optional(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -60,6 +64,7 @@ export const ChatSendSchema = z
     gid: z.string(),
     message: z.string().optional(),
     text: z.string().optional(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -69,6 +74,7 @@ export const MemberListSchema = z
   .object({
     session_id: sessionIdSchema,
     gid: z.string().optional(),
+    ...commonRequestFields,
   })
   .loose();
 

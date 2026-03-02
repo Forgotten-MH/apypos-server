@@ -1,9 +1,10 @@
 import { z } from 'zod';
-import { sessionIdSchema, questIdSchema } from '../../../schemas/common.schema.js';
+import { sessionIdSchema, questIdSchema, commonRequestFields } from '../../../schemas/common.schema.js';
 
 export const QuestIdOnlySchema = z
   .object({
     mst_quest_id: questIdSchema,
+    ...commonRequestFields,
   })
   .loose();
 
@@ -13,6 +14,7 @@ export const IslandStartSchema = z
   .object({
     mst_quest_id: questIdSchema,
     session_id: sessionIdSchema,
+    ...commonRequestFields,
   })
   .loose();
 
@@ -23,6 +25,7 @@ export const IslandEndSchema = z
     mst_quest_id: questIdSchema,
     clear_time: z.number().int(),
     session_id: sessionIdSchema,
+    ...commonRequestFields,
   })
   .loose();
 
@@ -31,17 +34,16 @@ export type IslandEndInput = z.infer<typeof IslandEndSchema>;
 export const IslandMapAllSchema = z
   .object({
     session_id: sessionIdSchema,
+    ...commonRequestFields,
   })
-  .loose();
+  .strict();
 
 export type IslandMapAllInput = z.infer<typeof IslandMapAllSchema>;
 
 export const EventStartSchema = z
   .object({
     mst_quest_id: questIdSchema,
-    block_seq: z.number().int().optional(),
-    app_ver: z.string().optional(),
-    res_ver: z.number().int().optional(),
+    ...commonRequestFields,
     atk: z.number().int().optional(),
     def: z.number().int().optional(),
     increase: z.number().int().optional(),
@@ -57,7 +59,7 @@ export const EventStartSchema = z
     power_up: z.number().int().optional(),
     select_fix_equipment_idx: z.number().int().optional(),
   })
-  .loose();
+  .strict();
 
 export type EventStartInput = z.infer<typeof EventStartSchema>;
 
@@ -65,7 +67,7 @@ export const EternalStartSchema = z
   .object({
     mst_quest_id: questIdSchema,
     mst_eternal_node_id: z.number().int(),
-    block_seq: z.number().int().optional(),
+    ...commonRequestFields,
     atk: z.number().int().optional(),
     def: z.number().int().optional(),
     increase: z.number().int().optional(),
@@ -74,6 +76,6 @@ export const EternalStartSchema = z
     partner_id: z.string().optional(),
     power_up: z.number().int().optional(),
   })
-  .loose();
+  .strict();
 
 export type EternalStartInput = z.infer<typeof EternalStartSchema>;

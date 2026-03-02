@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { sessionIdSchema } from '../../../schemas/common.schema.js';
+import { sessionIdSchema, commonRequestFields } from '../../../schemas/common.schema.js';
 
 export const StoryEndSchema = z
   .object({
@@ -9,7 +9,8 @@ export const StoryEndSchema = z
     mst_ocean_id: z.number().int(),
     mst_part_id: z.number().int(),
     mst_story_id: z.number().int(),
+    ...commonRequestFields,
   })
-  .loose();
+  .strict();
 
 export type StoryEndInput = z.infer<typeof StoryEndSchema>;

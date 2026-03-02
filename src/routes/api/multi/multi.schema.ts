@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { commonRequestFields } from '../../../schemas/common.schema.js';
 
 export const RoomReserveSchema = z
   .object({
@@ -6,6 +7,7 @@ export const RoomReserveSchema = z
     quick_match: z.number().int(),
     reserve: z.array(z.unknown()),
     restart: z.number().int(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -18,6 +20,7 @@ export const RoomSearchSchema = z
     quest_id: z.number().int(),
     quick_match: z.number().int(),
     restart: z.number().int(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -32,6 +35,7 @@ export const RoomJoinSchema = z
     reserve: z.array(z.unknown()),
     restart: z.number().int(),
     room_id: z.number().int(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -47,6 +51,7 @@ export const RoomCreateSchema = z
     reserve: z.array(z.unknown()),
     restart: z.number().int(),
     tag: z.number().int(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -62,6 +67,7 @@ export const RoomQuickSchema = z
     reserve: z.array(z.unknown()),
     restart: z.number().int(),
     tag: z.number().int(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -71,6 +77,7 @@ export const RoomGetSchema = z
   .object({
     quest_id: z.number().int(),
     room_id: z.number().int(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -79,6 +86,7 @@ export type RoomGetInput = z.infer<typeof RoomGetSchema>;
 export const MemberInfoSchema = z
   .object({
     sequence: z.number().int(),
+    ...commonRequestFields,
   })
   .loose();
 

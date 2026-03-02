@@ -1,17 +1,19 @@
 import { z } from 'zod';
-import { sessionIdSchema } from '../../../schemas/common.schema.js';
+import { sessionIdSchema, commonRequestFields } from '../../../schemas/common.schema.js';
 
 export const BoxGetSchema = z
   .object({
     session_id: sessionIdSchema,
+    ...commonRequestFields,
   })
-  .loose();
+  .strict();
 
 export type BoxGetInput = z.infer<typeof BoxGetSchema>;
 
 export const StorageGetSchema = z
   .object({
     target_idx: z.number().int(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -22,6 +24,7 @@ export const EquipLevelupSchema = z
     session_id: sessionIdSchema,
     eqp_obj_id: z.string(),
     num: z.number().int().optional(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -31,6 +34,7 @@ export const EquipAwakeSchema = z
   .object({
     session_id: sessionIdSchema,
     base_equipment_id: z.string(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -39,6 +43,7 @@ export type EquipAwakeInput = z.infer<typeof EquipAwakeSchema>;
 export const PotentialupAutoSetSchema = z
   .object({
     eqp_obj_infos: z.array(z.unknown()),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -47,6 +52,7 @@ export type PotentialupAutoSetInput = z.infer<typeof PotentialupAutoSetSchema>;
 export const SaleSchema = z
   .object({
     eqp_obj_ids: z.array(z.string()),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -56,6 +62,7 @@ export const FavoriteSetSchema = z
   .object({
     is_favorite: z.number().int(),
     eqp_obj_id: z.string(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -65,6 +72,7 @@ export const MonumentLevelupSchema = z
   .object({
     session_id: sessionIdSchema,
     type: z.string(),
+    ...commonRequestFields,
   })
   .loose();
 

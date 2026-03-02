@@ -1,10 +1,11 @@
 import { z } from 'zod';
-import { sessionIdSchema, modelInfoSchema } from '../../../../schemas/common.schema.js';
+import { sessionIdSchema, modelInfoSchema, commonRequestFields } from '../../../../schemas/common.schema.js';
 
 export const ModelCreateSchema = z
   .object({
     session_id: sessionIdSchema,
     model_info: modelInfoSchema,
+    ...commonRequestFields,
   })
   .loose();
 
@@ -14,6 +15,7 @@ export const ModelSetSchema = z
   .object({
     session_id: sessionIdSchema,
     model_info: modelInfoSchema,
+    ...commonRequestFields,
   })
   .loose();
 

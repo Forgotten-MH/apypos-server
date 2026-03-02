@@ -3,6 +3,13 @@ import { z } from 'zod';
 export const sessionIdSchema = z.string();
 export const questIdSchema = z.number().int();
 
+/** Common protocol fields sent on nearly every request by the game client */
+export const commonRequestFields = {
+  block_seq: z.number().int().optional(),
+  app_ver: z.string().optional(),
+  res_ver: z.number().int().optional(),
+};
+
 export const modelInfoSchema = z
   .object({
     face: z.number().int(),
@@ -18,7 +25,8 @@ export const modelInfoSchema = z
 export const SessionOnlySchema = z
   .object({
     session_id: sessionIdSchema,
+    ...commonRequestFields,
   })
-  .loose();
+  .strict();
 
 export type SessionOnlyInput = z.infer<typeof SessionOnlySchema>;

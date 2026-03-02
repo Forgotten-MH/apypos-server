@@ -1,10 +1,12 @@
 import { z } from 'zod';
+import { commonRequestFields } from '../../../schemas/common.schema.js';
 
 export const RegistSchema = z
   .object({
     uu_id: z.string(),
     secret_id: z.string(),
     session_id: z.string().optional(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -15,8 +17,16 @@ export const LoginSchema = z
     uu_id: z.string(),
     secret_id: z.string(),
     session_id: z.string().optional(),
+    device_id: z.number().int().optional(),
+    device_type: z.string().optional(),
+    gpu: z.string().optional(),
+    login_id: z.string().optional(),
+    os_version: z.string().optional(),
+    safetynet_result: z.string().optional(),
+    status_code: z.number().int().optional(),
+    ...commonRequestFields,
   })
-  .loose();
+  .strict();
 
 export type LoginInput = z.infer<typeof LoginSchema>;
 
@@ -27,6 +37,7 @@ export const MigrationReadySchema = z
     mst_himitsu_question_id: z.number().int(),
     himitsu_answer: z.string(),
     migration_pass: z.string(),
+    ...commonRequestFields,
   })
   .loose();
 
@@ -38,6 +49,7 @@ export const MigrationAuthSchema = z
     migration_pass: z.string(),
     secret_id: z.string(),
     uu_id: z.string(),
+    ...commonRequestFields,
   })
   .loose();
 
