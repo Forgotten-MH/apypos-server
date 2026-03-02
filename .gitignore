@@ -30,6 +30,9 @@ src/public/
 # Log files
 src/middleware/logs/
 
+# Proxy recordings (large session captures)
+recordings/
+
 # Patcher output
 scripts/patcher/out/
 
