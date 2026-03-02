@@ -43,19 +43,27 @@ A server emulator for **Monster Hunter Explore** (MHXR), the mobile-exclusive Mo
    yarn install
    ```
 
-3. Copy and edit the environment config:
+3. Run the setup script (creates `.env`, resource directories, and empty download lists):
    ```bash
-   cp .env.example .env
+   yarn setup
    ```
 
-4. Build the project:
+4. Edit `.env` with your network settings (LAN IP, MongoDB credentials, etc.).
+
+5. (Optional) If you have a local backup of the MHXR game resources, import them:
+   ```bash
+   yarn setup --import-resources /path/to/res/download
+   ```
+   The path should contain `android/` and/or `ios/` subdirectories. This creates symlinks into the server's resource directory and the server will generate download lists with real CRC checksums on next startup.
+
+6. (Optional) Build for production:
    ```bash
    yarn build
    ```
 
 ## Configuration
 
-Copy `.env.example` to `.env` and adjust the values as needed.
+`yarn setup` copies `.env.example` to `.env` automatically. Adjust the values as needed.
 
 > [!IMPORTANT]
 > `IP`, `RES_URL`, and `WEB_URL` must be set to an IP address reachable by the game client (e.g. your LAN IP). The client runs on a mobile device or emulator and cannot reach `127.0.0.1` on the host machine.
@@ -80,6 +88,13 @@ Copy `.env.example` to `.env` and adjust the values as needed.
 
 The server expects game files in `src/public/res/download/` for your platform (Android or iOS). These are FPK archives containing the game's arc files. Only **v0282** is currently supported. You can generate these FPKs by running the FPK Packer script over a backup of the game files.
 
+The recommended way to import resources is:
+```bash
+yarn setup --import-resources /path/to/res/download
+```
+
+The server will start without resources (clients just won't be able to download game assets).
+
 ### Event banners
 
 The game originally downloaded extra banners on startup for events. This is disabled by default. To enable it, populate the API in `src/controllers/bannerController.ts` and place your banner files in `src/public/res/banner/`.
@@ -102,16 +117,21 @@ The server will be available at `http://localhost:80` (or your configured port).
 
 | Command | Description |
 |---------|-------------|
+| `yarn setup` | Create `.env`, resource directories, and empty download lists |
+| `yarn setup --import-resources <path>` | Also symlink FPK files from a local resource dump |
 | `yarn install` | Install dependencies |
 | `yarn run install:clean` | Clean reinstall (removes node_modules + lockfile) |
 | `yarn build` | Clean and compile TypeScript to `dist/` |
 | `yarn start` | Run production server |
-| `yarn run start:dev` | Run dev server with nodemon |
+| `yarn dev` | Run dev server (tsx, no auto-reload) |
+| `yarn run start:dev` | Run dev server with nodemon (auto-reload) |
 | `yarn test` | Run tests (vitest) |
 | `yarn test:watch` | Run tests in watch mode |
 | `yarn test:coverage` | Run tests with coverage |
 | `yarn lint` | Lint source files (ESLint) |
 | `yarn format` | Format source files (Prettier) |
+| `yarn fpk` | FPK/ARC/XFS archive tool (pack, unpack, convert) |
+| `yarn proxy` | MITM proxy for recording/replaying MHXR traffic |
 | `yarn generate-island` | Generate ocean/island data |
 | `yarn generate-questList` | Generate quest list |
 | `yarn bf-dec` | Test Blowfish decryption |
