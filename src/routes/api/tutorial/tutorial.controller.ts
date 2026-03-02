@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
-import { ERROR_CODE } from '../../../constants/error.codes.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import { updatePartNoteState } from '../story/story.controller.js';
@@ -20,16 +20,21 @@ const log = createLogger('tutorial');
 // 0xFFFF = isTutorialEnd
 
 export const getTutorialFlag = async (req: Request, res: Response) => {
-  const { session_id } = req.body as SessionOnlyInput;
-  const filter = { current_session: session_id };
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+  try {
+    const { session_id } = req.body as SessionOnlyInput;
+    const filter = { current_session: session_id };
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const data = {
+      flags: doc.tutorial_flags,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in getTutorialFlag:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get tutorial flag failed');
   }
-  const data = {
-    flags: doc.tutorial_flags,
-  };
-  encryptAndSend(data, res, req);
 };
 
 export const nyankenList = (req: Request, res: Response) => {
@@ -118,109 +123,124 @@ export const nyankenList = (req: Request, res: Response) => {
 };
 
 export const nyankenGo = async (req: Request, res: Response) => {
-  const { session_id } = req.body as SessionOnlyInput;
-  const filter = { current_session: session_id };
-  const update = { tutorial_step: 6010 };
+  try {
+    const { session_id } = req.body as SessionOnlyInput;
+    const filter = { current_session: session_id };
+    const update = { tutorial_step: 6010 };
 
-  const doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    const doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const data = {
+      currency_ammount: 0,
+      discount_currency_ammount: 0,
+      mst_nyanken_id: 2022298312,
+      rare_appear_time: 0,
+      rare_flag: 0,
+      return_time: 0,
+      tutorial_step: doc.tutorial_step,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in nyankenGo:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Nyanken go failed');
   }
-  const data = {
-    currency_ammount: 0,
-    discount_currency_ammount: 0,
-    mst_nyanken_id: 2022298312,
-    rare_appear_time: 0,
-    rare_flag: 0,
-    return_time: 0,
-    tutorial_step: doc.tutorial_step,
-  };
-  encryptAndSend(data, res, req);
 };
 
 export const nyankenResult = async (req: Request, res: Response) => {
-  const { session_id } = req.body as SessionOnlyInput;
-  const filter = { current_session: session_id };
-  const update = { tutorial_step: 7010 };
+  try {
+    const { session_id } = req.body as SessionOnlyInput;
+    const filter = { current_session: session_id };
+    const update = { tutorial_step: 7010 };
 
-  const doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    const doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const rewardEquip = {
+      auto_potential_composite: 0,
+      awaked: 0,
+      created: 0,
+      elv: 0,
+      endAwakeCount: 0,
+      endAwakeRemain: 0,
+      end_remain: 0,
+      equipment_id: 'WD_AXE103',
+      evolve_start_time: 0,
+      favorite: 0,
+      is_awake: 1,
+      is_complete_auto_potential_composite: 0,
+      mst_equipment_id: 3880313379,
+      potential: 0,
+      slv: 0,
+      start_remain: 0,
+    };
+    addItem(doc.box!, 'equipments', rewardEquip);
+    const data = {
+      effect_id: 42,
+      is_island: 0, //triggers /api/nyanken/islandInfoGet
+      island_result: {
+        normal_result_list: [
+          //Normal item list { equipment:[]}
+        ],
+        special_result_list: [
+          {
+            travel: [
+              // {      //   amount: 0,
+              //   mst_travel_id: 0
+              // }
+            ],
+          },
+        ],
+      },
+      payments: [{ amount: 50, mst_payment_id: 1573159746 }],
+      result_list: {
+        equipments: [rewardEquip],
+      },
+      tutorial_step: doc.tutorial_step,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in nyankenResult:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Nyanken result failed');
   }
-  const rewardEquip = {
-    auto_potential_composite: 0,
-    awaked: 0,
-    created: 0,
-    elv: 0,
-    endAwakeCount: 0,
-    endAwakeRemain: 0,
-    end_remain: 0,
-    equipment_id: 'WD_AXE103',
-    evolve_start_time: 0,
-    favorite: 0,
-    is_awake: 1,
-    is_complete_auto_potential_composite: 0,
-    mst_equipment_id: 3880313379,
-    potential: 0,
-    slv: 0,
-    start_remain: 0,
-  };
-  addItem(doc.box!, 'equipments', rewardEquip);
-  const data = {
-    effect_id: 42,
-    is_island: 0, //triggers /api/nyanken/islandInfoGet
-    island_result: {
-      normal_result_list: [
-        //Normal item list { equipment:[]}
-      ],
-      special_result_list: [
-        {
-          travel: [
-            // {      //   amount: 0,
-            //   mst_travel_id: 0
-            // }
-          ],
-        },
-      ],
-    },
-    payments: [{ amount: 50, mst_payment_id: 1573159746 }],
-    result_list: {
-      equipments: [rewardEquip],
-    },
-    tutorial_step: doc.tutorial_step,
-  };
-  encryptAndSend(data, res, req);
 };
 
 export const TutorialFlagSet = async (req: Request, res: Response) => {
-  const { session_id, flags } = req.body as FlagSetInput;
-  const filter = { current_session: session_id };
-  let doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+  try {
+    const { session_id, flags } = req.body as FlagSetInput;
+    const filter = { current_session: session_id };
+    let doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+
+    const newFlags = doc.tutorial_flags;
+    flags.forEach((flag) => {
+      newFlags.push(flag);
+    });
+
+    const update = { tutorial_flags: newFlags };
+    doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const data = {
+      flags: doc.tutorial_flags,
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in TutorialFlagSet:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Tutorial flag set failed');
   }
-
-  const newFlags = doc.tutorial_flags;
-  flags.forEach((flag) => {
-    newFlags.push(flag);
-  });
-
-  const update = { tutorial_flags: newFlags };
-  doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
-  }
-  const data = {
-    flags: doc.tutorial_flags,
-  };
-
-  encryptAndSend(data, res, req);
 };
 
 export const TutorialQuestStart = (req: Request, res: Response) => {
@@ -384,146 +404,156 @@ export const TutorialQuestStart = (req: Request, res: Response) => {
 };
 
 export const stepUP = async (req: Request, res: Response) => {
-  const { session_id } = req.body as SessionOnlyInput;
-  const filter = { current_session: session_id };
-  let doc = await User.findOne(filter);
+  try {
+    const { session_id } = req.body as SessionOnlyInput;
+    const filter = { current_session: session_id };
+    let doc = await User.findOne(filter);
 
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+
+    let update = { tutorial_step: doc.tutorial_step };
+    switch (doc.tutorial_step) {
+      case 110:
+        update = { tutorial_step: 210 };
+        break;
+      case 210:
+        update = { tutorial_step: 310 };
+        break;
+      case 310:
+        update = { tutorial_step: 1010 };
+        break;
+      case 1010:
+        update = { tutorial_step: 2010 };
+        break;
+      case 2010:
+        update = { tutorial_step: 3010 };
+        break;
+      case 3010:
+        update = { tutorial_step: 4010 };
+        break;
+      case 4010:
+        update = { tutorial_step: 5010 };
+        break;
+      case 5010:
+        update = { tutorial_step: 6010 };
+        break;
+      case 6010:
+        update = { tutorial_step: 7010 };
+        break;
+      case 7010:
+        update = { tutorial_step: 0xffff };
+        break;
+    }
+
+    doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+
+    const data = {
+      tutorial_step: update.tutorial_step,
+    };
+    log.debug(` TutorialStepUp: Old: ${doc.tutorial_step} New: ${data.tutorial_step}`);
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in stepUP:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Tutorial step up failed');
   }
-
-  let update = { tutorial_step: doc.tutorial_step };
-  switch (doc.tutorial_step) {
-    case 110:
-      update = { tutorial_step: 210 };
-      break;
-    case 210:
-      update = { tutorial_step: 310 };
-      break;
-    case 310:
-      update = { tutorial_step: 1010 };
-      break;
-    case 1010:
-      update = { tutorial_step: 2010 };
-      break;
-    case 2010:
-      update = { tutorial_step: 3010 };
-      break;
-    case 3010:
-      update = { tutorial_step: 4010 };
-      break;
-    case 4010:
-      update = { tutorial_step: 5010 };
-      break;
-    case 5010:
-      update = { tutorial_step: 6010 };
-      break;
-    case 6010:
-      update = { tutorial_step: 7010 };
-      break;
-    case 7010:
-      update = { tutorial_step: 0xffff };
-      break;
-  }
-
-  doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
-  }
-
-  const data = {
-    tutorial_step: update.tutorial_step,
-  };
-  log.debug(` TutorialStepUp: Old: ${doc.tutorial_step} New: ${data.tutorial_step}`);
-
-  encryptAndSend(data, res, req);
 };
 
 export const TutorialQuestEnd = async (req: Request, res: Response) => {
-  const { session_id } = req.body as SessionOnlyInput;
-  const filter = { current_session: session_id };
-  let doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
-  }
-  updatePartNoteState(doc.ocean_list, 3525753088, 3815380063, 3758796689, 2);
-  doc = await User.findOneAndUpdate(
-    filter,
-    { tutorial_step: 5010, ocean_list: doc.ocean_list },
-    {
-      new: true,
-    },
-  );
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
-  }
-  //TODO make random
-  const rewards = [
-    { reward_type: 'normal', type: 'material', amount: 1, id: 1714092880 },
-    { reward_type: 'normal', type: 'material', amount: 1, id: 1642667129 },
-    { reward_type: 'normal', type: 'material', amount: 1, id: 1726002341 },
-    { reward_type: 'normal', type: 'material', amount: 1, id: 1714092880 },
-    { reward_type: 'add', type: 'material', amount: 1, id: 1726002341 },
-    { reward_type: 'add', type: 'material', amount: 1, id: 1714092880 },
-    { reward_type: 'add', type: 'material', amount: 1, id: 1642667129 },
-    { reward_type: 'add', type: 'material', amount: 1, id: 1714092880 },
-  ];
-
-  const data = {
-    otomo_result: [
+  try {
+    const { session_id } = req.body as SessionOnlyInput;
+    const filter = { current_session: session_id };
+    let doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    updatePartNoteState(doc.ocean_list, 3525753088, 3815380063, 3758796689, 2);
+    doc = await User.findOneAndUpdate(
+      filter,
+      { tutorial_step: 5010, ocean_list: doc.ocean_list },
       {
-        get_exp: 20,
-        mst_otomo_id: 2092467563,
-        otomo_id: 'OT_OTOMO_CHAR_ID_001',
+        new: true,
       },
-    ],
-    tutorial_rewards: {
-      tutorial_normal_add: [] as {
-        idx: number;
-        value: number;
-        item_list: Record<string, Record<string, number>[]>;
-      }[],
-      tutorial_normal_reward: {
-        item_list: {} as Record<string, Record<string, number>[]>,
-      },
-      tutorial_zeny: 100,
-    },
-    tutorial_step: doc.tutorial_step,
-  };
+    );
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    //TODO make random
+    const rewards = [
+      { reward_type: 'normal', type: 'material', amount: 1, id: 1714092880 },
+      { reward_type: 'normal', type: 'material', amount: 1, id: 1642667129 },
+      { reward_type: 'normal', type: 'material', amount: 1, id: 1726002341 },
+      { reward_type: 'normal', type: 'material', amount: 1, id: 1714092880 },
+      { reward_type: 'add', type: 'material', amount: 1, id: 1726002341 },
+      { reward_type: 'add', type: 'material', amount: 1, id: 1714092880 },
+      { reward_type: 'add', type: 'material', amount: 1, id: 1642667129 },
+      { reward_type: 'add', type: 'material', amount: 1, id: 1714092880 },
+    ];
 
-  rewards.forEach((obj, index) => {
-    const idField = `mst_${obj.type}_id`;
-    let key = obj.type;
-    if (key === 'material') key = 'materials';
-    if (obj.reward_type === 'normal') {
-      if (!data.tutorial_rewards.tutorial_normal_reward.item_list[key]) {
-        data.tutorial_rewards.tutorial_normal_reward.item_list[key] = [];
+    const data = {
+      otomo_result: [
+        {
+          get_exp: 20,
+          mst_otomo_id: 2092467563,
+          otomo_id: 'OT_OTOMO_CHAR_ID_001',
+        },
+      ],
+      tutorial_rewards: {
+        tutorial_normal_add: [] as {
+          idx: number;
+          value: number;
+          item_list: Record<string, Record<string, number>[]>;
+        }[],
+        tutorial_normal_reward: {
+          item_list: {} as Record<string, Record<string, number>[]>,
+        },
+        tutorial_zeny: 100,
+      },
+      tutorial_step: doc.tutorial_step,
+    };
+
+    rewards.forEach((obj, index) => {
+      const idField = `mst_${obj.type}_id`;
+      let key = obj.type;
+      if (key === 'material') key = 'materials';
+      if (obj.reward_type === 'normal') {
+        if (!data.tutorial_rewards.tutorial_normal_reward.item_list[key]) {
+          data.tutorial_rewards.tutorial_normal_reward.item_list[key] = [];
+        }
+        data.tutorial_rewards.tutorial_normal_reward.item_list[key]!.push({
+          amount: obj.amount,
+          [idField]: obj.id,
+        });
       }
-      data.tutorial_rewards.tutorial_normal_reward.item_list[key]!.push({
+      if (obj.reward_type === 'add') {
+        data.tutorial_rewards.tutorial_normal_add.push({
+          idx: index + 1,
+          value: 1,
+          item_list: { [key]: [{ amount: obj.amount, [idField]: obj.id }] },
+        });
+      }
+      //Add to box
+      type BoxKey = keyof Box;
+      addItem(doc!.box!, key as BoxKey, {
         amount: obj.amount,
         [idField]: obj.id,
       });
-    }
-    if (obj.reward_type === 'add') {
-      data.tutorial_rewards.tutorial_normal_add.push({
-        idx: index + 1,
-        value: 1,
-        item_list: { [key]: [{ amount: obj.amount, [idField]: obj.id }] },
-      });
-    }
-    //Add to box
-    type BoxKey = keyof Box;
-    addItem(doc!.box!, key as BoxKey, {
-      amount: obj.amount,
-      [idField]: obj.id,
     });
-  });
-  doc = await User.findOneAndUpdate(filter, { box: doc.box });
+    doc = await User.findOneAndUpdate(filter, { box: doc.box });
 
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in TutorialQuestEnd:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Tutorial quest end failed');
   }
-  encryptAndSend(data, res, req);
 };

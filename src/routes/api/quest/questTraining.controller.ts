@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
-import { ERROR_CODE } from '../../../constants/error.codes.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import { calcMstId } from '../../../services/defineService.js';
 import User from '../../../model/user.js';
@@ -89,70 +89,75 @@ const getRewardItemByQuestId = (questId: number) => {
   }
 };
 export const trainingEnd = async (req: Request, res: Response) => {
-  const { mst_quest_id, clear_time, session_id } = req.body as TrainingEndInput;
-  const reward = getRewardItemByQuestId(mst_quest_id);
-  const cleared_quest = mst_quest_id;
-  const clearTime = clear_time;
-  const filter = { current_session: session_id };
+  try {
+    const { mst_quest_id, clear_time, session_id } = req.body as TrainingEndInput;
+    const reward = getRewardItemByQuestId(mst_quest_id);
+    const cleared_quest = mst_quest_id;
+    const clearTime = clear_time;
+    const filter = { current_session: session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
-  }
-  const cleared_quests = doc.cleared_quests;
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const cleared_quests = doc.cleared_quests;
 
-  const questIndex = cleared_quests.findIndex((q) => q.mst_quest_id === cleared_quest);
+    const questIndex = cleared_quests.findIndex((q) => q.mst_quest_id === cleared_quest);
 
-  if (questIndex === -1) {
-    log.debug('Inserted Quest as seen');
-    cleared_quests.push({ mst_quest_id: cleared_quest, clear_time: clearTime });
-  } else {
-    log.debug('Updated clear_time...');
-    cleared_quests[questIndex]!.clear_time = clearTime;
-  }
+    if (questIndex === -1) {
+      log.debug('Inserted Quest as seen');
+      cleared_quests.push({ mst_quest_id: cleared_quest, clear_time: clearTime });
+    } else {
+      log.debug('Updated clear_time...');
+      cleared_quests[questIndex]!.clear_time = clearTime;
+    }
 
-  const update = { cleared_quests: cleared_quests };
+    const update = { cleared_quests: cleared_quests };
 
-  // Await the update so you know it completed
-  await User.findOneAndUpdate(filter, update, { new: true });
-  const trainingPresent = new Present();
-  trainingPresent.uu_id = doc.uu_id!;
-  trainingPresent.set('content', {
-    equipments: [
-      {
-        ...reward,
-        auto_potential_composite: 0,
-        awaked: 0,
-        elv: 0,
-        endAwakeCount: 0,
-        endAwakeRemain: 0,
-        end_remain: 0,
-        evolve_start_time: 0,
-        favorite: 0,
-        is_awake: 0,
-        is_complete_auto_potential_composite: 0,
-        potential: 0,
-        slv: 0,
-        start_remain: 0,
-        created: Date.now(),
-      },
-    ],
-  });
-  trainingPresent.message = 'Training Reward';
-  await trainingPresent.save();
-
-  const data = {
-    mst_quest_id,
-    pop_list: [
-      {
-        pop_id: 1,
-        item_list: {
-          equipments: [reward],
+    // Await the update so you know it completed
+    await User.findOneAndUpdate(filter, update, { new: true });
+    const trainingPresent = new Present();
+    trainingPresent.uu_id = doc.uu_id!;
+    trainingPresent.set('content', {
+      equipments: [
+        {
+          ...reward,
+          auto_potential_composite: 0,
+          awaked: 0,
+          elv: 0,
+          endAwakeCount: 0,
+          endAwakeRemain: 0,
+          end_remain: 0,
+          evolve_start_time: 0,
+          favorite: 0,
+          is_awake: 0,
+          is_complete_auto_potential_composite: 0,
+          potential: 0,
+          slv: 0,
+          start_remain: 0,
+          created: Date.now(),
         },
-      },
-    ],
-  };
-  encryptAndSend(data, res, req);
+      ],
+    });
+    trainingPresent.message = 'Training Reward';
+    await trainingPresent.save();
+
+    const data = {
+      mst_quest_id,
+      pop_list: [
+        {
+          pop_id: 1,
+          item_list: {
+            equipments: [reward],
+          },
+        },
+      ],
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in trainingEnd:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Training end failed');
+  }
 };
 
 export const trainingStart = (req: Request, res: Response) => {
@@ -235,15 +240,16 @@ const isTrainingCleared = (cleared_quests: { mst_quest_id: number }[], questID: 
 };
 
 export const trainingList = async (req: Request, res: Response) => {
-  const { session_id } = req.body as TrainingListInput;
-  const filter = { current_session: session_id };
+  try {
+    const { session_id } = req.body as TrainingListInput;
+    const filter = { current_session: session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
-  }
-  const data = {
-    training_list: [
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const data = {
+      training_list: [
       {
         equip_type: 1,
         is_clear: isTrainingCleared(doc.cleared_quests, calcMstId('TRAINING00001')),
@@ -680,6 +686,10 @@ export const trainingList = async (req: Request, res: Response) => {
         reward_text: 'Accel Axe',
       },
     ],
-  };
-  encryptAndSend(data, res, req);
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in trainingList:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Training list failed');
+  }
 };

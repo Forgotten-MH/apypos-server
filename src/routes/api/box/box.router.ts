@@ -13,8 +13,8 @@ import { SessionOnlySchema } from '../../../schemas/common.schema.js';
 const boxRouter = Router();
 
 boxRouter.post('/get', validate(BoxGetSchema), boxController.get);
-boxRouter.post('/payment/get', boxController.PaymentGet);
-boxRouter.post('/payment/limit/get', boxController.paymentLimitGet);
+boxRouter.post('/payment/get', validate(SessionOnlySchema), boxController.PaymentGet);
+boxRouter.post('/payment/limit/get', validate(SessionOnlySchema), boxController.paymentLimitGet);
 
 boxRouter.post('/otomo/get', validate(SessionOnlySchema), boxController.otomoGet);
 // boxRouter.post("/otomo/skill/remove", );
@@ -22,7 +22,7 @@ boxRouter.post('/otomo/get', validate(SessionOnlySchema), boxController.otomoGet
 boxRouter.post('/partner/levelup', notImplemented.blankResponseEncrypted);
 boxRouter.post('/material/sell', notImplemented.blankResponseEncrypted);
 
-boxRouter.post('/storage/info', boxController.storageInfo);
+boxRouter.post('/storage/info', validate(SessionOnlySchema), boxController.storageInfo);
 boxRouter.post('/storage/content/get', validate(StorageGetSchema), boxController.storageGet);
 // boxRouter.post("/storage/content/move", );
 // boxRouter.post("/storage/rename", );
@@ -36,8 +36,8 @@ boxRouter.post('/equipment/awake', notImplemented.blankResponseEncrypted);
 boxRouter.post('/equipment/potentialup/auto/set', notImplemented.blankResponseEncrypted);
 boxRouter.post('/equipment/favorite/set', notImplemented.blankResponseEncrypted);
 boxRouter.post('/equipment/sale', notImplemented.blankResponseEncrypted);
-boxRouter.post('/equipment/capacity/info', boxController.equipCapacityInfo);
-boxRouter.post('/equipment/capacity/expand', boxController.equipCapacityExpand);
+boxRouter.post('/equipment/capacity/info', validate(SessionOnlySchema), boxController.equipCapacityInfo);
+boxRouter.post('/equipment/capacity/expand', validate(SessionOnlySchema), boxController.equipCapacityExpand);
 
 // boxRouter.post("/growthitem/get", );
 // boxRouter.post("/item/get", );
@@ -50,9 +50,9 @@ boxRouter.post('/equipment/capacity/expand', boxController.equipCapacityExpand);
 // boxRouter.post("/monument/levelup", );
 boxRouter.post('/monument/levelup/auto', validate(MonumentLevelupSchema), boxController.leveupAuto);
 
-boxRouter.post('/stamp/get', boxController.stampGet);
-boxRouter.post('/stamp/hold/get', boxController.stampHoldGet);
-boxRouter.post('/stamp/shop/list', boxController.stampShopList);
+boxRouter.post('/stamp/get', validate(SessionOnlySchema), boxController.stampGet);
+boxRouter.post('/stamp/hold/get', validate(SessionOnlySchema), boxController.stampHoldGet);
+boxRouter.post('/stamp/shop/list', validate(SessionOnlySchema), boxController.stampShopList);
 // boxRouter.post("/stamp/hold/set", );
 // boxRouter.post("/stamp/shop/buy", );
 

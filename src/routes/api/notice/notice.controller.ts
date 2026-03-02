@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
-import { ERROR_CODE } from '../../../constants/error.codes.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import Present from '../../../model/presents.js';
@@ -8,19 +8,20 @@ import type { SessionOnlyInput } from './notice.schema.js';
 const log = createLogger('notice');
 
 export const get = async (req: Request, res: Response) => {
-  const { session_id } = req.body as SessionOnlyInput;
-  const userDoc = await User.findOne({ current_session: session_id });
-  if (!userDoc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
-  }
+  try {
+    const { session_id } = req.body as SessionOnlyInput;
+    const userDoc = await User.findOne({ current_session: session_id });
+    if (!userDoc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
 
-  const presentCount = await Present.countDocuments({
-    uu_id: userDoc.uu_id,
-    received: { $ne: 1 },
-  });
+    const presentCount = await Present.countDocuments({
+      uu_id: userDoc.uu_id,
+      received: { $ne: 1 },
+    });
 
-  log.debug('Count of unreceived presents:', presentCount); // Incomplete
-  const data = {
+    log.debug('Count of unreceived presents:', presentCount); // Incomplete
+    const data = {
     banner_list: {
       outer_banner_list: [
         //Unknown Beahviour
@@ -270,5 +271,9 @@ export const get = async (req: Request, res: Response) => {
     new_mail: 0,
     new_present: presentCount,
   };
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in get:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Notice get failed');
+  }
 };

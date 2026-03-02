@@ -40,16 +40,16 @@ userRouter.post('/equipset/social/get', validate(SessionOnlySchema), userEquipSe
 userRouter.post('/equipset/social/set', validate(EquipSetSocialSetSchema), userEquipSetController.equipSetSocialSet);
 
 //Nav
-userRouter.post('/navigation/all', userController.navigationAll);
-userRouter.post('/navigation/news', userController.navigationNews);
+userRouter.post('/navigation/all', validate(SessionOnlySchema), userController.navigationAll);
+userRouter.post('/navigation/news', validate(SessionOnlySchema), userController.navigationNews);
 // userRouter.post("/navigation/reward/receive", );
 
 //Title
-userRouter.post('/title/all', userController.titleAll);
+userRouter.post('/title/all', validate(SessionOnlySchema), userController.titleAll);
 userRouter.post('/title/set', validate(TitleSetSchema), userController.titleSet);
-userRouter.post('/title/news', userController.titleNews);
-userRouter.post('/achievement/news', userController.achievementNews);
-userRouter.post('/achievement/all', userController.achievementAll);
+userRouter.post('/title/news', validate(SessionOnlySchema), userController.titleNews);
+userRouter.post('/achievement/news', validate(SessionOnlySchema), userController.achievementNews);
+userRouter.post('/achievement/all', validate(SessionOnlySchema), userController.achievementAll);
 // userRouter.post("/achievement/apple/sync", );
 // userRouter.post("/achievement/google/sync", );
 // userRouter.post("/achievement/reward/receive", );
@@ -59,7 +59,7 @@ userRouter.post('/achievement/all', userController.achievementAll);
 
 userRouter.post('/partner/set', validate(PartnerSetSchema), userController.partnerGet);
 
-userRouter.post('/offer/check', userController.OfferCheck);
+userRouter.post('/offer/check', validate(SessionOnlySchema), userController.OfferCheck);
 // userRouter.post("/offer/start", );
 
 userRouter.post('/search/userID', validate(SearchUserIdSchema), userController.searchId);

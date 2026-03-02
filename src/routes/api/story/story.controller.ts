@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
-import { ERROR_CODE } from '../../../constants/error.codes.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import type { StoryEndInput } from './story.schema.js';
@@ -147,7 +147,8 @@ export const updatePartNoteState = (
 };
 
 export const end = async (req: Request, res: Response) => {
-  const { session_id, mst_node_id, mst_note_content_id, mst_ocean_id, mst_part_id, mst_story_id } = req.body as StoryEndInput;
+  try {
+    const { session_id, mst_node_id, mst_note_content_id, mst_ocean_id, mst_part_id, mst_story_id } = req.body as StoryEndInput;
   // Use the above values to determine how to increment the island....
 
   const data = {
@@ -240,6 +241,10 @@ export const end = async (req: Request, res: Response) => {
     const update = { ocean_list: doc.ocean_list, box: doc.box };
 
     await User.findByIdAndUpdate(doc.id, update);
+    }
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in end:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Story end failed');
   }
-  encryptAndSend(data, res, req);
 };

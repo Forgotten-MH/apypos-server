@@ -10,7 +10,7 @@ import { Request, Response } from 'express';
 
 const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
-import { ERROR_CODE } from '../../../constants/error.codes.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
 import { createLogger } from '../../../middleware/logger.js';
 import User from '../../../model/user.js';
 import Event from '../../../model/events.js';
@@ -80,383 +80,406 @@ export const eventTicketFree = (req: Request, res: Response) => {
   encryptAndSend(data, res, req);
 };
 export const eventNormalStart = async (req: Request, res: Response) => {
-  /*
-  Request Body:
- {
-        "session_id": "4466edfe-4191-4a72-968d-7cc3a06ff3cb",
-        "block_seq": 46,
-        "app_ver": "09.03.06",
-        "res_ver": 282,
-        "atk": 105,
-        "def": 85,
-        "increase": 0,
-        "is_auto": 0,
-        "kyokuti_field_id_1": -1,
-        "kyokuti_field_id_2": -1,
-        "kyokuti_field_value_1": -1,
-        "kyokuti_field_value_2": -1,
-        "mst_event_node_id": 1587403803,
-        "mst_quest_id": 2974642427,
-        "multi_room_id": 0,
-        "otomo": [],
-        "partner_id": "",
-        "power_up": 0,
-        "select_fix_equipment_idx": -1
-}
-  */
-  const { mst_quest_id } = req.body as EventStartInput;
-
-  const data = {
-    instance_data: {
-      block_list: [] as BlockListItem[],
-      bomb_lot_no: [
-        {
-          bomb_lottery: [{ bomb_id: 0, weight: 0 }],
-        },
-      ],
-      enable_limited_skill_id_list: [],
-      enable_partner_limited_skill_id_list: [],
-      enable_talisman: 0,
-      enable_talisman_partner: 0,
-      enemy_point_list: [
-        {
-          mst_enemy_id: 1618895799,
-          point: 0,
-        },
-      ],
-      instance_id: 0,
-      mission_message: 'start',
-      mst_quest_id,
-      multi_leave_check_time: 0,
-      point_info: {
-        armor_skill_value: 0,
-        campaign_value: 0,
-        get_point: 0,
-        guild_bingo_bonus: 0,
-        guild_total_point: 0,
-        m16_get_point: 0,
-        mst_event_info_id: 2740334662,
-        mst_event_point_id: 2992123464,
-        now_point: 0,
-        total_point: 0,
-      },
-      power_up: 0,
-      select_fix_equipment_idx: 0,
-      subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
-    },
-  };
-
-  const quest = await QuestSheet.findOne({ mQuestID: String(mst_quest_id) });
-  const blocks = quest?.mBlocks || [];
-
-  if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
+  try {
+    /*
+    Request Body:
+   {
+          "session_id": "4466edfe-4191-4a72-968d-7cc3a06ff3cb",
+          "block_seq": 46,
+          "app_ver": "09.03.06",
+          "res_ver": 282,
+          "atk": 105,
+          "def": 85,
+          "increase": 0,
+          "is_auto": 0,
+          "kyokuti_field_id_1": -1,
+          "kyokuti_field_id_2": -1,
+          "kyokuti_field_value_1": -1,
+          "kyokuti_field_value_2": -1,
+          "mst_event_node_id": 1587403803,
+          "mst_quest_id": 2974642427,
+          "multi_room_id": 0,
+          "otomo": [],
+          "partner_id": "",
+          "power_up": 0,
+          "select_fix_equipment_idx": -1
   }
-  blocks.forEach((block, index) => {
-    data.instance_data.block_list.push({
-      block_idx: index + 1,
-      block_instance_list: [{ instance_id: 0, serial_no: 1 }],
-      drop_list: [],
-      instance_id: 0,
-      is_insert: 0,
-      is_raid: 0,
-      mst_block_id: block,
-      repop_list: [{ amount: 0, serial_no: 0 }],
-    });
-  });
+    */
+    const { mst_quest_id } = req.body as EventStartInput;
 
-  encryptAndSend(data, res, req);
+    const data = {
+      instance_data: {
+        block_list: [] as BlockListItem[],
+        bomb_lot_no: [
+          {
+            bomb_lottery: [{ bomb_id: 0, weight: 0 }],
+          },
+        ],
+        enable_limited_skill_id_list: [],
+        enable_partner_limited_skill_id_list: [],
+        enable_talisman: 0,
+        enable_talisman_partner: 0,
+        enemy_point_list: [
+          {
+            mst_enemy_id: 1618895799,
+            point: 0,
+          },
+        ],
+        instance_id: 0,
+        mission_message: 'start',
+        mst_quest_id,
+        multi_leave_check_time: 0,
+        point_info: {
+          armor_skill_value: 0,
+          campaign_value: 0,
+          get_point: 0,
+          guild_bingo_bonus: 0,
+          guild_total_point: 0,
+          m16_get_point: 0,
+          mst_event_info_id: 2740334662,
+          mst_event_point_id: 2992123464,
+          now_point: 0,
+          total_point: 0,
+        },
+        power_up: 0,
+        select_fix_equipment_idx: 0,
+        subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
+      },
+    };
+
+    const quest = await QuestSheet.findOne({ mQuestID: String(mst_quest_id) });
+    const blocks = quest?.mBlocks || [];
+
+    if (blocks.length === 0) {
+      return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
+    }
+    blocks.forEach((block, index) => {
+      data.instance_data.block_list.push({
+        block_idx: index + 1,
+        block_instance_list: [{ instance_id: 0, serial_no: 1 }],
+        drop_list: [],
+        instance_id: 0,
+        is_insert: 0,
+        is_raid: 0,
+        mst_block_id: block,
+        repop_list: [{ amount: 0, serial_no: 0 }],
+      });
+    });
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in eventNormalStart:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Event normal start failed');
+  }
 };
 export const eventTicketStart = async (req: Request, res: Response) => {
-  /*
-  Request Body:
-  {
-  session_id: 'b647115b-47cc-4fd8-a96e-15897f531e59',
-  block_seq: 71,
-  app_ver: '09.03.06',
-  res_ver: 282,
-  atk: 102,
-  def: 0,
-  increase: 0,
-  is_auto: 0,
-  mst_quest_id: 248014439,
-  multi_room_id: 0,
-  otomo: [ 'OT_OTOMO_CHAR_ID_118', 'OT_OTOMO_CHAR_ID_119' ],
-  partner_id: 'PT_CHAR_ID_001',
-  power_up: 0
-}
-  */
-  const { mst_quest_id } = req.body as EventStartInput;
-  const startedQuest = mst_quest_id;
-
-  const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
-  const data = {
-    instance_data: {
-      block_list: [] as BlockListItem[],
-      bomb_lot_no: [
-        {
-          bomb_lottery: [{ bomb_id: 0, weight: 0 }],
-        },
-      ],
-      enable_limited_skill_id_list: [],
-      enable_partner_limited_skill_id_list: [],
-      enable_talisman: 0,
-      enable_talisman_partner: 0,
-      enemy_point_list: [
-        {
-          mst_enemy_id: 1618895799,
-          point: 0,
-        },
-      ],
-      instance_id: 0,
-      mission_message: 'start',
-      mst_quest_id,
-      multi_leave_check_time: 0,
-      point_info: {
-        armor_skill_value: 0,
-        campaign_value: 0,
-        get_point: 0,
-        guild_bingo_bonus: 0,
-        guild_total_point: 0,
-        m16_get_point: 0,
-        mst_event_info_id: 2740334662,
-        mst_event_point_id: 2992123464,
-        now_point: 0,
-        total_point: 0,
-      },
-      power_up: 0,
-      select_fix_equipment_idx: 0,
-      subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
-    },
-  };
-  //Get Quest: From Hash -> QuestName req.body.mst_quest_id
-  //Split Quest Name
-  const blocks = quest?.mBlocks || [];
-  if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
+  try {
+    /*
+    Request Body:
+    {
+    session_id: 'b647115b-47cc-4fd8-a96e-15897f531e59',
+    block_seq: 71,
+    app_ver: '09.03.06',
+    res_ver: 282,
+    atk: 102,
+    def: 0,
+    increase: 0,
+    is_auto: 0,
+    mst_quest_id: 248014439,
+    multi_room_id: 0,
+    otomo: [ 'OT_OTOMO_CHAR_ID_118', 'OT_OTOMO_CHAR_ID_119' ],
+    partner_id: 'PT_CHAR_ID_001',
+    power_up: 0
   }
-  blocks.forEach((block, index) => {
-    data.instance_data.block_list.push({
-      block_idx: index + 1,
-      block_instance_list: [{ instance_id: 0, serial_no: 1 }],
-      drop_list: [],
-      instance_id: 0,
-      is_insert: 0,
-      is_raid: 0,
-      mst_block_id: block,
-      repop_list: [{ amount: 0, serial_no: 0 }],
-    });
-  });
+    */
+    const { mst_quest_id } = req.body as EventStartInput;
+    const startedQuest = mst_quest_id;
 
-  encryptAndSend(data, res, req);
+    const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
+    const data = {
+      instance_data: {
+        block_list: [] as BlockListItem[],
+        bomb_lot_no: [
+          {
+            bomb_lottery: [{ bomb_id: 0, weight: 0 }],
+          },
+        ],
+        enable_limited_skill_id_list: [],
+        enable_partner_limited_skill_id_list: [],
+        enable_talisman: 0,
+        enable_talisman_partner: 0,
+        enemy_point_list: [
+          {
+            mst_enemy_id: 1618895799,
+            point: 0,
+          },
+        ],
+        instance_id: 0,
+        mission_message: 'start',
+        mst_quest_id,
+        multi_leave_check_time: 0,
+        point_info: {
+          armor_skill_value: 0,
+          campaign_value: 0,
+          get_point: 0,
+          guild_bingo_bonus: 0,
+          guild_total_point: 0,
+          m16_get_point: 0,
+          mst_event_info_id: 2740334662,
+          mst_event_point_id: 2992123464,
+          now_point: 0,
+          total_point: 0,
+        },
+        power_up: 0,
+        select_fix_equipment_idx: 0,
+        subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
+      },
+    };
+    //Get Quest: From Hash -> QuestName req.body.mst_quest_id
+    //Split Quest Name
+    const blocks = quest?.mBlocks || [];
+    if (blocks.length === 0) {
+      return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
+    }
+    blocks.forEach((block, index) => {
+      data.instance_data.block_list.push({
+        block_idx: index + 1,
+        block_instance_list: [{ instance_id: 0, serial_no: 1 }],
+        drop_list: [],
+        instance_id: 0,
+        is_insert: 0,
+        is_raid: 0,
+        mst_block_id: block,
+        repop_list: [{ amount: 0, serial_no: 0 }],
+      });
+    });
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in eventTicketStart:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Event ticket start failed');
+  }
 };
 export const eventScoreStart = async (req: Request, res: Response) => {
-  /*
-  Request Body:
- {
-        "session_id": "4466edfe-4191-4a72-968d-7cc3a06ff3cb",
-        "block_seq": 46,
-        "app_ver": "09.03.06",
-        "res_ver": 282,
-        "atk": 105,
-        "def": 85,
-        "increase": 0,
-        "is_auto": 0,
-        "kyokuti_field_id_1": -1,
-        "kyokuti_field_id_2": -1,
-        "kyokuti_field_value_1": -1,
-        "kyokuti_field_value_2": -1,
-        "mst_event_node_id": 1587403803,
-        "mst_quest_id": 2974642427,
-        "multi_room_id": 0,
-        "otomo": [],
-        "partner_id": "",
-        "power_up": 0,
-        "select_fix_equipment_idx": -1
-}
-  */
-  const { mst_quest_id } = req.body as EventStartInput;
-  const startedQuest = mst_quest_id;
-
-  const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
-  const data = {
-    instance_data: {
-      block_list: [] as BlockListItem[],
-      bomb_lot_no: [
-        {
-          bomb_lottery: [{ bomb_id: 0, weight: 0 }],
-        },
-      ],
-      enable_limited_skill_id_list: [],
-      enable_partner_limited_skill_id_list: [],
-      enable_talisman: 0,
-      enable_talisman_partner: 0,
-      enemy_point_list: [
-        {
-          mst_enemy_id: 1618895799,
-          point: 0,
-        },
-      ],
-      instance_id: 0,
-      mission_message: 'start',
-      mst_quest_id,
-      multi_leave_check_time: 0,
-      point_info: {
-        armor_skill_value: 0,
-        campaign_value: 0,
-        get_point: 0,
-        guild_bingo_bonus: 0,
-        guild_total_point: 0,
-        m16_get_point: 0,
-        mst_event_info_id: 2740334662,
-        mst_event_point_id: 2992123464,
-        now_point: 0,
-        total_point: 0,
-      },
-      power_up: 0,
-      select_fix_equipment_idx: 0,
-      subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
-    },
-  };
-  //Get Quest: From Hash -> QuestName req.body.mst_quest_id
-  //Split Quest Name
-  const blocks = quest?.mBlocks || [];
-  if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
+  try {
+    /*
+    Request Body:
+   {
+          "session_id": "4466edfe-4191-4a72-968d-7cc3a06ff3cb",
+          "block_seq": 46,
+          "app_ver": "09.03.06",
+          "res_ver": 282,
+          "atk": 105,
+          "def": 85,
+          "increase": 0,
+          "is_auto": 0,
+          "kyokuti_field_id_1": -1,
+          "kyokuti_field_id_2": -1,
+          "kyokuti_field_value_1": -1,
+          "kyokuti_field_value_2": -1,
+          "mst_event_node_id": 1587403803,
+          "mst_quest_id": 2974642427,
+          "multi_room_id": 0,
+          "otomo": [],
+          "partner_id": "",
+          "power_up": 0,
+          "select_fix_equipment_idx": -1
   }
-  blocks.forEach((block, index) => {
-    data.instance_data.block_list.push({
-      block_idx: index + 1,
-      block_instance_list: [{ instance_id: 0, serial_no: 1 }],
-      drop_list: [],
-      instance_id: 0,
-      is_insert: 0,
-      is_raid: 0,
-      mst_block_id: block,
-      repop_list: [{ amount: 0, serial_no: 0 }],
-    });
-  });
+    */
+    const { mst_quest_id } = req.body as EventStartInput;
+    const startedQuest = mst_quest_id;
 
-  encryptAndSend(data, res, req);
+    const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
+    const data = {
+      instance_data: {
+        block_list: [] as BlockListItem[],
+        bomb_lot_no: [
+          {
+            bomb_lottery: [{ bomb_id: 0, weight: 0 }],
+          },
+        ],
+        enable_limited_skill_id_list: [],
+        enable_partner_limited_skill_id_list: [],
+        enable_talisman: 0,
+        enable_talisman_partner: 0,
+        enemy_point_list: [
+          {
+            mst_enemy_id: 1618895799,
+            point: 0,
+          },
+        ],
+        instance_id: 0,
+        mission_message: 'start',
+        mst_quest_id,
+        multi_leave_check_time: 0,
+        point_info: {
+          armor_skill_value: 0,
+          campaign_value: 0,
+          get_point: 0,
+          guild_bingo_bonus: 0,
+          guild_total_point: 0,
+          m16_get_point: 0,
+          mst_event_info_id: 2740334662,
+          mst_event_point_id: 2992123464,
+          now_point: 0,
+          total_point: 0,
+        },
+        power_up: 0,
+        select_fix_equipment_idx: 0,
+        subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
+      },
+    };
+    //Get Quest: From Hash -> QuestName req.body.mst_quest_id
+    //Split Quest Name
+    const blocks = quest?.mBlocks || [];
+    if (blocks.length === 0) {
+      return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
+    }
+    blocks.forEach((block, index) => {
+      data.instance_data.block_list.push({
+        block_idx: index + 1,
+        block_instance_list: [{ instance_id: 0, serial_no: 1 }],
+        drop_list: [],
+        instance_id: 0,
+        is_insert: 0,
+        is_raid: 0,
+        mst_block_id: block,
+        repop_list: [{ amount: 0, serial_no: 0 }],
+      });
+    });
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in eventScoreStart:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Event score start failed');
+  }
 };
 export const eternalStart = async (req: Request, res: Response) => {
-  /*
-  Request Body:
- {
-                                                                                                                                                                                                                                                                         
-  session_id: '70507a54-28c8-405d-ba53-c6eca57a1dad',                                                                                                                                                                                                                                      
-  block_seq: 46,
-  app_ver: '09.03.06',                                                                                                                                                                                                                                                                     
-  res_ver: 282,                                                                                                                                                                                                                                                                            
-  atk: 105,
-  def: 85,
-  increase: 0,
-  is_auto: 0,                                                                                                                                                                                                                                                                              
-  mst_eternal_node_id: 517825253,
-  mst_quest_id: 2002926758,                                                                                                                                                                                                                                                                
-  otomo: [],                                                                                                                                                                                                                                                                               
-  partner_id: '',
-  power_up: 0                                                                                                                                                                                                                                                                              
-
-}
-  */
-  const { mst_quest_id } = req.body as EternalStartInput;
-  const startedQuest = mst_quest_id;
-
-  const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
-  const data = {
-    instance_data: {
-      block_list: [] as BlockListItem[],
-      bomb_lot_num: [],
-      bomb_lottery: [],
-
-      enable_limited_skill_id_list: [],
-      enable_partner_limited_skill_id_list: [],
-      enable_talisman: 0,
-      enable_talisman_partner: 0,
-      enemy_point_list: [],
-      instance_id: 0,
-      mission_message: 'start',
-      mst_quest_id,
-      multi_leave_check_time: 0,
-      point_info: {
-        armor_skill_value: 0,
-        campaign_value: 0,
-        get_point: 0,
-        guild_bingo_bonus: 0,
-        guild_total_point: 0,
-        m16_get_point: 0,
-        mst_event_info_id: 2740334662,
-        mst_event_point_id: 2992123464,
-        now_point: 0,
-        total_point: 0,
-      },
-      power_up: 0,
-      select_fix_equipment_idx: 0,
-      subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
-    },
-  };
-  const blocks = quest?.mBlocks || [];
-  if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
+  try {
+    /*
+    Request Body:
+   {
+    session_id: '70507a54-28c8-405d-ba53-c6eca57a1dad',
+    block_seq: 46,
+    app_ver: '09.03.06',
+    res_ver: 282,
+    atk: 105,
+    def: 85,
+    increase: 0,
+    is_auto: 0,
+    mst_eternal_node_id: 517825253,
+    mst_quest_id: 2002926758,
+    otomo: [],
+    partner_id: '',
+    power_up: 0
   }
-  blocks.forEach((block, index) => {
-    data.instance_data.block_list.push({
-      block_idx: index + 1,
-      block_instance_list: [
-        // { instance_id: 0, serial_no: 1 }
-      ],
-      drop_list: [],
-      instance_id: 0,
-      is_insert: 0,
-      is_raid: 0,
-      mst_block_id: block,
-      repop_list: [
-        // { amount: 0, serial_no: 0 }
-      ],
+    */
+    const { mst_quest_id } = req.body as EternalStartInput;
+    const startedQuest = mst_quest_id;
+
+    const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
+    const data = {
+      instance_data: {
+        block_list: [] as BlockListItem[],
+        bomb_lot_num: [],
+        bomb_lottery: [],
+
+        enable_limited_skill_id_list: [],
+        enable_partner_limited_skill_id_list: [],
+        enable_talisman: 0,
+        enable_talisman_partner: 0,
+        enemy_point_list: [],
+        instance_id: 0,
+        mission_message: 'start',
+        mst_quest_id,
+        multi_leave_check_time: 0,
+        point_info: {
+          armor_skill_value: 0,
+          campaign_value: 0,
+          get_point: 0,
+          guild_bingo_bonus: 0,
+          guild_total_point: 0,
+          m16_get_point: 0,
+          mst_event_info_id: 2740334662,
+          mst_event_point_id: 2992123464,
+          now_point: 0,
+          total_point: 0,
+        },
+        power_up: 0,
+        select_fix_equipment_idx: 0,
+        subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
+      },
+    };
+    const blocks = quest?.mBlocks || [];
+    if (blocks.length === 0) {
+      return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
+    }
+    blocks.forEach((block, index) => {
+      data.instance_data.block_list.push({
+        block_idx: index + 1,
+        block_instance_list: [
+          // { instance_id: 0, serial_no: 1 }
+        ],
+        drop_list: [],
+        instance_id: 0,
+        is_insert: 0,
+        is_raid: 0,
+        mst_block_id: block,
+        repop_list: [
+          // { amount: 0, serial_no: 0 }
+        ],
+      });
     });
-  });
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in eternalStart:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Eternal start failed');
+  }
 };
 
 export const eventListAll = async (req: Request, res: Response) => {
-  //This is the multiplayer tab
-  //Big Nodes
-  // Easy	90000
-  // Limited Event	90001
-  // Polar Assualt	90002
-  // Hard	90003
-  // Forbidden	90004
-  // Material Tour	90005
-  // Past Quests	90006
-  // Unk	90037
-  //middle nodes
+  try {
+    //This is the multiplayer tab
+    //Big Nodes
+    // Easy	90000
+    // Limited Event	90001
+    // Polar Assualt	90002
+    // Hard	90003
+    // Forbidden	90004
+    // Material Tour	90005
+    // Past Quests	90006
+    // Unk	90037
+    //middle nodes
 
-  const event = (await Event.findOne({}).exec())!.toObject();
-  const data = {
-    big_node_order_array: event.big_node_order_array,
-    event_list: {
-      assault: enrichEvent(
-        (await AssualtEvents.find().exec()).map((d) => d.toObject({ getters: true })),
-      ),
-      m16: enrichEvent((await M16Events.find().exec()).map((d) => d.toObject({ getters: true }))),
-      score: enrichEvent(
-        (await ScoreEvents.find().exec()).map((d) => d.toObject({ getters: true })),
-      ), //Collabration Events Type Takes SCORE prefixed events and quests
-      standing: enrichEvent(
-        (await StandingEvents.find().exec()).map((d) => d.toObject({ getters: true })),
-      ),
-      ticket: await TicketEvents.find({}).exec(), //Ticket prefixed quests
-      tour: enrichEvent((await TourEvents.find().exec()).map((d) => d.toObject({ getters: true }))),
-    },
-    next_day_start: event.next_day_start,
-    next_latest_node_infos: event.next_latest_node_infos,
-    now_latest_node_info_remain: event.now_latest_node_info_remain,
-    now_latest_node_infos: event.now_latest_node_infos,
-  };
+    const event = (await Event.findOne({}).exec())!.toObject();
+    const data = {
+      big_node_order_array: event.big_node_order_array,
+      event_list: {
+        assault: enrichEvent(
+          (await AssualtEvents.find().exec()).map((d) => d.toObject({ getters: true })),
+        ),
+        m16: enrichEvent((await M16Events.find().exec()).map((d) => d.toObject({ getters: true }))),
+        score: enrichEvent(
+          (await ScoreEvents.find().exec()).map((d) => d.toObject({ getters: true })),
+        ), //Collabration Events Type Takes SCORE prefixed events and quests
+        standing: enrichEvent(
+          (await StandingEvents.find().exec()).map((d) => d.toObject({ getters: true })),
+        ),
+        ticket: await TicketEvents.find({}).exec(), //Ticket prefixed quests
+        tour: enrichEvent((await TourEvents.find().exec()).map((d) => d.toObject({ getters: true }))),
+      },
+      next_day_start: event.next_day_start,
+      next_latest_node_infos: event.next_latest_node_infos,
+      now_latest_node_info_remain: event.now_latest_node_info_remain,
+      now_latest_node_infos: event.now_latest_node_infos,
+    };
 
-  encryptAndSend(data, res, req);
-  log.debug('Score events: %o', data.event_list.score);
+    encryptAndSend(data, res, req);
+    log.debug('Score events: %o', data.event_list.score);
+  } catch (error) {
+    log.error('Error in eventListAll:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Event list failed');
+  }
 };
 
 export const eternalAll = (req: Request, res: Response) => {
@@ -664,122 +687,128 @@ export const eternalAll = (req: Request, res: Response) => {
 };
 
 export const islandStart = async (req: Request, res: Response) => {
-  const { mst_quest_id, session_id } = req.body as IslandStartInput;
-  const startedQuest = mst_quest_id;
-  const filter = { current_session: session_id };
+  try {
+    const { mst_quest_id, session_id } = req.body as IslandStartInput;
+    const startedQuest = mst_quest_id;
+    const filter = { current_session: session_id };
 
-  const doc = await User.findOne(filter);
+    const doc = await User.findOne(filter);
 
-  const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
+    const quest = await QuestSheet.findOne({ mQuestID: String(startedQuest) });
 
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
-  }
-  const cleared_quests = doc.cleared_quests;
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const cleared_quests = doc.cleared_quests;
 
-  const questExists = cleared_quests.some((q) => q.mst_quest_id === startedQuest);
+    const questExists = cleared_quests.some((q) => q.mst_quest_id === startedQuest);
 
-  if (!questExists) {
-    log.debug('Inserted Quest as seen');
-    cleared_quests.push({ mst_quest_id: startedQuest });
-  }
+    if (!questExists) {
+      log.debug('Inserted Quest as seen');
+      cleared_quests.push({ mst_quest_id: startedQuest });
+    }
 
-  const update = { cleared_quests: cleared_quests };
+    const update = { cleared_quests: cleared_quests };
 
-  // Await the update so you know it completed
-  await User.findOneAndUpdate(filter, update, { new: true });
-  const data = {
-    instance_data: {
-      block_list: [] as BlockListItem[],
-      bomb_lot_no: [
-        {
-          bomb_lottery: [{ bomb_id: 0, weight: 0 }],
+    // Await the update so you know it completed
+    await User.findOneAndUpdate(filter, update, { new: true });
+    const data = {
+      instance_data: {
+        block_list: [] as BlockListItem[],
+        bomb_lot_no: [
+          {
+            bomb_lottery: [{ bomb_id: 0, weight: 0 }],
+          },
+        ],
+        enable_limited_skill_id_list: [],
+        enable_partner_limited_skill_id_list: [],
+        enable_talisman: 0,
+        enable_talisman_partner: 0,
+        enemy_point_list: [
+          // {
+          //   mst_enemy_id: 1618895799,
+          //   point: 0,
+          // },
+        ],
+        instance_id: 0,
+        mission_message: 'start',
+        mst_quest_id: startedQuest,
+        multi_leave_check_time: 0,
+        point_info: {
+          armor_skill_value: 0,
+          campaign_value: 0,
+          get_point: 0,
+          guild_bingo_bonus: 0,
+          guild_total_point: 0,
+          m16_get_point: 0,
+          mst_event_info_id: 2740334662,
+          mst_event_point_id: 2992123464,
+          now_point: 0,
+          total_point: 0,
         },
-      ],
-      enable_limited_skill_id_list: [],
-      enable_partner_limited_skill_id_list: [],
-      enable_talisman: 0,
-      enable_talisman_partner: 0,
-      enemy_point_list: [
-        // {
-        //   mst_enemy_id: 1618895799,
-        //   point: 0,
-        // },
-      ],
-      instance_id: 0,
-      mission_message: 'start',
-      mst_quest_id: startedQuest,
-      multi_leave_check_time: 0,
-      point_info: {
-        armor_skill_value: 0,
-        campaign_value: 0,
-        get_point: 0,
-        guild_bingo_bonus: 0,
-        guild_total_point: 0,
-        m16_get_point: 0,
-        mst_event_info_id: 2740334662,
-        mst_event_point_id: 2992123464,
-        now_point: 0,
-        total_point: 0,
+        power_up: 0,
+        select_fix_equipment_idx: 0,
+        subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
       },
-      power_up: 0,
-      select_fix_equipment_idx: 0,
-      subtargets: [{ instance_id: 0, mst_subtarget_id: 0 }],
-    },
-  };
+    };
 
-  const blocks = quest?.mBlocks || [];
-  if (blocks.length === 0) {
-    return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
-  }
-  blocks.forEach((block, index) => {
-    data.instance_data.block_list.push({
-      block_idx: index + 1,
-      block_instance_list: [
-        // { instance_id: 0, serial_no: 1 }
-      ],
-      drop_list: [],
-      instance_id: 0,
-      is_insert: 0,
-      is_raid: 0,
-      mst_block_id: block,
-      repop_list: [
-        // { amount: 0, serial_no: 0 }
-      ],
+    const blocks = quest?.mBlocks || [];
+    if (blocks.length === 0) {
+      return encryptAndSend({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
+    }
+    blocks.forEach((block, index) => {
+      data.instance_data.block_list.push({
+        block_idx: index + 1,
+        block_instance_list: [
+          // { instance_id: 0, serial_no: 1 }
+        ],
+        drop_list: [],
+        instance_id: 0,
+        is_insert: 0,
+        is_raid: 0,
+        mst_block_id: block,
+        repop_list: [
+          // { amount: 0, serial_no: 0 }
+        ],
+      });
     });
-  });
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in islandStart:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Island start failed');
+  }
 };
 
 export const islandEnd = async (req: Request, res: Response) => {
-  //TODO update quest in cleared_quests with complete time
-  const { mst_quest_id, clear_time, session_id } = req.body as IslandEndInput;
-  const cleared_quest = mst_quest_id;
-  const clearTime = clear_time;
-  const filter = { current_session: session_id };
-  const quest = await QuestSheet.findOne({ mQuestID: String(cleared_quest) });
-  log.debug('Rewards: %o', quest?.mRewardItemList);
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
-  }
-  const cleared_quests = doc.cleared_quests;
+  try {
+    //TODO update quest in cleared_quests with complete time
+    const { mst_quest_id, clear_time, session_id } = req.body as IslandEndInput;
+    const cleared_quest = mst_quest_id;
+    const clearTime = clear_time;
+    const filter = { current_session: session_id };
+    const quest = await QuestSheet.findOne({ mQuestID: String(cleared_quest) });
+    log.debug('Rewards: %o', quest?.mRewardItemList);
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const cleared_quests = doc.cleared_quests;
 
-  const questIndex = cleared_quests.findIndex((q) => q.mst_quest_id === cleared_quest);
+    const questIndex = cleared_quests.findIndex((q) => q.mst_quest_id === cleared_quest);
 
-  if (questIndex === -1) {
-    log.debug('Inserted Quest as seen');
-    cleared_quests.push({ mst_quest_id: cleared_quest, clear_time: clearTime });
-  } else {
-    log.debug('Updated clear_time...');
-    cleared_quests[questIndex]!.clear_time = clearTime;
-  }
+    if (questIndex === -1) {
+      log.debug('Inserted Quest as seen');
+      cleared_quests.push({ mst_quest_id: cleared_quest, clear_time: clearTime });
+    } else {
+      log.debug('Updated clear_time...');
+      cleared_quests[questIndex]!.clear_time = clearTime;
+    }
 
-  const update = { cleared_quests: cleared_quests };
+    const update = { cleared_quests: cleared_quests };
 
-  // Await the update so you know it completed
-  await User.findOneAndUpdate(filter, update, { new: true });
-  const data = {
+    // Await the update so you know it completed
+    await User.findOneAndUpdate(filter, update, { new: true });
+    const data = {
     advance_bingo_mission_ids: [],
     campaign_info: [
       //{mst_campaign_type_id:0,value:0}
@@ -1136,8 +1165,12 @@ export const islandEnd = async (req: Request, res: Response) => {
     },
 
     view_collection_list: [], ////unk
-  };
-  encryptAndSend(data, res, req);
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in islandEnd:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Island end failed');
+  }
 };
 
 // --- Types ---
@@ -1332,27 +1365,32 @@ export async function enrichOceanData(
 }
 
 export const islandMapAll = async (req: Request, res: Response) => {
-  const { session_id } = req.body as IslandMapAllInput;
-  const filter = { current_session: session_id };
+  try {
+    const { session_id } = req.body as IslandMapAllInput;
+    const filter = { current_session: session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+
+    // let final_ocean = await enrichOceanData(doc.ocean_list.toObject());
+    // const data = {
+    //   ocean_list: final_ocean,
+    // };
+
+    const final_ocean = await enrichOceanData(
+      doc.tutorial_step == 0xffff ? full_island : [...doc.ocean_list],
+      [...doc.cleared_quests],
+    );
+    log.debug('FINAL ocean data: %o', final_ocean);
+    const data = {
+      ocean_list: final_ocean,
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in islandMapAll:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Island map all failed');
   }
-
-  // let final_ocean = await enrichOceanData(doc.ocean_list.toObject());
-  // const data = {
-  //   ocean_list: final_ocean,
-  // };
-
-  const final_ocean = await enrichOceanData(
-    doc.tutorial_step == 0xffff ? full_island : [...doc.ocean_list],
-    [...doc.cleared_quests],
-  );
-  log.debug('FINAL ocean data: %o', final_ocean);
-  const data = {
-    ocean_list: final_ocean,
-  };
-
-  encryptAndSend(data, res, req);
 };

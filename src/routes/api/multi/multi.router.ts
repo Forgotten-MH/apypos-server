@@ -10,6 +10,7 @@ import {
   RoomGetSchema,
   MemberInfoSchema,
 } from './multi.schema.js';
+import { SessionOnlySchema } from '../../../schemas/common.schema.js';
 
 const multiRouter = Router();
 multiRouter.post('/room/reserve', validate(RoomReserveSchema), multiController.roomReserve);
@@ -21,7 +22,7 @@ multiRouter.post('/room/create', validate(RoomCreateSchema), multiController.roo
 multiRouter.post('/room/quick', validate(RoomQuickSchema), multiController.roomQuick);
 multiRouter.post('/room/get', validate(RoomGetSchema), multiController.roomGet);
 multiRouter.post('/member/info', validate(MemberInfoSchema), multiController.memberInfo);
-multiRouter.post('/invite/targets', multiController.inviteList); //todo
+multiRouter.post('/invite/targets', validate(SessionOnlySchema), multiController.inviteList); //todo
 
-multiRouter.post('/invite/list', multiController.inviteList);
+multiRouter.post('/invite/list', validate(SessionOnlySchema), multiController.inviteList);
 export default multiRouter;

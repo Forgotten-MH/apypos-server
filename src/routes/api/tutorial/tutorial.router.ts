@@ -12,7 +12,7 @@ tutorialRouter.post('/step/up', validate(SessionOnlySchema), tutorialController.
 tutorialRouter.post('/quest/start', validate(QuestStartSchema), tutorialController.TutorialQuestStart);
 tutorialRouter.post('/quest/end', validate(SessionOnlySchema), tutorialController.TutorialQuestEnd);
 
-tutorialRouter.post('/nyanken/list', tutorialController.nyankenList);
+tutorialRouter.post('/nyanken/list', validate(SessionOnlySchema), tutorialController.nyankenList);
 tutorialRouter.post('/nyanken/go', validate(SessionOnlySchema), tutorialController.nyankenGo);
 tutorialRouter.post('/nyanken/result', validate(SessionOnlySchema), tutorialController.nyankenResult);
 
