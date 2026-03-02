@@ -1,17 +1,24 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
     "esModuleInterop": true,
-    "target": "es6",
-    "moduleResolution": "node",
+    "target": "ES2022",
+    "moduleResolution": "nodenext",
+    "resolveJsonModule": true,
     "sourceMap": true,
     "outDir": "dist",
     "lib": [
-      "es2015"
-    ]
+      "ES2022"
+    ],
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true
   },
   "include": [
-    "src/**/*.ts",
-    "src/typings.d.ts"
-  ]
+    "src/**/*.ts"
+  ],
+  "exclude": []
 }

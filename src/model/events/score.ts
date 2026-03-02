@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import { getDurationFromValue } from "./utils";
+import mongoose from 'mongoose';
+import { getDurationFromValue } from './utils.js';
 const ScoreEventSchema = new mongoose.Schema(
   {
     big_node_banner_id: { type: Number, required: true },
@@ -9,7 +9,7 @@ const ScoreEventSchema = new mongoose.Schema(
     },
     middle_node_banner_id: { type: Number, required: true },
     mst_score_node_id: { type: Number, required: true },
-    schedule_category: { type: String, default: "" },
+    schedule_category: { type: String, default: '' },
     start_remain: {
       type: Date,
       get: getDurationFromValue,
@@ -17,10 +17,8 @@ const ScoreEventSchema = new mongoose.Schema(
     recommended_flag: { type: Number, default: 0 },
     state: { type: Number, default: 0 },
   },
-  { toJSON: { getters: true }, toObject: { getters: true } }
+  { toJSON: { getters: true }, toObject: { getters: true } },
 );
 
-
-
-const ScoreEvents = mongoose.model("ScoreEvents", ScoreEventSchema);
+const ScoreEvents = mongoose.model('ScoreEvents', ScoreEventSchema);
 export default ScoreEvents;

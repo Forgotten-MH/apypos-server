@@ -1,6 +1,6 @@
-import { app } from "./app";
-import { makeDownloadList } from "./services/initResourceDownloadList";
-import mongoose from "mongoose";
+import { app } from './app.js';
+import { makeDownloadList } from './services/initResourceDownloadList.js';
+import mongoose from 'mongoose';
 import {
   IP,
   PORT,
@@ -9,65 +9,77 @@ import {
   DB_PASSWORD,
   DB_IP,
   DB_PORT,
-} from "./config";
-const normalTutorialQuestSheets = require("./json/questDB/normal.extended.complete.json");
-const trainingQuestSheets = require("./json/questDB/training.extended.complete.json");
-const scoreQuestSheets = require("./json/questDB/score.extended.complete.json");
-const eternalQuestSheets = require("./json/questDB/eternal.extended.complete.json");
-const ticketQuestSheets = require("./json/questDB/ticket.extended.complete.json");
-const eventQuestSheets = require("./json/questDB/event.extended.blank.json");
-const ticketEvents = require("./json/ticket_events.json");
-const coevEvents = require("./json/coev_events.json");
+  SSL_KEY_PATH,
+  SSL_CERT_PATH,
+  SSL_CA_PATH,
+} from './config.js';
+import { createLogger } from './middleware/logger.js';
 
-const easyEvents = require("./json/easy_events.json");
-const normEvents = require("./json/norm_events.json");
-const hardEvents = require("./json/hard_events.json");
-const forbEvents = require("./json/forb_events.json");
+const log = createLogger('server');
+import normalTutorialQuestSheets from './json/questDB/normal.extended.complete.json' with { type: 'json' };
+import trainingQuestSheets from './json/questDB/training.extended.complete.json' with { type: 'json' };
+import scoreQuestSheets from './json/questDB/score.extended.complete.json' with { type: 'json' };
+import eternalQuestSheets from './json/questDB/eternal.extended.complete.json' with { type: 'json' };
+import ticketQuestSheets from './json/questDB/ticket.extended.complete.json' with { type: 'json' };
+import eventQuestSheets from './json/questDB/event.extended.blank.json' with { type: 'json' };
+import ticketEvents from './json/ticket_events.json' with { type: 'json' };
+import coevEvents from './json/coev_events.json' with { type: 'json' };
 
-import { readFileSync } from "fs";
-const Server = require("socket.io");
-// import { Server } from "socket.io"; wont work TypeError: (0 , socket_io_1.Server) is not a function
-import Event from "./model/events";
-import QuestSheet from "./model/questSheet";
+import easyEvents from './json/easy_events.json' with { type: 'json' };
+import normEvents from './json/norm_events.json' with { type: 'json' };
+import hardEvents from './json/hard_events.json' with { type: 'json' };
+import forbEvents from './json/forb_events.json' with { type: 'json' };
 
-import { onConnect } from "./multiServer";
-import AssualtEvents from "./model/events/assualts";
-import TicketEvents from "./model/events/tickets";
-import ScoreEvents from "./model/events/score";
+// Type definition for quest sheet JSON imports
+interface QuestSheetJson {
+  rQuestSheet: {
+    mQuestDataList: Record<string, unknown>[];
+  };
+}
 
-let createServer;
-const credentials = false
+// Cast JSON imports to resolve deep nested type access
+const typedNormal = normalTutorialQuestSheets as unknown as QuestSheetJson;
+const typedTraining = trainingQuestSheets as unknown as QuestSheetJson;
+const typedScore = scoreQuestSheets as unknown as QuestSheetJson;
+const typedEternal = eternalQuestSheets as unknown as QuestSheetJson;
+const typedTicket = ticketQuestSheets as unknown as QuestSheetJson;
+const typedEvent = eventQuestSheets as unknown as QuestSheetJson;
+
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { Server } from 'socket.io';
+import Event from './model/events.js';
+import QuestSheet from './model/questSheet.js';
+
+import { onConnect } from './multiServer.js';
+import AssualtEvents from './model/events/assualts.js';
+import TicketEvents from './model/events/tickets.js';
+import ScoreEvents from './model/events/score.js';
+
+import http from 'http';
+import https from 'https';
+import { restoreSessions } from './services/crypto/encryptionHelpers.js';
+
+const useHttps = PORT === 443;
+const defaultKeysDir = join(import.meta.dirname, '..', 'keys');
+const credentials: https.ServerOptions = useHttps
   ? {
-      key: readFileSync("../keys/private.key"),
-      cert: readFileSync("../keys/certificate.crt"),
-      ca: readFileSync("../keys/certificate.crt"), // Optional, for full certificate chain
+      key: readFileSync(SSL_KEY_PATH || join(defaultKeysDir, 'private.key')),
+      cert: readFileSync(SSL_CERT_PATH || join(defaultKeysDir, 'certificate.crt')),
+      ca: readFileSync(SSL_CA_PATH || SSL_CERT_PATH || join(defaultKeysDir, 'certificate.crt')),
     }
   : {};
-if (PORT === 443) {
-  // For HTTPS, load the https module and SSL credentials
-  const https = require("https");
-
-  createServer = https.createServer;
-} else {
-  // For HTTP, load the http module
-  const http = require("http");
-  createServer = http.createServer;
-}
 
 mongoose
   .connect(`mongodb://${DB_USER}:${DB_PASSWORD}@${DB_IP}:${DB_PORT}`, {
     dbName: DB_NAME,
   })
-  .then(() => {
-    console.log("Connected to MongoDB...");
+  .then(async () => {
+    log.info('Connected to MongoDB...');
+    await restoreSessions();
 
-    const downloadCategories = [
-      "openingDL",
-      "tutorialDL",
-      "trainingDL",
-      "v0282/stdDL",
-    ];
-    const platforms = ["android", "ios"];
+    const downloadCategories = ['openingDL', 'tutorialDL', 'trainingDL', 'v0282/stdDL'];
+    const platforms = ['android', 'ios'];
 
     try {
       platforms.forEach((platform) => {
@@ -76,79 +88,66 @@ mongoose
         });
       });
     } catch (error) {
-      console.error(
+      log.error(
         "Failed to create FPK download lists. Please ensure the FPK files are located in './src/public/res/' and the server is properly configured.",
-        error
+        error,
       );
     }
     app.use((req, res, next) => {
-      console.log(`Request method: ${req.method}`);
-      console.log(`Request URL: ${req.url}`);
-      console.log("Request Headers:", req.headers);
-      console.log("Request Body:", req.body);
-
-      next(); // Pass the request to the next middleware or route handler
-    });
-
-    const server = createServer(PORT === 443 ? credentials : {}, app);
-
-    const io = Server(server, {
-      allowEIO3: true, // false by default
-    });
-
-    io.use((socket, next) => {
-      console.log(`Incoming connection: ${socket.id}`);
-      console.log(` ${socket.data}`);
-
-      next(); // Call next to proceed with the connection
-    });
-
-    io.use((socket, next) => {
-      const originalOnevent = socket.onevent;
-      socket.onevent = function (packet) {
-        const eventName = packet.data[0];
-        const args = packet.data.slice(1);
-        // console.log("Intercepted event:", eventName, args[0]);
-        if (Buffer.isBuffer(args[0])) {
-          // If it's a buffer, log as hex for inspection
-          console.log(
-            `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
-              args[0].toString("hex")
-          );
-        } else {
-          console.log(
-            `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` +
-              args[0]
-          );
-        }
-        originalOnevent.call(this, packet);
-      };
+      log.debug(`Request method: ${req.method}`);
+      log.debug(`Request URL: ${req.url}`);
+      log.debug('Request Headers: %o', req.headers);
+      log.debug('Request Body: %o', req.body);
       next();
     });
 
-    io.on("connection", onConnect);
+    const server = useHttps ? https.createServer(credentials, app) : http.createServer(app);
+
+    const io = new Server(server, {
+      allowEIO3: true,
+      cors: { origin: '*' },
+    });
+
+    io.use((socket, next) => {
+      log.info(`Incoming connection: ${socket.id}`);
+      log.debug('Socket data: %o', socket.data);
+
+      socket.onAny((eventName, arg) => {
+        if (Buffer.isBuffer(arg)) {
+          log.debug(
+            `Received ${eventName} Buffer at ${new Date().toISOString()}:\n` + arg.toString('hex'),
+          );
+        } else {
+          log.debug(`Received ${eventName} Buffer at ${new Date().toISOString()}:\n` + arg);
+        }
+      });
+
+      next();
+    });
+
+    io.on('connection', onConnect);
 
     server.listen(PORT, () => {
-      Event.countDocuments({})
+      void Event.countDocuments({})
         .then((count) => {
-          console.log(`Number of Events: ${count}`);
+          log.info(`Number of Events: ${count}`);
           if (count == 0) {
             const eventDefault = new Event();
-            eventDefault.save();
-            console.log("✅ Event Data imported successfully.");
+            void eventDefault.save();
+            log.info('Event Data imported successfully.');
           } else {
-            console.log("⚠️ Event Data is not empty. Skipping import.");
+            log.info('Event Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((err: unknown) => {
+          log.error('Error:', err);
         });
-      AssualtEvents.countDocuments({})
+      void AssualtEvents.countDocuments({})
         .then((count) => {
-          console.log(`Number of Assualt Events: ${count}`);
+          log.info(`Number of Assualt Events: ${count}`);
           if (count == 0) {
-            easyEvents.map((easyEvent) => {
-              AssualtEvents.create({
+            easyEvents.forEach((easyEvent) => {
+              void AssualtEvents.create({
                 appear_remain: Date.now(), //Only start when this hits 0
                 disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
@@ -156,8 +155,8 @@ mongoose
                 ...easyEvent,
               });
             });
-            normEvents.map((normEvent) => {
-              AssualtEvents.create({
+            normEvents.forEach((normEvent) => {
+              void AssualtEvents.create({
                 appear_remain: Date.now(), //Only start when this hits 0
                 disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
@@ -165,8 +164,8 @@ mongoose
                 ...normEvent,
               });
             });
-            hardEvents.map((hardEvent) => {
-              AssualtEvents.create({
+            hardEvents.forEach((hardEvent) => {
+              void AssualtEvents.create({
                 appear_remain: Date.now(), //Only start when this hits 0
                 disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
@@ -174,8 +173,8 @@ mongoose
                 ...hardEvent,
               });
             });
-            forbEvents.map((forbEvent) => {
-              AssualtEvents.create({
+            forbEvents.forEach((forbEvent) => {
+              void AssualtEvents.create({
                 appear_remain: Date.now(), //Only start when this hits 0
                 disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
@@ -184,40 +183,40 @@ mongoose
               });
             });
 
-            console.log("✅ Assualt Event Data imported successfully.");
+            log.info('✅ Assualt Event Data imported successfully.');
           } else {
-            console.log("⚠️ Assualt Event Data is not empty. Skipping import.");
+            log.info('⚠️ Assualt Event Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((err: unknown) => {
+          log.error('Error:', err);
         });
-      ScoreEvents.countDocuments({})
+      void ScoreEvents.countDocuments({})
         .then((count) => {
-          console.log(`Number of Score Events: ${count}`);
+          log.info(`Number of Score Events: ${count}`);
           if (count == 0) {
-            coevEvents.map((coevEvent) => {
-              ScoreEvents.create({
+            coevEvents.forEach((coevEvent) => {
+              void ScoreEvents.create({
                 end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 start_remain: Date.now(),
                 ...coevEvent,
               });
             });
 
-            console.log("✅ Score Event Data imported successfully.");
+            log.info('✅ Score Event Data imported successfully.');
           } else {
-            console.log("⚠️ Score Event Data is not empty. Skipping import.");
+            log.info('⚠️ Score Event Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((err: unknown) => {
+          log.error('Error:', err);
         });
-      TicketEvents.countDocuments({})
+      void TicketEvents.countDocuments({})
         .then((count) => {
-          console.log(`Number of Ticket Events: ${count}`);
+          log.info(`Number of Ticket Events: ${count}`);
           if (count == 0) {
-            ticketEvents.map((ticketEvent) => {
-              TicketEvents.create({
+            ticketEvents.forEach((ticketEvent) => {
+              void TicketEvents.create({
                 buy_end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 buy_start_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
                 clear_time: 0,
@@ -227,46 +226,39 @@ mongoose
               });
             });
 
-            console.log("✅ Ticket Event Data imported successfully.");
+            log.info('✅ Ticket Event Data imported successfully.');
           } else {
-            console.log("⚠️ Ticket Event Data is not empty. Skipping import.");
+            log.info('⚠️ Ticket Event Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((err: unknown) => {
+          log.error('Error:', err);
         });
-      QuestSheet.countDocuments({})
+      void QuestSheet.countDocuments({})
         .then((count) => {
-          console.log(`Number of Quests: ${count}`);
+          log.info(`Number of Quests: ${count}`);
           if (count === 0) {
-            QuestSheet.create(
-              normalTutorialQuestSheets.rQuestSheet.mQuestDataList
-            );
-            QuestSheet.create(trainingQuestSheets.rQuestSheet.mQuestDataList);
-            QuestSheet.create(scoreQuestSheets.rQuestSheet.mQuestDataList);
-            QuestSheet.create(eternalQuestSheets.rQuestSheet.mQuestDataList);
-            QuestSheet.create(ticketQuestSheets.rQuestSheet.mQuestDataList);
-            QuestSheet.create(eventQuestSheets.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedNormal.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedTraining.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedScore.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedEternal.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedTicket.rQuestSheet.mQuestDataList);
+            void QuestSheet.insertMany(typedEvent.rQuestSheet.mQuestDataList);
 
-            console.log("✅ Quest Data imported successfully.");
+            log.info('✅ Quest Data imported successfully.');
           } else {
-            console.log("⚠️ Quest Data is not empty. Skipping import.");
+            log.info('⚠️ Quest Data is not empty. Skipping import.');
           }
         })
-        .catch((err) => {
-          console.error(err);
+        .catch((err: unknown) => {
+          log.error('Error:', err);
         });
 
       //TODO Instatiate entire ocean map here.
 
-      console.log(
-        `Apypos Server Internal Test v0.0.12 started on ${IP}:${PORT}`
-      );
+      log.info(`Apypos Server Internal Test v0.0.12 started on ${IP}:${PORT}`);
     });
   })
-  .catch((err) =>
-    console.error(
-      "Coudn't Start Apypos Server: Couldn't connect to MongoDB....",
-      err
-    )
+  .catch((err: unknown) =>
+    log.error("Coudn't Start Apypos Server: Couldn't connect to MongoDB....", err),
   );

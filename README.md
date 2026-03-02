@@ -1,103 +1,181 @@
-# Apypos (Monster Hunter Explore Server Emulator)
-This repository contains the source code for a server emulator for the game Monster Hunter Explore.
+# Apypos
 
-The code you may find is in a `WIP` state. 
+A server emulator for **Monster Hunter Explore** (MHXR), the mobile-exclusive Monster Hunter title (iOS/Android) shut down by Capcom. Apypos handles Blowfish-encrypted HTTP API routes, real-time multiplayer via Socket.IO, and serves game resource files (FPK archives).
 
-If you paid for any of this you was scammed. 
+> [!WARNING]
+> This project is in a **WIP** state. If you paid for any of this, you were scammed.
 
-## DISCLAIMER
+## Table of Contents
 
-This project is an unofficial, fan-made private server created for educational and personal use only. It is not affiliated with, endorsed by, or connected in any way to Capcom or its affiliates. All trademarks and copyrights related to MHXR are the property of their respective owners.
-This server and its associated software are provided “AS IS,” without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement.
-The developers and contributors of this project are not responsible for any damages, losses, or legal consequences arising from the use of this server or its software.
-Use of this server may violate the terms of service of Capcom and could result in suspension or banning from official services. Users assume all risk and responsibility for participating.
-
-## License
-This project is licensed under the AGPL-3.0 License - see the [LICENSE](./LICENSE) file for details.
-
-### Important
-If you modify this software and make it available to others over a network (for example, by hosting a web service), you must provide the complete source code of your modified version to all users of that service, per the AGPL terms.
-
-## Why the Name?
-The server is called Apypos. To keep with the theme Erupe set. It was originally called Boromir, after the Guild Executive from MHXR and was randomly chosen name by the initial framework developer as they had not played the game when it was live. It was changed because LOTR association just felt like it didnt fit MH which we also found it might have been a localization error.
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Configuration](#configuration)
+- [Resource Files](#resource-files)
+- [Running](#running)
+- [Commands](#commands)
+- [Architecture](#architecture)
+- [IDs and Quests](#ids-and-quests)
+- [Logging](#logging)
+- [Why the Name?](#why-the-name)
+- [Disclaimer](#disclaimer)
+- [License](#license)
 
 ## Prerequisites
 
-* Node.js and npm
-    * Using NVM [Download NVM here](https://github.com/nvm-sh/nvm/releases/)
-        ```bash
-        nvm install [version_number]
-        ```
-        For example:
-        ```bash
-        nvm install 20
-        ```
-    * Direct Download
-        [Download Node.js and npm](https://nodejs.org/)
-* Yarn
-    ```bash
-    npm install -g yarn
-    ```
-* Git (Optional)
-    [Download Git for Windows](https://gitforwindows.org/)
-
-* Mongo DB
-    Install it locally [Download Mongo](https://www.mongodb.com/products/self-managed/community-edition)
-    or you can run `docker-compose up` in the root of this directory if you have `https://www.docker.com/` installed.
+- **Node.js** >= 20
+  - Via [nvm](https://github.com/nvm-sh/nvm/releases/): `nvm install 20`
+  - Or [direct download](https://nodejs.org/)
+- **Yarn**: `npm install -g yarn`
+- **MongoDB** — either:
+  - [Install locally](https://www.mongodb.com/products/self-managed/community-edition), or
+  - Run `docker-compose up` (requires [Docker](https://www.docker.com/))
+- **Git** (optional) — [Download](https://git-scm.com/)
 
 ## Setup
 
-1. Clone the repository (if you haven't already):
+1. Clone the repository.
 
-2. Install the dependencies:
+2. Install dependencies:
+   ```bash
+   yarn install
+   ```
 
-    ```bash
-    yarn install
-    ```
-    ```bash
-    yarn run install:clean
-    ```
-
-3. Configuration:
-
-    * Ensure you have set the necessary environment variables or configurations needed by the project. Including DB Connection config.
-    * Edit any configuration files if necessary.
+3. Copy and edit the environment config:
+   ```bash
+   cp .env.example .env
+   ```
 
 4. Build the project:
-   
-    ```bash
-    yarn build
-    ```
+   ```bash
+   yarn build
+   ```
 
+## Configuration
+
+Copy `.env.example` to `.env` and adjust the values as needed:
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `IP` | `127.0.0.1` | Server bind address |
+| `PORT` | `80` | Server port |
+| `WEB_URL` | `http://127.0.0.1/web` | Web interface URL |
+| `RES_URL` | `http://127.0.0.1/` | Resource files base URL |
+| `DB_IP` | `127.0.0.1` | MongoDB host |
+| `DB_PORT` | `27017` | MongoDB port |
+| `DB_NAME` | `apypos` | MongoDB database name |
+| `DB_USER` | `root` | MongoDB username |
+| `DB_PASSWORD` | `example` | MongoDB password |
+| `IS_MAINTENANCE` | `false` | Enable maintenance mode |
+| `DEBUG` | `false` | Log full request/response bodies |
 
 ## Resource Files
-The server expects you to place some files for the game to download within `src\public\res\download` for your platform of choosing. Andriod or iOS. These files are FPK files a compressed archive which has the game arc files within. As the only files ive been able to get are `v0282` this is all the server supports. You can use a backup of the games files and run the FPK Packer script over the files to generate these fpks.
 
-## Banner resources
-The game would download extra banners on start up for events. This is disabled but if you want to enable this you need to populate the API in `src\controllers\bannerController.ts` and then place your respective files in `src\public\res\banner` for your platform of choosing. Pre installed files would have these files bundled in you would need to seperate them out from resource files. 
+### Game resources (FPK)
 
+The server expects game files in `src/public/res/download/` for your platform (Android or iOS). These are FPK archives containing the game's arc files. Only **v0282** is currently supported. You can generate these FPKs by running the FPK Packer script over a backup of the game files.
 
-## Running the Project
+### Event banners
 
-After setting up and Putting the resource files in you can run the project using:
+The game originally downloaded extra banners on startup for events. This is disabled by default. To enable it, populate the API in `src/controllers/bannerController.ts` and place your banner files in `src/public/res/banner/`.
 
-  ```bash
-    yarn start
-  ```
-Alternatively you can run it in dev mode which enables nodemon for automatic file refresh
+## Running
 
-  ```bash
-    yarn run start:dev
-  ```
+Start the server in production mode:
+```bash
+yarn start
+```
 
-Your server should start, and you should be able to access it on `http://localhost:80` or whatever port you've configured.
+Or in dev mode with auto-reload (nodemon):
+```bash
+yarn run start:dev
+```
 
-# ID's and Quests
-Most IDs can be found in the game files under `arc_cmn\resident` you will need to extract the arcs and then convert the xfs files to xml. There is a tool called Revil Toolkit `https://github.com/PredatorCZ/RevilLib`
+The server will be available at `http://localhost:80` (or your configured port).
+
+## Commands
+
+| Command | Description |
+|---------|-------------|
+| `yarn install` | Install dependencies |
+| `yarn run install:clean` | Clean reinstall (removes node_modules + lockfile) |
+| `yarn build` | Clean and compile TypeScript to `dist/` |
+| `yarn start` | Run production server |
+| `yarn run start:dev` | Run dev server with nodemon |
+| `yarn test` | Run tests (vitest) |
+| `yarn test:watch` | Run tests in watch mode |
+| `yarn test:coverage` | Run tests with coverage |
+| `yarn lint` | Lint source files (ESLint) |
+| `yarn format` | Format source files (Prettier) |
+| `yarn generate-island` | Generate ocean/island data |
+| `yarn generate-questList` | Generate quest list |
+| `yarn bf-dec` | Test Blowfish decryption |
+
+## Architecture
+
+```
+Client (Android/iOS)
+  |  Blowfish ECB encrypted HTTP (application/octet-stream)
+  v
+Express Server (src/server.ts)
+  ├── Decrypt middleware (Blowfish ECB -> JSON)
+  ├── Input sanitization (strips MongoDB $ operators)
+  ├── API route groups (src/routes/api/)
+  ├── Encrypt response (JSON -> Blowfish ECB)
+  └── Static file serving (FPK game resources)
+  |
+  v
+MongoDB (via Mongoose ODM)
+```
+
+Multiplayer is handled by Socket.IO (`src/multiServer.ts`) with a 16-byte binary packet header format for room-based sessions.
+
+### Project Structure
+
+```
+src/
+├── server.ts           # Entry point
+├── app.ts              # Express app setup + middleware
+├── config.ts           # Environment configuration
+├── multiServer.ts      # Socket.IO multiplayer server
+├── routes/             # API routes (api/, version/, maintenance/, web/)
+├── model/              # Mongoose schemas (user, guild, quests, events, etc.)
+├── services/           # Business logic (quests, items, guilds, ocean, crypto)
+├── csv/                # Quest master data (CSV)
+├── json/               # Quest DB, event definitions, node configs (JSON)
+├── bin/                # CLI utilities
+└── public/res/         # Static game resources (FPK, banners)
+frida/                  # Frida scripts for runtime client analysis
+scripts/                # Offline data conversion tools (XFS, XML->JSON, FPK)
+```
+
+## IDs and Quests
+
+Most IDs can be found in the game files under `arc_cmn/resident`. You'll need to extract the arcs and convert the XFS files to XML using a tool like [Revil Toolkit](https://github.com/PredatorCZ/RevilLib).
 
 ## Logging
 
-This project uses Winston for logging. Logs are displayed in the console in the format:
+This project uses [Winston](https://github.com/winstonjs/winston). Logs are displayed in the console in the format:
 
-
+```
 Request: [HTTP_METHOD] [URL] | Response: [STATUS_CODE] [RESPONSE_TIME]ms
+```
+
+Set `DEBUG=true` in `.env` to log full request and response bodies.
+
+## Why the Name?
+
+The server is named after the in-game Guild character. It was originally called "Boromir" — randomly chosen by the initial framework developer who hadn't played the game when it was live. It was renamed because the Lord of the Rings association didn't fit Monster Hunter, and the original name may have been a localization error. The name follows the convention set by [Erupe](https://github.com/ZeruLight/Erupe), the MH Frontier server emulator.
+
+## Disclaimer
+
+This project is an unofficial, fan-made private server created for educational and preservation purposes only. It is not affiliated with, endorsed by, or connected to Capcom or its affiliates. All trademarks and copyrights related to MHXR are the property of their respective owners.
+
+This server and its associated software are provided "AS IS," without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. The developers and contributors are not responsible for any damages, losses, or legal consequences arising from the use of this software.
+
+Use of this server may violate the terms of service of Capcom and could result in suspension or banning from official services. Users assume all risk and responsibility.
+
+## License
+
+This project is licensed under the [AGPL-3.0 License](./LICENSE).
+
+If you modify this software and make it available to others over a network (for example, by hosting a web service), you must provide the complete source code of your modified version to all users of that service, per the AGPL terms.

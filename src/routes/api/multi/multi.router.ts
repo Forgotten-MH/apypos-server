@@ -1,18 +1,28 @@
-import { Router } from "express";
-import * as multiReserveRoomController from "./multiReserveRoomController"
+import { Router } from 'express';
+import * as multiController from './multi.controller.js';
+import { validate } from '../../../middleware/validation.js';
+import {
+  RoomReserveSchema,
+  RoomSearchSchema,
+  RoomJoinSchema,
+  RoomCreateSchema,
+  RoomQuickSchema,
+  RoomGetSchema,
+  MemberInfoSchema,
+} from './multi.schema.js';
+import { SessionOnlySchema } from '../../../schemas/common.schema.js';
 
-const MultiReserveRoom = Router();
-MultiReserveRoom.post("/room/reserve", multiReserveRoomController.roomReserve);
+const multiRouter = Router();
+multiRouter.post('/room/reserve', validate(RoomReserveSchema), multiController.roomReserve);
 
-MultiReserveRoom.post("/room/reserve/join", multiReserveRoomController.roomReserveJoin);
-MultiReserveRoom.post("/room/search", multiReserveRoomController.roomSearch);
-MultiReserveRoom.post("/room/join", multiReserveRoomController.roomJoin);
-MultiReserveRoom.post("/room/create", multiReserveRoomController.roomCreate);
-MultiReserveRoom.post("/room/quick", multiReserveRoomController.roomQuick);
-MultiReserveRoom.post("/room/get", multiReserveRoomController.roomGet);
-MultiReserveRoom.post("/member/info", multiReserveRoomController.memberInfo);
-MultiReserveRoom.post("/invite/targets", multiReserveRoomController.inviteList); //todo
+multiRouter.post('/room/reserve/join', validate(RoomReserveSchema), multiController.roomReserveJoin);
+multiRouter.post('/room/search', validate(RoomSearchSchema), multiController.roomSearch);
+multiRouter.post('/room/join', validate(RoomJoinSchema), multiController.roomJoin);
+multiRouter.post('/room/create', validate(RoomCreateSchema), multiController.roomCreate);
+multiRouter.post('/room/quick', validate(RoomQuickSchema), multiController.roomQuick);
+multiRouter.post('/room/get', validate(RoomGetSchema), multiController.roomGet);
+multiRouter.post('/member/info', validate(MemberInfoSchema), multiController.memberInfo);
+multiRouter.post('/invite/targets', validate(SessionOnlySchema), multiController.inviteList); //todo
 
-
-MultiReserveRoom.post("/invite/list", multiReserveRoomController.inviteList);
-export default MultiReserveRoom;
+multiRouter.post('/invite/list', validate(SessionOnlySchema), multiController.inviteList);
+export default multiRouter;

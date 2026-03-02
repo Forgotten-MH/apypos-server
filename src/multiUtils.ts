@@ -1,3 +1,7 @@
+import { createLogger } from './middleware/logger.js';
+import { FLAG1, HEADER_SIZE, DEFAULT_SEQ, DEFAULT_FLAG2, SERVER_PLAYER_ID } from './constants/multiplayer.js';
+const log = createLogger('multiUtils');
+
 export function createHeader({
   roomNumber,
   playerId,
@@ -7,8 +11,17 @@ export function createHeader({
   flag1,
   flag2,
   pktlen,
+}: {
+  roomNumber: number;
+  playerId: number;
+  seq: number;
+  unk2: number;
+  emitTypeHex: number;
+  flag1: number;
+  flag2: number;
+  pktlen: number;
 }) {
- /*
+  /*
 uint32 roomid;
 ubyte unk1;
 uint16 sequence;
@@ -19,9 +32,9 @@ uint16 pktlength;
 uint32 flag2;
 ubyte array[pktlength];
  */
-  const header = Buffer.alloc(16);
+  const header = Buffer.alloc(HEADER_SIZE);
   let offset = 0;
-  header.writeUInt32LE(roomNumber, offset); 
+  header.writeUInt32LE(roomNumber, offset);
   offset += 4;
   header.writeUInt8(playerId, offset); //Unk but seems to be related to session size so 4 for 4 player and 16 for 16 player ff being like server maybe???
   offset += 1;
@@ -46,51 +59,50 @@ ubyte array[pktlength];
   header.writeUInt16LE(pktlen, offset);
   offset += 2;
   header.writeUInt32LE(flag2, offset);
-  offset += 4;
   return header;
 }
 
-function createMaintenance({ durationSecondsTill }) {
-  const pktId = 0x0a;
+function createMaintenance({ durationSecondsTill }: { durationSecondsTill: number }) {
+  const pktId = FLAG1.NOTICE;
   const data = Buffer.alloc(4);
-    console.log("Maintenance Message Sent: ",durationSecondsTill)
+  log.debug('Maintenance Message Sent: ', durationSecondsTill);
 
   data.writeUInt32LE(durationSecondsTill, 0);
   return { data, pktId };
 }
 
-export function createMaintenancePacket({ durationSecondsTill }) {
+export function createMaintenancePacket({ durationSecondsTill }: { durationSecondsTill: number }) {
   //10 onRecieveNotice
   const { data, pktId } = createMaintenance({ durationSecondsTill });
   const header = createHeader({
     roomNumber: 0x00000000,
-    playerId: 0xff,
-    seq: 0x0004,
+    playerId: SERVER_PLAYER_ID,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
     emitTypeHex: 0x0,
     flag1: pktId,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
   return Buffer.concat([header, data]);
 }
 
 ///////////////
 
-function createChat(message) {
+function createChat(message: string) {
   const data = Buffer.alloc(100);
-  let messageStartIndex = 0x36;
-  let name = "Command User";
-  console.log("Message From: ",name,"-",message)
-  data.write(name, 0x00, "ascii");
+  const messageStartIndex = 0x36;
+  const name = 'Command User';
+  log.debug('Message From: ', name, '-', message);
+  data.write(name, 0x00, 'ascii');
   data[0x00 + name.length] = 0x00; // null terminator
-  data.write(message, messageStartIndex, "ascii");
+  data.write(message, messageStartIndex, 'ascii');
   data[messageStartIndex + message.length + 1] = 0x00; // null terminator
 
   return { data };
 }
 
-export function createChatPacket(roomNo,messsage) {
+export function createChatPacket(roomNo: number, messsage: string) {
   //9 onRecieveChat
   const playerId = Math.floor(Math.random() * 10);
 
@@ -98,20 +110,20 @@ export function createChatPacket(roomNo,messsage) {
   const header = createHeader({
     roomNumber: roomNo,
     playerId: playerId,
-    seq: 0x0004,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
     emitTypeHex: 0x0,
-    flag1: 0x09,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    flag1: FLAG1.CHAT,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
-  return Buffer.concat([header,  data]);
+  return Buffer.concat([header, data]);
 }
 
 ///////////////
 
-function createInfo(msgType) {
-  const pktId = 0x07;
+function createInfo(msgType: number) {
+  const pktId = FLAG1.INFO;
 
   // Allocate a buffer: 54 bytes padding + "hello\0" = 60 bytes total
   const data = Buffer.alloc(100); // Total size: 15 bytes
@@ -142,7 +154,7 @@ function createInfo(msgType) {
 
     case 0x05: // setSelectedRoomNoFromID + string
       data.writeUInt32LE(1234, 4); // Room ID at offset 4
-      data.write("Room42\0", 8, "ascii"); // Null-terminated ASCII string
+      data.write('Room42\0', 8, 'ascii'); // Null-terminated ASCII string
       break;
 
     case 0x06: // setPhase1EndFlg
@@ -180,30 +192,29 @@ export function createInfoPacket() {
   //8 setSelectedFixedEquipID
   //9 ?? some float?
   const allowed = [0, 2, 3, 4, 5, 6, 7, 8, 9];
-  const msgType = allowed[Math.floor(Math.random() * allowed.length)];
+  const msgType = allowed[Math.floor(Math.random() * allowed.length)]!;
   const playerId = Math.floor(Math.random() * 4);
-  console.log("msg", msgType, "pId", playerId);
+  log.debug('msg', msgType, 'pId', playerId);
   const { data, pktId } = createInfo(msgType); // 0 to 9 (0x0 to 0x09)
   const header = createHeader({
     roomNumber: 0x00000000,
     playerId: playerId,
-    seq: 0x0004,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
     emitTypeHex: 0x0,
     flag1: pktId,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
   return Buffer.concat([header, data]);
 }
 
 function createActivity() {
-  const pktId = 0x06;
+  const pktId = FLAG1.ACTIVITY;
   const data = Buffer.from([
-    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c,
-    0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-    0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20, 0x21, 0x22, 0x23, 0x24,
-    0x25, 0x26, 0x27, 0x28, 0x29, 0x2a,
+    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10,
+    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f, 0x20,
+    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28, 0x29, 0x2a,
   ]);
   return { data, pktId };
 }
@@ -216,18 +227,18 @@ export function createActivityPacket() {
   const header = createHeader({
     roomNumber: 0x00000000,
     playerId: playerId,
-    seq: 0x0004,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
     emitTypeHex: 0x0,
     flag1: pktId,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
   return Buffer.concat([header, data]);
 }
 
 function creatSession() {
-  const pktId = 0x03;
+  const pktId = FLAG1.SESSION;
   const data = Buffer.from([0x01, 0x02]);
   //the
   return { data, pktId };
@@ -241,19 +252,18 @@ export function createSessionPacket() {
   const header = createHeader({
     roomNumber: 0x00000000,
     playerId: playerId,
-    seq: 0x0004,
+    seq: DEFAULT_SEQ,
     unk2: 0x0,
-    emitTypeHex: 0x0, //0 data 4 join 7 entry 10 cancel 0xd/13 match 14 terminate 15 lock 18 unlock 21 leave 22 hostchange //TODO.. AUTOMATICALLY APPLY EMIT TYPE BASED ON THIS.
+    emitTypeHex: 0x0,
     flag1: pktId,
-    pktlen: data.length, // auto-calculated
-    flag2: 0x10,
+    pktlen: data.length,
+    flag2: DEFAULT_FLAG2,
   });
   return Buffer.concat([header, data]);
 }
 
-function createRandomBuffer(minLength = 50, maxLength = 300) {
-  const length =
-    Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+function _createRandomBuffer(minLength = 50, maxLength = 300) {
+  const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
   const buffer = Buffer.alloc(length);
 
   for (let i = 0; i < length; i++) {
@@ -263,9 +273,9 @@ function createRandomBuffer(minLength = 50, maxLength = 300) {
   return buffer;
 }
 
-export function parseHeader(buffer) {
-  if (buffer.length < 16) {
-    throw new Error("Buffer too short to contain valid header");
+export function parseHeader(buffer: Buffer) {
+  if (buffer.length < HEADER_SIZE) {
+    throw new Error('Buffer too short to contain valid header');
   }
 
   let offset = 0;
@@ -294,17 +304,17 @@ export function parseHeader(buffer) {
   offset += 4;
 
   // Payload is everything after the header bytes
-  const payload = buffer.slice(offset);
-  console.log({
-      roomNumber,
-      playerId,
-      seq,
-      unk2,
-      emitTypeHex,
-      flag1,
-      pktlen,
-      flag2,
-    })
+  const payload = buffer.subarray(offset);
+  log.debug({
+    roomNumber,
+    playerId,
+    seq,
+    unk2,
+    emitTypeHex,
+    flag1,
+    pktlen,
+    flag2,
+  });
   return {
     header: {
       roomNumber,

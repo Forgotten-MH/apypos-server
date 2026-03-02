@@ -1,13 +1,15 @@
-import { Router } from "express";
-import * as nyankanController from "./nyankenController";
-import * as notImplementedController from "../notImplementedController";
+import { Router } from 'express';
+import * as nyankenController from './nyanken.controller.js';
+import { validate } from '../../../middleware/validation.js';
+import { SessionOnlySchema } from '../../../schemas/common.schema.js';
+// import * as notImplementedController from '../notImplemented.controller.js';
 
-const nyankanRouter = Router();
+const nyankenRouter = Router();
 
-nyankanRouter.post("/progress", nyankanController.progress);
-nyankanRouter.post("/historyGet", nyankanController.historyGet);
-nyankanRouter.post("/questlist", nyankanController.QuestList);
-// nyankanRouter.post("/start", notImplementedController.blankResponseEncrypted);
-nyankanRouter.post("/islandInfoGet", nyankanController.islandInfoGet);
+nyankenRouter.post('/progress', validate(SessionOnlySchema), nyankenController.progress);
+nyankenRouter.post('/historyGet', validate(SessionOnlySchema), nyankenController.historyGet);
+nyankenRouter.post('/questlist', validate(SessionOnlySchema), nyankenController.QuestList);
+// nyankenRouter.post("/start", notImplementedController.blankResponseEncrypted);
+nyankenRouter.post('/islandInfoGet', validate(SessionOnlySchema), nyankenController.islandInfoGet);
 
-export default nyankanRouter;
+export default nyankenRouter;

@@ -1,8 +1,8 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const { Schema, model } = mongoose;
 
-const QuestSchema = new Schema({
+const _QuestSchema = new Schema({
   clear_time: { type: Number, default: 0 },
   limited_amount: { type: Number, default: 0 }, //amount needed
   mst_limited_id: { type: Number, required: true }, //limited points
@@ -10,10 +10,6 @@ const QuestSchema = new Schema({
   quest_subtargets: { type: [Object], default: [] },
   state: { type: Number, required: true }, // Bool for new = 1
 });
-
-
-
-
 
 const NodeInfoSchema = new Schema({
   beginner_node_id: { type: Number, default: 0 },
@@ -469,5 +465,5 @@ const eventSchema = new Schema({
   },
 });
 
-const Event = model("Event", eventSchema);
+const Event = model('Event', eventSchema);
 export default Event;

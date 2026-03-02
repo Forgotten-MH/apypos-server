@@ -1,53 +1,70 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
-import Present from "../../../model/presents";
-import { Box, BoxService } from "../../../services/boxService";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
+import { createLogger } from '../../../middleware/logger.js';
+import User from '../../../model/user.js';
+import Present from '../../../model/presents.js';
+import { addItem } from '../../../services/boxService.js';
+import type { SessionOnlyInput, PresentReceiveInput } from './present.schema.js';
+const log = createLogger('present');
 
 export const presentSync = async (req: Request, res: Response) => {
-  const { session_id } = req.body;
-  const userDoc = await User.findOne({ current_session: session_id });
+  try {
+    const { session_id } = req.body as SessionOnlyInput;
+    const userDoc = await User.findOne({ current_session: session_id });
+    if (!userDoc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
+    }
 
-  encryptAndSend(
-    {
-      presentDetail: await Present.find({ uu_id: userDoc.uu_id }),
-    },
-    res,
-    req
-  );
+    encryptAndSend(
+      {
+        presentDetail: await Present.find({ uu_id: userDoc.uu_id }),
+      },
+      res,
+      req,
+    );
+  } catch (error) {
+    log.error('Error in presentSync:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Present sync failed');
+  }
 };
 
 export const presentReceive = async (req: Request, res: Response) => {
-  const requestedIdsToBePutInBox: string[] = req.body._ids;
-  //Mark present as recieved
-  const { session_id } = req.body;
-  const userDoc = await User.findOne({ current_session: session_id });
-
-  const presents = await Present.find({
-    _id: { $in: requestedIdsToBePutInBox },
-  });
-
-  type BoxKey = keyof Box;
-  presents.map(async(present) => {
-    for (const [key, value] of Object.entries(present.toObject().content)) {
-      console.log("CONTENT KEY",key)
-      if (Array.isArray(value)) {
-        value.forEach((item) => {
-          console.log("ADDED ITEM TO BOX",key,item)
-          BoxService.addItem(userDoc.box, key as BoxKey, item);
-        });
-      }
+  try {
+    const { _ids: requestedIdsToBePutInBox, session_id } = req.body as PresentReceiveInput;
+    const userDoc = await User.findOne({ current_session: session_id });
+    if (!userDoc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
     }
-    await Present.updateOne({_id:present._id},{received:1})
-  });
-  await User.updateOne(
-    { uu_id: userDoc.uu_id },
-    { box: userDoc.box },
-  );
 
-  const data = {
-    presentDetail: await Present.find({ uu_id: userDoc.uu_id }), //this should only be
-    receive_num: presents.length,
-  };
-  encryptAndSend(data, res, req);
+    const presents = await Present.find({
+      _id: { $in: requestedIdsToBePutInBox },
+    });
+
+    type BoxKey = keyof import('../../../types/game.js').Box;
+    await Promise.all(
+      presents.map(async (present) => {
+        for (const [key, value] of Object.entries(present.toObject().content)) {
+          log.debug('CONTENT KEY', key);
+          if (Array.isArray(value)) {
+            value.forEach((item) => {
+              log.debug('ADDED ITEM TO BOX', key, item);
+              addItem(userDoc.box!, key as BoxKey, item);
+            });
+          }
+        }
+        await Present.updateOne({ _id: present._id }, { received: 1 });
+      }),
+    );
+    await User.updateOne({ uu_id: userDoc.uu_id }, { box: userDoc.box });
+
+    const data = {
+      presentDetail: await Present.find({ uu_id: userDoc.uu_id }), //this should only be
+      receive_num: presents.length,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in presentReceive:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Present receive failed');
+  }
 };

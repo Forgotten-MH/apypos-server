@@ -1,33 +1,49 @@
-import {
-  getBlockHashsFromQuestHash,
-  getQuestNameFromQuestHash,
-} from "./questService";
-import * as fs from "fs/promises";
-const path = ".\\Projects\\Boromir\\src\\json\\questDB\\event.json"
-const questSheets = require(path);
-let originalLen = questSheets.rQuestSheet.mQuestDataList.length
-function condenseAutoDeleteArrays(obj: any) {
+import { fileURLToPath } from 'node:url';
+import { getBlockHashsFromQuestHash, getQuestNameFromQuestHash } from './questService.js';
+import * as fs from 'fs/promises';
+import { readFileSync } from 'fs';
+import * as path from 'path';
+
+const __dirname = import.meta.dirname ?? fileURLToPath(new URL('.', import.meta.url));
+import { createLogger } from '../middleware/logger.js';
+const log = createLogger('questList');
+
+interface QuestSheetFile {
+  rQuestSheet: {
+    mQuestDataList: Array<Record<string, unknown> & { mQuestID: string; mBlocks?: number[]; mDefineId?: string }>;
+  };
+}
+
+const questType = process.argv[2] || 'event';
+const questPath = path.join(__dirname, '..', 'json', 'questDB', `${questType}.json`);
+const questSheets = JSON.parse(readFileSync(questPath, 'utf-8')) as QuestSheetFile;
+const originalLen = questSheets.rQuestSheet.mQuestDataList.length;
+
+function condenseAutoDeleteArrays(obj: unknown) {
   if (Array.isArray(obj)) {
     obj.forEach(condenseAutoDeleteArrays);
-  } else if (typeof obj === "object" && obj !== null) {
-    for (const key of Object.keys(obj)) {
-      const val = obj[key];
+  } else if (typeof obj === 'object' && obj !== null) {
+    const record = obj as Record<string, unknown>;
+    for (const key of Object.keys(record)) {
+      const val = record[key] as Record<string, unknown> | null;
 
       // Normalize mAutoDelete value
-      const autoDeleteFalse = val?.mAutoDelete === false || val?.mAutoDelete === "false";
+      const autoDeleteFalse = val?.mAutoDelete === false || val?.mAutoDelete === 'false';
 
       // Pattern 1: classref_.mpArray
-      const classrefArray = val?.classref_?.mpArray;
+      const classref = val?.classref_ as Record<string, unknown> | undefined;
+      const classrefArray = classref?.mpArray;
       // Pattern 2: array.mpArray
-      const arrayArray = val?.array?.mpArray;
+      const arrayObj = val?.array as Record<string, unknown> | undefined;
+      const arrayArray = arrayObj?.mpArray;
 
       if (
         val &&
-        typeof val === "object" &&
+        typeof val === 'object' &&
         autoDeleteFalse &&
         (Array.isArray(classrefArray) || Array.isArray(arrayArray))
       ) {
-        obj[key] = Array.isArray(classrefArray) ? classrefArray : arrayArray;
+        record[key] = Array.isArray(classrefArray) ? classrefArray : arrayArray;
       } else {
         condenseAutoDeleteArrays(val); // Recurse into deeper structures
       }
@@ -38,62 +54,50 @@ function condenseAutoDeleteArrays(obj: any) {
 condenseAutoDeleteArrays(questSheets);
 
 async function enrichAndPersist() {
-  let errors = [];
-  let allBlocks = [];
+  const errors: Record<string, unknown>[] = [];
+  const allBlocks: number[] = [];
   for (const obj of questSheets.rQuestSheet.mQuestDataList) {
     try {
-      
-      const blocks:any = await getBlockHashsFromQuestHash(obj.mQuestID);
+      const blocks = (await getBlockHashsFromQuestHash(obj.mQuestID)) as number[];
       obj.mBlocks = blocks;
-      blocks.map((block)=>{
-        allBlocks.push(block)
-      })
+      blocks.map((block) => {
+        allBlocks.push(block);
+      });
     } catch (err) {
-      console.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
+      log.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
       obj.mBlocks = [];
     }
-    
-     try {
-      obj.mDefineId = await getQuestNameFromQuestHash(obj.mQuestID);
-      console.log(obj.mDefineId)
-     
+
+    try {
+      obj.mDefineId = (await getQuestNameFromQuestHash(obj.mQuestID)) as string;
+      log.info(obj.mDefineId);
     } catch (err) {
-      console.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
-      obj.mDefineId = "";
+      log.error(`Failed to get blocks for quest ${obj.mQuestID}:`, err);
+      obj.mDefineId = '';
     }
   }
   questSheets.rQuestSheet.mQuestDataList.map((obj) => {
-    if (!obj.mBlocks || obj.mBlocks.length === 0) {
+    if (!obj.mBlocks || (Array.isArray(obj.mBlocks) && obj.mBlocks.length === 0)) {
       errors.push(obj);
     }
-    if (!obj.mDefineId || obj.mDefineId.length === 0) {
+    if (!obj.mDefineId || (typeof obj.mDefineId === 'string' && obj.mDefineId.length === 0)) {
       errors.push(obj);
     }
   });
-  console.log(originalLen,questSheets.rQuestSheet.mQuestDataList.length
-)
+  log.info(`${originalLen}`, questSheets.rQuestSheet.mQuestDataList.length);
   try {
-    
-    const extendedPath = path.replace(/\.json$/, ".extended.json");
+    const extendedPath = questPath.replace(/\.json$/, '.extended.json');
 
-    await fs.writeFile(
-      extendedPath,
-      JSON.stringify(questSheets, null, 2),
-      "utf-8"
-    );
-    console.log("Extended file saved to:", extendedPath);
-    console.log("Errors:", errors);
+    await fs.writeFile(extendedPath, JSON.stringify(questSheets, null, 2), 'utf-8');
+    log.info('Extended file saved to:', extendedPath);
+    log.info('Errors:', errors);
   } catch (err) {
-    console.error("Error writing extended file:", err);
+    log.error('Error writing extended file:', err);
   }
-console.log(allBlocks)
-const extendedPath = path.replace(/\.json$/, ".blocks.json");
+  log.info(allBlocks);
+  const extendedPath = questPath.replace(/\.json$/, '.blocks.json');
 
-    await fs.writeFile(
-      extendedPath,
-      JSON.stringify(allBlocks, null, 2),
-      "utf-8"
-    );
+  await fs.writeFile(extendedPath, JSON.stringify(allBlocks, null, 2), 'utf-8');
 }
 
-enrichAndPersist();
+void enrichAndPersist();

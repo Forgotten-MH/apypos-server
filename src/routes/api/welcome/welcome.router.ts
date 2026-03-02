@@ -1,9 +1,9 @@
-import { Router } from "express";
-import * as welcomeController from "./welcomeController";
+import { Router } from 'express';
+import * as welcomeController from './welcome.controller.js';
 
 const welcomeRouter = Router();
 
-welcomeRouter.post("/safety/flag/get", welcomeController.getSafetyFlag);
-// welcomeRouter.post("/safety/check", );
+welcomeRouter.post('/safety/flag/get', welcomeController.getSafetyFlag);
+welcomeRouter.post('/safety/check', welcomeController.getSafetyCheck);
 
 export default welcomeRouter;

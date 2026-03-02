@@ -1,18 +1,64 @@
-const fs = require("fs");
-const path = require("path");
+import fs from 'fs';
+import { createLogger } from '../middleware/logger.js';
+import type { Campaign, OceanObject, RaidInfo } from '../types/game.js';
+const log = createLogger('oceanService');
 
-function parseCSV(csvContent) {
-  const lines = csvContent.trim().split("\n");
-  const headers = lines.shift().split(",");
-  const data = {};
+interface QuestListItem {
+  quest_name: string;
+  clear_time: number;
+  is_collection_quest: number;
+  is_key_quest: number;
+  mst_quest_id: number;
+  quest_subtargets: { mst_subtarget_id: number; state: number }[];
+  state: number;
+}
+
+interface OceanNode {
+  name: string;
+  node_type: number;
+  day_quest_list: QuestListItem[];
+  is_collection_node: number;
+  mst_node_id: number;
+  mst_story_id: number;
+  night_quest_list: QuestListItem[];
+  state: number;
+}
+
+interface OceanPart {
+  mst_part_id: number;
+  campaign: Campaign[];
+  exploration_note: {
+    note_contents: { mst_note_content_id: number; state: number }[];
+    progress: number;
+  };
+  gingira_node_id: number;
+  node_list: OceanNode[];
+  object_list: OceanObject[];
+  raid_info: RaidInfo[];
+  silver_bonus: number;
+  state: number;
+}
+
+interface OceanData {
+  ocean_name: string;
+  mst_ocean_id: number;
+  part_list: OceanPart[];
+}
+
+function parseCSV(csvContent: string) {
+  const lines = csvContent.trim().split('\n');
+  const headers = lines.shift()!.split(',');
+  const data: Record<string, OceanData> = {};
 
   for (const line of lines) {
-    const values = line.split(",");
-    const row = Object.fromEntries(headers.map((h, i) => [h, values[i]]));
+    const values = line.split(',');
+    const row = Object.fromEntries(
+      headers.map((h: string, i: number) => [h, values[i] ?? '']),
+    ) as Record<string, string>;
 
-    const oceanHash = row.mOceanHash;
-    const partHash = row.mPartHash;
-    const oceanName = row.mOceanName;
+    const oceanHash = row['mOceanHash'] ?? '';
+    const partHash = row['mPartHash'] ?? '';
+    const oceanName = row['mOceanName'] ?? '';
     if (!data[oceanHash]) {
       data[oceanHash] = {
         ocean_name: oceanName,
@@ -49,20 +95,22 @@ function parseCSV(csvContent) {
   return Object.values(data);
 }
 
-function parsePartCSV(csvContent, oceanData) {
-  const lines = csvContent.trim().split("\n");
-  const headers = lines.shift().split(",");
-  const partNodeMap = {};
+function parsePartCSV(csvContent: string, oceanData: OceanData[]) {
+  const lines = csvContent.trim().split('\n');
+  const headers = lines.shift()!.split(',');
+  const partNodeMap: Record<number, Record<number, number>> = {};
 
   for (const line of lines) {
-    const values = line.split(",");
-    const row = Object.fromEntries(headers.map((h, i) => [h, values[i]]));
+    const values = line.split(',');
+    const row = Object.fromEntries(
+      headers.map((h: string, i: number) => [h, values[i] ?? '']),
+    ) as Record<string, string>;
 
-    const partHash = Number(row.mPartHash);
-    const nodeHash = Number(row.mNodeHash);
-    const nodeOrder = Number(row.NodeOrder);
-    const mNodeType = Number(row.mNodeType);
-    const mNodeName = row.mNodeName;
+    const partHash = Number(row['mPartHash']);
+    const nodeHash = Number(row['mNodeHash']);
+    const nodeOrder = Number(row['NodeOrder']);
+    const mNodeType = Number(row['mNodeType']);
+    const mNodeName = row['mNodeName'] ?? '';
 
     if (!partNodeMap[partHash]) {
       partNodeMap[partHash] = {};
@@ -89,24 +137,26 @@ function parsePartCSV(csvContent, oceanData) {
 }
 
 function parseDramaCSV(
-  dramaCsv,
-  storyData,
-  noteData,
-  nodeQuestData,
-  questData,
-  questSubtargetSet,
-  partNodeMap,
-  oceanData
+  dramaCsv: string,
+  storyData: string,
+  noteData: string,
+  nodeQuestData: string,
+  questData: string,
+  questSubtargetSet: string,
+  partNodeMap: Record<number, Record<number, number>>,
+  oceanData: OceanData[],
 ) {
-  const dramaLines = dramaCsv.trim().split("\n");
-  const dramaHeaders = dramaLines.shift().split(",");
+  const dramaLines = dramaCsv.trim().split('\n');
+  const dramaHeaders = dramaLines.shift()!.split(',');
 
-  const storyLines = storyData.trim().split("\n");
-  const storyHeaders = storyLines.shift().split(",");
+  const storyLines = storyData.trim().split('\n');
+  const storyHeaders = storyLines.shift()!.split(',');
 
   for (const line of dramaLines) {
-    const values = line.split(",");
-    const row = Object.fromEntries(dramaHeaders.map((h, i) => [h, values[i]]));
+    const values = line.split(',');
+    const row = Object.fromEntries(
+      dramaHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
+    ) as Record<string, string>;
 
     const partHash = Number(row.mPartHash);
     const dramaHash = Number(row.mDramaHash);
@@ -119,10 +169,10 @@ function parseDramaCSV(
           const node = part.node_list.find((n) => n.mst_node_id === nodeHash);
           if (node) {
             for (const line of storyLines) {
-              const values = line.split(",");
+              const values = line.split(',');
               const row = Object.fromEntries(
-                storyHeaders.map((h, i) => [h, values[i]])
-              );
+                storyHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
+              ) as Record<string, string>;
               const storyDramaHash = Number(row.mDramaHash);
               const storyHash = Number(row.mStoryHash);
               if (dramaHash == storyDramaHash) {
@@ -134,12 +184,14 @@ function parseDramaCSV(
       }
     }
   }
-  const noteLines = noteData.trim().split("\n");
-  const noteHeaders = noteData.trim().split(",");
+  const noteLines = noteData.trim().split('\n');
+  const noteHeaders = noteData.trim().split(',');
 
   for (const line of noteLines) {
-    const values = line.split(",");
-    const row = Object.fromEntries(noteHeaders.map((h, i) => [h, values[i]]));
+    const values = line.split(',');
+    const row = Object.fromEntries(
+      noteHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
+    ) as Record<string, string>;
     const note_id = Number(row.mNoteID);
     const note_part_id = Number(row.mPartID);
     for (const ocean of oceanData) {
@@ -153,57 +205,64 @@ function parseDramaCSV(
     }
   }
 
-  const noteQuestLines = nodeQuestData.trim().split("\n");
-  const noteQuestHeaders = noteQuestLines.shift().split(",");
-  const questLines = questData.trim().split("\n");
-  const questHeaders = questLines.shift().split(",");
+  const noteQuestLines = nodeQuestData.trim().split('\n');
+  const noteQuestHeaders = noteQuestLines.shift()!.split(',');
+  const questLines = questData.trim().split('\n');
+  const questHeaders = questLines.shift()!.split(',');
 
-  const questSubtargetSetLines = questSubtargetSet.trim().split("\n");
-  const questSubtargetSetHeaders = questSubtargetSetLines.shift().split(",");
-  
+  const questSubtargetSetLines = questSubtargetSet.trim().split('\n');
+  const questSubtargetSetHeaders = questSubtargetSetLines.shift()!.split(',');
 
   // Preprocess nodeQuestData into a Map (mNodeHash -> [mQuestHash])
-  const nodeQuestMap = new Map();
+  const nodeQuestMap = new Map<number, { questHash: number; isCollectionQuest: string; isKeyQuest: string }[]>();
   for (const line of noteQuestLines) {
-    const values = line.split(",");
+    const values = line.split(',');
     const row = Object.fromEntries(
-      noteQuestHeaders.map((h, i) => [h, values[i]])
-    );
+      noteQuestHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
+    ) as Record<string, string>;
 
     const nodeHash = Number(row.mNodeHash);
     const questHash = Number(row.mQuestHash);
-    const isCollectionQuest = row.isCollectionQuest;
-    const isKeyQuest = row.isKeyQuest;
+    const isCollectionQuest = row.isCollectionQuest ?? '';
+    const isKeyQuest = row.isKeyQuest ?? '';
 
     if (!nodeQuestMap.has(nodeHash)) {
       nodeQuestMap.set(nodeHash, []);
     }
-    nodeQuestMap.get(nodeHash).push({questHash:questHash,isCollectionQuest:isCollectionQuest,isKeyQuest:isKeyQuest});
+    nodeQuestMap.get(nodeHash)!.push({
+      questHash: questHash,
+      isCollectionQuest: isCollectionQuest,
+      isKeyQuest: isKeyQuest,
+    });
   }
 
   // Preprocess questData into a Map (mQuestID -> mDayNight)
-  const questMap = new Map();
+  const questMap = new Map<number, { time: number; name: string }>();
   for (const line of questLines) {
-    const values = line.split(",");
-    const row = Object.fromEntries(questHeaders.map((h, i) => [h, values[i]]));
+    const values = line.split(',');
+    const row = Object.fromEntries(
+      questHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
+    ) as Record<string, string>;
 
     const questID = Number(row.mQuestID);
     const questTimeType = Number(row.mDayNight);
-    const mQuestName = row.mQuestName;
+    const mQuestName = row.mQuestName ?? '';
     questMap.set(questID, { time: questTimeType, name: mQuestName });
   }
 
-   // Preprocess questData into a Map (mQuestID -> mDayNight)
-   const questSubtargetSetMap = new Map();
-   for (const line of questSubtargetSetLines) {
-     const values = line.split(",");
-     const row = Object.fromEntries(questSubtargetSetHeaders.map((h, i) => [h, values[i]]));
- 
-     const questID = Number(row.mQuestID);
-     const mSubTargetID = Number(row.mSubTargetID);
+  // Preprocess questData into a Map (mQuestID -> mDayNight)
+  const questSubtargetSetMap = new Map<number, number>();
+  for (const line of questSubtargetSetLines) {
+    const values = line.split(',');
+    const row = Object.fromEntries(
+      questSubtargetSetHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
+    ) as Record<string, string>;
 
-     questSubtargetSetMap.set(questID, mSubTargetID);
-   }
+    const questID = Number(row.mQuestID);
+    const mSubTargetID = Number(row.mSubTargetID);
+
+    questSubtargetSetMap.set(questID, mSubTargetID);
+  }
 
   // Iterate over ocean and part structures
   for (const ocean of oceanData) {
@@ -211,31 +270,37 @@ function parseDramaCSV(
       if (!part) continue;
 
       // Convert node list into a Map for fast lookups
-      const nodeMap = new Map(part.node_list.map((n) => [n.mst_node_id, n]));
+      const nodeMap = new Map<number, OceanNode>(
+        part.node_list.map((n: OceanNode) => [n.mst_node_id, n]),
+      );
 
       for (const [nodeHash, questHashList] of nodeQuestMap) {
-        const node = nodeMap.get(nodeHash) as any;
+        const node = nodeMap.get(nodeHash);
         if (node) {
-          for (const {questHash,isCollectionQuest,isKeyQuest} of questHashList) {
-            const { time: questTimeType, name } = questMap.get(questHash);
+          for (const { questHash, isCollectionQuest, isKeyQuest } of questHashList) {
+            const questInfo = questMap.get(questHash);
+            if (!questInfo) continue;
+            const { time: questTimeType, name } = questInfo;
             const subtarget = questSubtargetSetMap.get(questHash);
             if (questTimeType !== undefined) {
-              console.log(node.mst_node_id, questHash, questTimeType);
+              log.debug(String(node.mst_node_id), questHash, questTimeType);
 
               switch (questTimeType) {
                 case 1:
                   node.day_quest_list.push({
                     quest_name: name,
                     clear_time: 0,
-                    is_collection_quest: isCollectionQuest=="true"?1:0,
-                    is_key_quest: isKeyQuest=="true"?1:0,
+                    is_collection_quest: isCollectionQuest == 'true' ? 1 : 0,
+                    is_key_quest: isKeyQuest == 'true' ? 1 : 0,
                     mst_quest_id: questHash,
-                    quest_subtargets: subtarget?[
-                      {
-                          mst_subtarget_id: subtarget?subtarget:0,
-                          state: 1,
-                      }
-                    ]:[],
+                    quest_subtargets: subtarget
+                      ? [
+                          {
+                            mst_subtarget_id: subtarget ? subtarget : 0,
+                            state: 1,
+                          },
+                        ]
+                      : [],
                     state: 1,
                   });
                   break;
@@ -243,15 +308,17 @@ function parseDramaCSV(
                   node.night_quest_list.push({
                     quest_name: name,
                     clear_time: 0,
-                    is_collection_quest: isCollectionQuest=="true"?1:0,
-                    is_key_quest: isKeyQuest=="true"?1:0,
+                    is_collection_quest: isCollectionQuest == 'true' ? 1 : 0,
+                    is_key_quest: isKeyQuest == 'true' ? 1 : 0,
                     mst_quest_id: questHash,
-                    quest_subtargets: subtarget?[
-                      {
-                          mst_subtarget_id: subtarget?subtarget:0,
-                          state: 1,
-                      }
-                    ]:[],
+                    quest_subtargets: subtarget
+                      ? [
+                          {
+                            mst_subtarget_id: subtarget ? subtarget : 0,
+                            state: 1,
+                          },
+                        ]
+                      : [],
                     state: 1,
                   });
                   break;
@@ -264,116 +331,88 @@ function parseDramaCSV(
   }
 }
 
-fs.readFile("./src/csv/oceans/1-oceans.csv", "utf8", (err, oceanData) => {
+fs.readFile('./src/csv/oceans/1-oceans.csv', 'utf8', (err, oceanData) => {
   if (err) {
-    console.error("Error reading ocean file:", err);
+    log.error('Error reading ocean file:', err);
     return;
   }
-  let parsedOceanData = parseCSV(oceanData);
+  let parsedOceanData: OceanData[] = parseCSV(oceanData);
 
-  fs.readFile("./src/csv/oceans/parts/1-parts.csv", "utf8", (err, partData) => {
+  fs.readFile('./src/csv/oceans/parts/1-parts.csv', 'utf8', (err, partData) => {
     if (err) {
-      console.error("Error reading part file:", err);
+      log.error('Error reading part file:', err);
       return;
     }
 
-    fs.readFile(
-      "./src/csv/oceans/parts/2-dramas.csv",
-      "utf8",
-      (err, dramaData) => {
+    fs.readFile('./src/csv/oceans/parts/2-dramas.csv', 'utf8', (err, dramaData) => {
+      if (err) {
+        log.error('Error reading drama file:', err);
+        return;
+      }
+
+      fs.readFile('./src/csv/oceans/parts/3-story.csv', 'utf8', (err, storyData) => {
         if (err) {
-          console.error("Error reading drama file:", err);
+          log.error('Error reading story file:', err);
           return;
         }
+        fs.readFile('./src/csv/oceans/parts/4-notes.csv', 'utf8', (err, noteData) => {
+          if (err) {
+            log.error('Error reading notes file:', err);
+            return;
+          }
+          fs.readFile(
+            './src/csv/oceans/parts/nodes/2-node-quests.csv',
+            'utf8',
+            (err, noteQuestData) => {
+              if (err) {
+                log.error('Error reading story file:', err);
+                return;
+              }
 
-        fs.readFile(
-          "./src/csv/oceans/parts/3-story.csv",
-          "utf8",
-          (err, storyData) => {
-            if (err) {
-              console.error("Error reading story file:", err);
-              return;
-            }
-            fs.readFile(
-              "./src/csv/oceans/parts/4-notes.csv",
-              "utf8",
-              (err, noteData) => {
+              fs.readFile('./src/csv/questData.csv', 'utf8', (err, questData) => {
                 if (err) {
-                  console.error("Error reading notes file:", err);
+                  log.error('Error reading questData file:', err);
                   return;
                 }
-                fs.readFile(
-                  "./src/csv/oceans/parts/nodes/2-node-quests.csv",
-                  "utf8",
-                  (err, noteQuestData) => {
-                    if (err) {
-                      console.error("Error reading story file:", err);
-                      return;
-                    }
 
-                    fs.readFile(
-                      "./src/csv/questData.csv",
-                      "utf8",
-                      (err, questData) => {
-                        if (err) {
-                          console.error("Error reading questData file:", err);
-                          return;
-                        }
-
-                        fs.readFile(
-                          "./src/csv/questSubtargetSet.csv",
-                          "utf8",
-                          (err, questSubtargetSet) => {
-                            if (err) {
-                              console.error(
-                                "Error reading questSubtargetSet file:",
-                                err
-                              );
-                              return;
-                            }
-
-                            const partNodeMap = parsePartCSV(
-                              partData,
-                              parsedOceanData
-                            );
-
-                            parseDramaCSV(
-                              dramaData,
-                              storyData,
-                              noteData,
-                              noteQuestData,
-                              questData,
-                              questSubtargetSet,
-                              partNodeMap,
-                              parsedOceanData
-                            );
-                            //lazyfix reverse
-                            console.log(
-                              JSON.stringify(parsedOceanData, null, 2)
-                            );
-
-                            parsedOceanData = parsedOceanData.reverse();
-
-                            fs.writeFile(
-                              "myjsonfile.json",
-                              JSON.stringify(parsedOceanData),
-                              "utf8",
-                              (err) => {
-                                if (err) throw err;
-                                console.log("complete");
-                              }
-                            );
-                          }
-                        );
-                      }
-                    );
+                fs.readFile('./src/csv/questSubtargetSet.csv', 'utf8', (err, questSubtargetSet) => {
+                  if (err) {
+                    log.error('Error reading questSubtargetSet file:', err);
+                    return;
                   }
-                );
-              }
-            );
-          }
-        );
-      }
-    );
+
+                  const partNodeMap = parsePartCSV(partData, parsedOceanData);
+
+                  parseDramaCSV(
+                    dramaData,
+                    storyData,
+                    noteData,
+                    noteQuestData,
+                    questData,
+                    questSubtargetSet,
+                    partNodeMap,
+                    parsedOceanData,
+                  );
+                  //lazyfix reverse
+                  log.debug(JSON.stringify(parsedOceanData, null, 2));
+
+                  parsedOceanData = parsedOceanData.reverse();
+
+                  fs.writeFile(
+                    'myjsonfile.json',
+                    JSON.stringify(parsedOceanData),
+                    'utf8',
+                    (err) => {
+                      if (err) throw err;
+                      log.info('complete');
+                    },
+                  );
+                });
+              });
+            },
+          );
+        });
+      });
+    });
   });
 });

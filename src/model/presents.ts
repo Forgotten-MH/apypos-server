@@ -1,16 +1,16 @@
-import augiteSchema from "./items/augite";
-import equipmentSchema from "./items/equipment";
-import growthItemSchema from "./items/growth_item";
-import limitedSchema from "./items/limited";
-import matatabiSchema from "./items/matatabi";
-import materialSchema from "./items/material";
-import paymentSchema from "./items/payment";
-import pointSchema from "./items/point";
-import powerSchema from "./items/power";
-import otomoSchema from "./sidekicks/otomo";
-import partnerSchema from "./sidekicks/partner";
+import augiteSchema from './items/augite.js';
+import equipmentSchema from './items/equipment.js';
+import growthItemSchema from './items/growth_item.js';
+import limitedSchema from './items/limited.js';
+import matatabiSchema from './items/matatabi.js';
+import materialSchema from './items/material.js';
+import paymentSchema from './items/payment.js';
+import pointSchema from './items/point.js';
+import powerSchema from './items/power.js';
+import otomoSchema from './sidekicks/otomo.js';
+import partnerSchema from './sidekicks/partner.js';
 
-const mongoose = require("mongoose");
+import mongoose from 'mongoose';
 
 const ContentSchema = new mongoose.Schema(
   {
@@ -41,7 +41,7 @@ const ContentSchema = new mongoose.Schema(
     pcoins: [mongoose.Schema.Types.Mixed],
     stamp_sets: [mongoose.Schema.Types.Mixed],
   },
-  { _id: false }
+  { _id: false },
 );
 
 const PresentSchema = new mongoose.Schema({
@@ -49,12 +49,12 @@ const PresentSchema = new mongoose.Schema({
   content: { type: ContentSchema, required: true },
   created: { type: Number, default: 0 },
   expires_in: { type: Number, default: 0 },
-  message: { type: String, default: "" },
+  message: { type: String, default: '' },
   received: { type: Number, default: 0 },
   start: { type: Number, default: 0 },
   valid: { type: Number, default: 0 },
 });
 
-const Present = mongoose.model("Present", PresentSchema);
+const Present = mongoose.model('Present', PresentSchema);
 
 export default Present;

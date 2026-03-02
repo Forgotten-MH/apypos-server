@@ -45,4 +45,4 @@ services:
       - explore
 networks:
   explore:
-    driver: bridge6
+    driver: bridge

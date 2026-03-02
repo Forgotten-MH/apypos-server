@@ -16,4 +16,4 @@ COPY --from=builder /app/src/json ./dist/json
 COPY --from=builder /app/package.json ./
 RUN yarn install --production
 EXPOSE 80 443 3000
-CMD ["node", "--openssl-legacy-provider","dist/server.js"]
+CMD ["node", "dist/server.js"]

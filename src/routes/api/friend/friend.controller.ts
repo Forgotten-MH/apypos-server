@@ -1,5 +1,5 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 
 export const capacityInfo = (req: Request, res: Response) => {
   const data = {
@@ -7,5 +7,5 @@ export const capacityInfo = (req: Request, res: Response) => {
     now: 0,
     price: 0,
   };
-  encryptAndSend(data, res,req);
+  encryptAndSend(data, res, req);
 };

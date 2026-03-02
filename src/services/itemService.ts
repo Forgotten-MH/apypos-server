@@ -1,5 +1,46 @@
-function buildExtendedItemList(rewardEntries) {
-  const item_list = {
+import { createLogger } from '../middleware/logger.js';
+const log = createLogger('itemService');
+
+interface RewardEntry {
+  type: string;
+  id?: number;
+  amount?: number;
+  value?: number;
+  key?: string;
+}
+
+interface RewardItem {
+  type: string;
+  amount: number;
+  id?: number;
+  value: number;
+}
+
+interface ItemList {
+  collections: RewardItem[];
+  equipments: RewardItem[];
+  growth_items: RewardItem[];
+  katamaris: never[];
+  limiteds: RewardItem[];
+  matatabis: RewardItem[];
+  materials: RewardItem[];
+  monument: {
+    augite: { id?: number; amount: number; value: number }[];
+    hr: number;
+    mlv: Record<string, number>;
+  };
+  otomos: RewardItem[];
+  partners: RewardItem[];
+  payments: RewardItem[];
+  pcoins: RewardItem[];
+  points: RewardItem[];
+  powers: RewardItem[];
+  stamp_sets: RewardItem[];
+  zenny: number;
+}
+
+function _buildExtendedItemList(rewardEntries: RewardEntry[]) {
+  const item_list: ItemList = {
     collections: [
       // {
       //     mst_collection_id: Number,
@@ -153,23 +194,24 @@ function buildExtendedItemList(rewardEntries) {
     const { type, id, amount = 1, value = 1, key } = entry;
 
     switch (type) {
-      case "material":
-      case "equipment":
-      case "growth_item":
-      case "limited":
-      case "matatabi":
-      case "otomo":
-      case "partner":
-      case "payment":
-      case "pcoin":
-      case "point":
-      case "power":
-      case "stamp_set":
-      case "collection":
+      case 'material':
+      case 'equipment':
+      case 'growth_item':
+      case 'limited':
+      case 'matatabi':
+      case 'otomo':
+      case 'partner':
+      case 'payment':
+      case 'pcoin':
+      case 'point':
+      case 'power':
+      case 'stamp_set':
+      case 'collection': {
         // pluralize type for key matching
-        const listKey = type + (type.endsWith("s") ? "" : "s");
-        if (Array.isArray(item_list[listKey])) {
-          item_list[listKey].push({
+        const listKey = (type + (type.endsWith('s') ? '' : 's')) as keyof ItemList;
+        const list = item_list[listKey];
+        if (Array.isArray(list)) {
+          (list as RewardItem[]).push({
             type,
             amount,
             id,
@@ -177,27 +219,28 @@ function buildExtendedItemList(rewardEntries) {
           });
         }
         break;
+      }
 
-      case "monument_hr":
+      case 'monument_hr':
         item_list.monument.hr += value;
         break;
 
-      case "monument_mlv":
-        if (key && item_list.monument.mlv.hasOwnProperty(key)) {
-          item_list.monument.mlv[key] += value;
+      case 'monument_mlv':
+        if (key && Object.prototype.hasOwnProperty.call(item_list.monument.mlv, key)) {
+          item_list.monument.mlv[key] = (item_list.monument.mlv[key] ?? 0) + value;
         }
         break;
 
-      case "monument_augite":
+      case 'monument_augite':
         item_list.monument.augite.push({ id, amount, value });
         break;
 
-      case "zenny":
+      case 'zenny':
         item_list.zenny += value;
         break;
 
       default:
-        console.warn(`Unknown reward type: ${type}`);
+        log.warn(`Unknown reward type: ${type}`);
         break;
     }
   }

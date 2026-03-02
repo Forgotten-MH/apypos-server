@@ -1,193 +1,234 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
+import User from '../../../model/user.js';
+import { createLogger } from '../../../middleware/logger.js';
+import type { RenameInput, CommentSetInput, TitleSetInput, PartnerSetInput, SearchUserIdInput, SearchGameIdInput, SessionOnlyInput } from './user.schema.js';
+const log = createLogger('user');
 
 export const rename = async (req: Request, res: Response) => {
-  const name = req.body.name;
-  const filter = { current_session: req.body.session_id };
-  const update = { character_name: name };
-  const doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
+  try {
+    const { name, session_id } = req.body as RenameInput;
+    const filter = { current_session: session_id };
+    const update = { character_name: name };
+    const doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
 
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+
+    // Set name in db
+    // Send request back
+    const data = {
+      name: doc.character_name,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in rename:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Rename failed');
   }
-
-  // Set name in db
-  // Send request back
-  const data = {
-    name: doc.character_name,
-  };
-  encryptAndSend(data, res, req);
 };
 
 export const get = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const { session_id } = req.body as SessionOnlyInput;
+    const filter = { current_session: session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+
+    const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
+      (team) => team.index === doc.otomoteam?.selected_index,
+    );
+    const data = {
+      payment_model_info: {
+        face: {
+          man: [],
+          woman: [],
+        },
+      },
+      user_info: {
+        capacity_eqp_set: doc.equipset?.capacity_eqp_set,
+        caplink_id: 'caplnk',
+        comment: doc.comment,
+        equip_sets: doc.equipset?.equip_sets,
+        game_id: doc.game_id,
+        model_info: doc.model_info,
+        name: doc.character_name,
+        otomo_team: {
+          main: doc.box?.otomos?.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0],
+          ),
+          sub: doc.box?.otomos?.find((otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]),
+        },
+        parameter: {
+          attack: doc.box?.monument?.mlv?.atk,
+          defence: doc.box?.monument?.mlv?.def,
+          hp: doc.box?.monument?.mlv?.hp,
+          rank: doc.box?.monument?.hr,
+          sp: doc.box?.monument?.mlv?.sp,
+        },
+        selected_equip_set_index: doc.equipset?.selected_equip_set_index,
+        selected_partner: {
+          main_partner_id: doc.selected_partner?.main_partner_id,
+          quest_partner_id: doc.selected_partner?.quest_partner_id,
+        },
+        social_equip: {
+          social_arm: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_body: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_head: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_leg: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_waist: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+        },
+        title: {
+          mst_title_id: 0,
+        },
+        use_social_equip: -1,
+        user_id: doc.user_id,
+      },
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in user get:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get user failed');
   }
-
-  const selectedOtomoTeam = doc.otomoteam.otomo_team.find(
-    (team) => team.index === doc.otomoteam.selected_index
-  );
-  const data = {
-    payment_model_info: {
-      face: {
-        man: [],
-        woman: [],
-      },
-    },
-    user_info: {
-      capacity_eqp_set: doc.equipset.capacity_eqp_set,
-      caplink_id: "caplnk",
-      comment: doc.comment,
-      equip_sets: doc.equipset.equip_sets,
-      game_id: doc.game_id,
-      model_info: doc.model_info,
-      name: doc.character_name,
-      otomo_team: {
-        main: doc.box.otomos.find(
-          (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[0]
-        ),
-        sub: doc.box.otomos.find(
-          (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[1]
-        ),
-      },
-      parameter: {
-        //POSSIBLY NEED TO SEPERATE THESE OUT IN THE DB DUE TO BOX AND THIS BEING SEPERATE THINGS!?
-        attack: doc.box.monument.mlv.atk,
-        defence: doc.box.monument.mlv.def,
-        hp: doc.box.monument.mlv.hp,
-        rank: doc.box.monument.hr,
-        sp: doc.box.monument.mlv.sp,
-      },
-      selected_equip_set_index: doc.equipset.selected_equip_set_index,
-      selected_partner: {
-        main_partner_id: doc.selected_partner.main_partner_id,
-        quest_partner_id: doc.selected_partner.quest_partner_id,
-      },
-      social_equip: {
-        social_arm: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-        social_body: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-        social_head: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-        social_leg: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-        social_waist: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-      },
-      title: {
-        mst_title_id: 0,
-      },
-      use_social_equip: -1,
-      user_id: doc.user_id,
-    },
-  };
-
-  encryptAndSend(data, res, req);
 };
 
 export const commentSet = async (req: Request, res: Response) => {
-  const comment = req.body.comment;
-  const filter = { current_session: req.body.session_id };
-  const update = { comment: comment };
-  const doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
-
-  const data = {
-    comment: doc.comment,
-  };
-
-  encryptAndSend(data, res, req);
-};
-
-export const navigationNews = async (req: Request, res: Response) => {
-  const data = {
-    navigations: [
-      //uncomment for achievement
-    ],
-  };
-  if (false) {
-    data.navigations.push({
-      close_at: 3600,
-      end_at: 3600,
-      explain: "explain",
-      is_clear: 0,
-      is_reward: 0,
-      item_list: {},
-      limited_flag: 0,
-      mst_navigation_id: 1,
-      name: "Achivement Name",
-      progress: 0,
-      progress_max: 99,
-      start_at: 1,
+  try {
+    const { comment, session_id } = req.body as CommentSetInput;
+    const filter = { current_session: session_id };
+    const update = { comment: comment };
+    const doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
     });
+
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
+    }
+
+    const data = {
+      comment: doc.comment,
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in commentSet:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Set comment failed');
   }
-
-  encryptAndSend(data, res, req);
 };
 
-export const achievementNews = async (req: Request, res: Response) => {
-  const data = {
-    achievements: [],
-    apple_achievements: [],
-    google_achievements: [],
-  };
+export const navigationNews = (req: Request, res: Response) => {
+  try {
+    const data: {
+      navigations: {
+        close_at: number;
+        end_at: number;
+        explain: string;
+        is_clear: number;
+        is_reward: number;
+        item_list: Record<string, never>;
+        limited_flag: number;
+        mst_navigation_id: number;
+        name: string;
+        progress: number;
+        progress_max: number;
+        start_at: number;
+      }[];
+    } = {
+      navigations: [],
+    };
+    if (false as boolean) {
+      // TODO: enable when navigation is implemented
+      data.navigations.push({
+        close_at: 3600,
+        end_at: 3600,
+        explain: 'explain',
+        is_clear: 0,
+        is_reward: 0,
+        item_list: {},
+        limited_flag: 0,
+        mst_navigation_id: 1,
+        name: 'Achivement Name',
+        progress: 0,
+        progress_max: 99,
+        start_at: 1,
+      });
+    }
 
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in navigationNews:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get navigation news failed');
+  }
 };
 
-export const achievementAll = async (req: Request, res: Response) => {
-  const data = {
-    achievements: [
-      // {is_clear:0,
-      //   is_reward:0,
-      //   mst_achievement_id:0,
-      //   progress:0,
-      //   progress_max:100
-      // }
-    ],
-  };
+export const achievementNews = (req: Request, res: Response) => {
+  try {
+    const data = {
+      achievements: [],
+      apple_achievements: [],
+      google_achievements: [],
+    };
 
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in achievementNews:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get achievement news failed');
+  }
 };
 
-export const OfferCheck = async (req: Request, res: Response) => {
-  const data = {
-    offer_products: [
-      {
-        additional_point: 0,
-        additional_state: 0,
-        amount: 1,
-        banner: "coev_04480",
-        explain: "Explain offer...",
-        id: 0,
-        is_started: 1,
-        name: "Offer Name",
-        remain: 3600,
-        start: 0,
-        state: 1,
-      },
-    ],
-  };
+export const achievementAll = (req: Request, res: Response) => {
+  try {
+    const data = {
+      achievements: [
+        // {is_clear:0,
+        //   is_reward:0,
+        //   mst_achievement_id:0,
+        //   progress:0,
+        //   progress_max:100
+        // }
+      ],
+    };
 
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in achievementAll:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get all achievements failed');
+  }
+};
+
+export const OfferCheck = (req: Request, res: Response) => {
+  try {
+    const data = {
+      offer_products: [],
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in OfferCheck:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Offer check failed');
+  }
 };
 
 export const navigationAll = (req: Request, res: Response) => {
@@ -197,7 +238,7 @@ export const navigationAll = (req: Request, res: Response) => {
       {
         close_at: 360000,
         end_at: 36000,
-        explain: "Explaination! Quick brown fox.",
+        explain: 'Explaination! Quick brown fox.',
         is_clear: 0,
         is_reward: 0,
         item_list: {
@@ -210,7 +251,7 @@ export const navigationAll = (req: Request, res: Response) => {
         },
         limited_flag: 0,
         mst_navigation_id: 0,
-        name: "Name 1!",
+        name: 'Name 1!',
         progress: 1,
         progress_max: 6,
         start_at: 0,
@@ -218,7 +259,7 @@ export const navigationAll = (req: Request, res: Response) => {
       {
         close_at: 360000,
         end_at: 36000,
-        explain: "Explaination! Quick brown fox.",
+        explain: 'Explaination! Quick brown fox.',
         is_clear: 0,
         is_reward: 0,
         item_list: {
@@ -231,7 +272,7 @@ export const navigationAll = (req: Request, res: Response) => {
         },
         limited_flag: 1,
         mst_navigation_id: 1,
-        name: "Name 2!",
+        name: 'Name 2!',
         progress: 1,
         progress_max: 6,
         start_at: 0,
@@ -239,7 +280,7 @@ export const navigationAll = (req: Request, res: Response) => {
       {
         close_at: 360000,
         end_at: 36000,
-        explain: "Explaination! Quick brown fox.",
+        explain: 'Explaination! Quick brown fox.',
         is_clear: 0,
         is_reward: 0,
         item_list: {
@@ -252,7 +293,7 @@ export const navigationAll = (req: Request, res: Response) => {
         },
         limited_flag: 2,
         mst_navigation_id: 2,
-        name: "Name 3!",
+        name: 'Name 3!',
         progress: 6,
         progress_max: 6,
         start_at: 0,
@@ -310,307 +351,330 @@ export const titleNews = (req: Request, res: Response) => {
 };
 
 export const titleSet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const { session_id, mst_title_id } = req.body as TitleSetInput;
+    const filter = { current_session: session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const selectedOtomoTeam = doc.otomoteam?.otomo_team.find(
+      (team) => team.index === doc.otomoteam?.selected_index,
+    );
+    const data = {
+      user_info: {
+        capacity_eqp_set: doc.equipset?.capacity_eqp_set,
+        caplink_id: 'caplnk',
+        comment: doc.comment,
+        equip_sets: doc.equipset?.equip_sets,
+        game_id: doc.game_id,
+        model_info: doc.model_info,
+        name: doc.character_name,
+        otomo_team: {
+          main: doc.box?.otomos?.find(
+            (otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[0],
+          ),
+          sub: doc.box?.otomos?.find((otomo) => otomo.otomo_id === selectedOtomoTeam?.otomo_ids[1]),
+        },
+        parameter: {
+          attack: 1,
+          defence: 1,
+          hp: 1,
+          rank: 1,
+          sp: 1,
+        },
+        selected_equip_set_index: 1,
+        selected_partner: {
+          main_partner_id: doc.selected_partner?.main_partner_id,
+          quest_partner_id: doc.selected_partner?.quest_partner_id,
+        },
+        social_equip: {
+          social_arm: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_body: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_head: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_leg: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+          social_waist: {
+            equipment_id: 'NO_EQUIP',
+            mst_equipment_id: 0,
+          },
+        },
+        title: {
+          mst_title_id,
+        },
+        use_social_equip: -1,
+        user_id: doc.user_id,
+      },
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in titleSet:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Set title failed');
   }
-  const selectedOtomoTeam = doc.otomoteam.otomo_team.find(
-    (team) => team.index === doc.otomoteam.selected_index
-  );
-  const data = {
-    user_info: {
-      capacity_eqp_set: doc.equipset.capacity_eqp_set,
-      caplink_id: "caplnk",
-      comment: doc.comment,
-      equip_sets: doc.equipset.equip_sets,
-      game_id: doc.game_id,
-      model_info: doc.model_info,
-      name: doc.character_name,
-      otomo_team: {
-        main: doc.box.otomos.find(
-          (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[0]
-        ),
-        sub: doc.box.otomos.find(
-          (otomo) => otomo.otomo_id === selectedOtomoTeam.otomo_ids[1]
-        ),
-      },
-      parameter: {
-        attack: 1,
-        defence: 1,
-        hp: 1,
-        rank: 1,
-        sp: 1,
-      },
-      selected_equip_set_index: 1,
-      selected_partner: {
-        main_partner_id: doc.selected_partner.main_partner_id,
-        quest_partner_id: doc.selected_partner.quest_partner_id,
-      },
-      social_equip: {
-        social_arm: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-        social_body: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-        social_head: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-        social_leg: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-        social_waist: {
-          equipment_id: "NO_EQUIP",
-          mst_equipment_id: 0,
-        },
-      },
-      title: {
-        mst_title_id: req.body.mst_title_id,
-      },
-      use_social_equip: -1,
-      user_id: doc.user_id,
-    },
-  };
-  encryptAndSend(data, res, req);
 };
 
 export const partnerGet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const { session_id, main_partner_id, quest_partner_id } = req.body as PartnerSetInput;
+    const filter = { current_session: session_id };
 
-  let doc = await User.findOne(filter);
-  doc.selected_partner.main_partner_id = req.body.main_partner_id;
-  doc.selected_partner.quest_partner_id = req.body.quest_partner_id;
+    let doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
+    }
+    doc.selected_partner!.main_partner_id = String(main_partner_id);
+    doc.selected_partner!.quest_partner_id = String(quest_partner_id);
 
-  let update = { selected_partner: doc.selected_partner };
-  doc = await User.findOneAndUpdate(filter, update, {
-    new: true,
-  });
+    const update = { selected_partner: doc.selected_partner };
+    doc = await User.findOneAndUpdate(filter, update, {
+      new: true,
+    });
 
-  const data = {
-    selected_partner: {
-      main_partner_id: doc.selected_partner.main_partner_id,
-      quest_partner_id: doc.selected_partner.quest_partner_id,
-    },
-  };
-
-  encryptAndSend(data, res, req);
-};
-export const searchId = async (req: Request, res: Response) => {
-  const { uids } = req.body;
-  //TODO search by uid loop over then produce below...
-  const data = {
-    capacity_eqp_set: 1,
-
-    player_details: [
-      {
-        comment: "<string>",
-        created: 12345,
-
-        equip_arm: {
-          equip_info: {
-            hash: 3325982510,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
-          },
-        },
-
-        equip_body: {
-          equip_info: {
-            hash: 1801022340,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
-          },
-        },
-
-        equip_head: {
-          equip_info: {
-            hash: 69277598,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
-          },
-        },
-
-        equip_leg: {
-          equip_info: {
-            hash: 3353202438,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
-          },
-        },
-
-        equip_secret_weapon: {
-          equip_info: {
-            hash: 2006810019,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
-          },
-        },
-
-        // equip_talisman: {
-        //   equip_info: {
-        //     hash: 1701921942,
-        //     level: 1,
-        //     potential: 1,
-        //     skill_level: 1,
-        //   },
-        // },
-
-        is_awake: 0,
-        is_enable: 0,
-
-        equip_waist: {
-          equip_info: {
-            hash: 62957325,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
-          },
-        },
-
-        equip_weapon: {
-          equip_info: {
-            hash: 2006810019,
-            level: 1,
-            potential: 1,
-            skill_level: 1,
-          },
-        },
-
-        friend_at: 1,
-        game_id: "<string>",
-
-        guild_info: {
-          gid: "<string>",
-          is_guild: 1,
-          is_same: 1,
-          member_type: 1,
-          name: "<string>",
-          rank: 1,
-        },
-
-        is_captomo: 1,
-        is_friend: 1,
-        last_access_at: 12,
-        login_freq: 1,
+    const data = {
+      selected_partner: {
+        main_partner_id: doc?.selected_partner?.main_partner_id,
+        quest_partner_id: doc?.selected_partner?.quest_partner_id,
       },
-    ],
-  };
-  encryptAndSend(data, res, req);
-};
-export const gameId = async (req: Request, res: Response) => {
-  const { gameIds } = req.body;
-  //TODO search by gameIds loop over then produce below...
-  const data = {
-    capacity_eqp_set: 3,
-    player_details: [
-      {
-        comment: "test",
-        created: 0,
-        equip_arm: {
-          equip_info: {
-            hash: 794677787,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
-          },
-        },
-        equip_body: {
-          equip_info: {
-            hash: 2184892081,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
-          },
-        },
-        equip_head: {
-          equip_info: {
-            hash: 3980571307,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
-          },
-        },
-        equip_leg: {
-          equip_info: {
-            hash: 784230963,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
-          },
-        },
-        equip_secret_weapon: {
-          equip_info: {
-            hash: 133663020,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
-          },
-        },
-        // equip_talisman: {
-        //   equip_info: {
-        //     hash: 1701921942,
-        //     level: 0,
-        //     potential: 0,
-        //     skill_level: 0,
-        //   },
-        // },
-        is_awake: 1,
-        is_enable: 1,
-        equip_waist: {
-          equip_info: {
-            hash: 3936551480,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
-          },
-        },
-        equip_weapon: {
-          equip_info: {
-            hash: 133663020,
-            level: 0,
-            potential: 0,
-            skill_level: 0,
-          },
-        },
-        friend_at: 1,
-        game_id: "abcdef1234567890",
-        guild_info: {
-          gid: "5f8e7a2b9a1b3c1d2e3f4a5b",
-          is_guild: 1,
-          is_same: 1,
-          member_type: 1,
-          name: "Guild of Heroes",
-          rank: 54,
-        },
-        is_captomo: 1,
-        is_friend: 1,
-        last_access_at: 1,
-        login_freq: 1,
-        player_id: "abcdef1234567890",
-        player_name: "test",
-        player_rank: 1,
-        player_rank_point: 1,
-        player_s_flag: 1,
-        player_search_rank: 1,
-        player_skin_hash: 1,
-        player_skin_level: 1,
-        player_skin_potential: 1,
-        player_skin_skill_level: 1,
-        player_total_score: 1,
-      },
-    ],
-  };
+    };
 
-  encryptAndSend(data, res, req);
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in partnerGet:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get partner failed');
+  }
+};
+export const searchId = (req: Request, res: Response) => {
+  try {
+    const { uids: _uids } = req.body as SearchUserIdInput;
+    //TODO search by uid loop over then produce below...
+    const data = {
+      capacity_eqp_set: 1,
+
+      player_details: [
+        {
+          comment: '<string>',
+          created: 12345,
+
+          equip_arm: {
+            equip_info: {
+              hash: 3325982510,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
+          },
+
+          equip_body: {
+            equip_info: {
+              hash: 1801022340,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
+          },
+
+          equip_head: {
+            equip_info: {
+              hash: 69277598,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
+          },
+
+          equip_leg: {
+            equip_info: {
+              hash: 3353202438,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
+          },
+
+          equip_secret_weapon: {
+            equip_info: {
+              hash: 2006810019,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
+          },
+
+          // equip_talisman: {
+          //   equip_info: {
+          //     hash: 1701921942,
+          //     level: 1,
+          //     potential: 1,
+          //     skill_level: 1,
+          //   },
+          // },
+
+          is_awake: 0,
+          is_enable: 0,
+
+          equip_waist: {
+            equip_info: {
+              hash: 62957325,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
+          },
+
+          equip_weapon: {
+            equip_info: {
+              hash: 2006810019,
+              level: 1,
+              potential: 1,
+              skill_level: 1,
+            },
+          },
+
+          friend_at: 1,
+          game_id: '<string>',
+
+          guild_info: {
+            gid: '<string>',
+            is_guild: 1,
+            is_same: 1,
+            member_type: 1,
+            name: '<string>',
+            rank: 1,
+          },
+
+          is_captomo: 1,
+          is_friend: 1,
+          last_access_at: 12,
+          login_freq: 1,
+        },
+      ],
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in searchId:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Search by ID failed');
+  }
+};
+export const gameId = (req: Request, res: Response) => {
+  try {
+    const { gameIds: _gameIds } = req.body as SearchGameIdInput;
+    //TODO search by gameIds loop over then produce below...
+    const data = {
+      capacity_eqp_set: 3,
+      player_details: [
+        {
+          comment: 'test',
+          created: 0,
+          equip_arm: {
+            equip_info: {
+              hash: 794677787,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
+          },
+          equip_body: {
+            equip_info: {
+              hash: 2184892081,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
+          },
+          equip_head: {
+            equip_info: {
+              hash: 3980571307,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
+          },
+          equip_leg: {
+            equip_info: {
+              hash: 784230963,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
+          },
+          equip_secret_weapon: {
+            equip_info: {
+              hash: 133663020,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
+          },
+          // equip_talisman: {
+          //   equip_info: {
+          //     hash: 1701921942,
+          //     level: 0,
+          //     potential: 0,
+          //     skill_level: 0,
+          //   },
+          // },
+          is_awake: 1,
+          is_enable: 1,
+          equip_waist: {
+            equip_info: {
+              hash: 3936551480,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
+          },
+          equip_weapon: {
+            equip_info: {
+              hash: 133663020,
+              level: 0,
+              potential: 0,
+              skill_level: 0,
+            },
+          },
+          friend_at: 1,
+          game_id: 'abcdef1234567890',
+          guild_info: {
+            gid: '5f8e7a2b9a1b3c1d2e3f4a5b',
+            is_guild: 1,
+            is_same: 1,
+            member_type: 1,
+            name: 'Guild of Heroes',
+            rank: 54,
+          },
+          is_captomo: 1,
+          is_friend: 1,
+          last_access_at: 1,
+          login_freq: 1,
+          player_id: 'abcdef1234567890',
+          player_name: 'test',
+          player_rank: 1,
+          player_rank_point: 1,
+          player_s_flag: 1,
+          player_search_rank: 1,
+          player_skin_hash: 1,
+          player_skin_level: 1,
+          player_skin_potential: 1,
+          player_skin_skill_level: 1,
+          player_total_score: 1,
+        },
+      ],
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in gameId:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Search by game ID failed');
+  }
 };

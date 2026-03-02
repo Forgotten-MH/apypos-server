@@ -1,10 +1,11 @@
-import { Router } from "express";
-import * as eventController from "./eventController";
-import * as notImplemented from "../notImplementedController";
+import { Router } from 'express';
+import * as eventController from './event.controller.js';
+import { validate } from '../../../middleware/validation.js';
+import { SessionOnlySchema } from '../../../schemas/common.schema.js';
 
 const eventRouter = Router();
 
-eventRouter.post("/info/get", eventController.infoGet);
-eventRouter.post("/limitedskill/get", eventController.limitedskillGet);
+eventRouter.post('/info/get', validate(SessionOnlySchema), eventController.infoGet);
+eventRouter.post('/limitedskill/get', validate(SessionOnlySchema), eventController.limitedskillGet);
 
 export default eventRouter;

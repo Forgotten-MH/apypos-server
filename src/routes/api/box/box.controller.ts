@@ -1,19 +1,29 @@
-import { Request, Response } from "express";
-import { encryptAndSend } from "../../../services/crypto/encryptionHelpers";
-import User from "../../../model/user";
-import { calcMstId } from "../../../services/defineService";
+import { Request, Response } from 'express';
+import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
+import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
+import { createLogger } from '../../../middleware/logger.js';
+import User from '../../../model/user.js';
+import { calcMstId as _calcMstId } from '../../../services/defineService.js';
+import type { BoxGetInput, StorageGetInput, EquipLevelupInput, EquipAwakeInput, PotentialupAutoSetInput, SaleInput, FavoriteSetInput, MonumentLevelupInput } from './box.schema.js';
+const log = createLogger('box');
 
 export const get = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const { session_id } = req.body as BoxGetInput;
+    const filter = { current_session: session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    const data = {
+      box: doc.box,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in box get:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get box failed');
   }
-  const data = {
-    box: doc.box,
-  };
-  encryptAndSend(data, res, req);
 };
 export const storageInfo = (req: Request, res: Response) => {
   const data = {
@@ -21,7 +31,7 @@ export const storageInfo = (req: Request, res: Response) => {
       storage_details: [
         {
           max: 200,
-          name: "装備倉庫1",
+          name: '装備倉庫1',
           now: 0,
           storage_idx: 1,
         },
@@ -34,14 +44,14 @@ export const storageInfo = (req: Request, res: Response) => {
 };
 
 export const storageGet = (req: Request, res: Response) => {
-  const { target_idx } = req.body;
+  const { target_idx: _target_idx } = req.body as StorageGetInput;
 
   const data = {
     storage_info: {
       storage_details: [
         {
           max: 200,
-          name: "装備倉庫1",
+          name: '装備倉庫1',
           now: 0,
           storage_idx: 1,
         },
@@ -58,7 +68,7 @@ export const storageGet = (req: Request, res: Response) => {
         endAwakeCount: 3,
         endAwakeRemain: 1,
         end_remain: 10,
-        equipment_id: "EQP123456",
+        equipment_id: 'EQP123456',
         favorite: 0,
         is_awake: 1,
         mst_equipment_id: 2006810019,
@@ -67,23 +77,31 @@ export const storageGet = (req: Request, res: Response) => {
         start_remain: 15,
         storage_idx: 1,
       },
-     
     ],
   };
   encryptAndSend(data, res, req);
 };
 
 export const otomoGet = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
+  try {
+    const { session_id } = req.body as BoxGetInput;
+    const filter = { current_session: session_id };
 
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); //Not authenticated
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    }
+    if (!doc.box) {
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Box not found');
+    }
+    const data = {
+      otomos: doc.box.otomos,
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in otomoGet:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Get otomo box failed');
   }
-  const data = {
-    otomos: doc.box.otomos,
-  };
-  encryptAndSend(data, res, req);
 };
 
 export const equipCapacityInfo = (req: Request, res: Response) => {
@@ -197,192 +215,98 @@ export const PaymentGet = (req: Request, res: Response) => {
 };
 
 export const equipLevelup = async (req: Request, res: Response) => {
-  // Authenticate by session
-  const filter = { current_session: req.body.session_id };
-  const doc = await User.findOne(filter);
-  if (!doc) {
-    return encryptAndSend({}, res, req, 2004); // Not authenticated
+  try {
+    // Authenticate by session
+    const { session_id, eqp_obj_id, num } = req.body as EquipLevelupInput;
+    const filter = { current_session: session_id };
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
+    }
+    if (!doc.box) {
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Box not found');
+    }
+
+    const equipmentId: string = eqp_obj_id;
+    const steps: number = Math.max(1, num || 1);
+
+    // Find equipment in user's box
+    const equipmentIndex = doc.box.equipments!.findIndex((eq) => eq.equipment_id === equipmentId);
+
+    if (equipmentIndex === -1) {
+      // Equipment not found
+      return encryptAndSend({}, res, req, ERROR_CODE.EQUIPMENT_NOT_FOUND, ERROR_CATEGORY.NONE, 'equipment not found');
+    }
+
+    // Apply level up
+    const equipment = doc.box.equipments?.[equipmentIndex];
+    if (!equipment) {
+      return encryptAndSend({}, res, req, ERROR_CODE.EQUIPMENT_NOT_FOUND, ERROR_CATEGORY.NONE, 'equipment not found');
+    }
+    const currentLevel = equipment.elv || 0;
+    const newLevel = currentLevel + steps;
+    equipment.elv = newLevel;
+
+    // Optional: handle zenny/material consumption when is_use_reinforcement == 2
+    // Not fully implemented due to pricing tables/material ids pending in repo
+
+    // Persist
+    await User.findByIdAndUpdate(doc.id, { box: doc.box });
+
+    const data = {
+      levelup: {
+        equipment: equipment,
+      },
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in equipLevelup:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Equipment level up failed');
   }
-
-  const equipmentId: string = req.body.eqp_obj_id;
-  const steps: number = Math.max(1, Number(req.body.num || 1));
-
-  // Find equipment in user's box
-  const equipmentIndex = doc.box.equipments.findIndex(
-    (eq) => eq.equipment_id === equipmentId,
-  );
-
-  if (equipmentIndex === -1) {
-    // Equipment not found
-    return encryptAndSend({}, res, req, 2001, 0, "equipment not found");
-  }
-
-  // Apply level up
-  const equipment = doc.box.equipments[equipmentIndex];
-  const currentLevel = Number(equipment.elv || 0);
-  const newLevel = currentLevel + steps;
-  equipment.elv = newLevel;
-
-  // Optional: handle zenny/material consumption when is_use_reinforcement == 2
-  // Not fully implemented due to pricing tables/material ids pending in repo
-
-  // Persist
-  await User.findByIdAndUpdate(doc.id, { box: doc.box });
-
-  const data = {
-    levelup: {
-      equipment: equipment,
-      // materials: [],
-      // payments: [],
-      // zenny: doc.box.zeny,
-    },
-  };
-
-  // const data = {
-  //   levelup: {
-  //     equipment: {
-  //       auto_potential_composite: 0,
-  //       awaked: 0,
-  //       created: 0,
-  //       elv: 1,
-  //       endAwakeCount: 0,
-  //       endAwakeRemain: 0,
-  //       end_remain: 0,
-  //       equipment_id: req.body.eqp_obj_id,
-  //       evolve_start_time: 0,
-  //       favorite: 0,
-  //       is_awake: 0,
-  //       is_complete_auto_potential_composite: 0,
-  //       mst_equipment_id: calcMstId(req.body.eqp_obj_id),
-  //       potential: 0,
-  //       slv: 0,
-  //       start_remain: 0,
-  //     },
-  //     // materials: [
-  //     //   // {
-  //     //   //   amount:0,
-  //     //   //   mst_material_id:0
-  //     //   // }
-  //     // ],
-  //     // payments: [
-  //     //   // {
-  //     //   //   amount: 50,
-  //     //   //   mst_payment_id: 1573159746,
-  //     //   // },
-  //     // ],
-  //     //zenny: 0,
-  //     equipment: equipment,
-  //     // materials: [],
-  //     // payments: [],
-  //     // zenny: doc.box.zeny,
-  //   },
-  encryptAndSend(data, res, req);
 };
+// TODO: Equipment awakening is not implemented. Requires knowledge of awakening
+// mechanics (karidama consumption, resource equipment merging, stat changes).
+// Currently returns the session-authenticated user's equipment unchanged.
 export const awake = async (req: Request, res: Response) => {
-  const { use_karidama, resource_equipment_ids, base_equipment_id } = req.body;
+  try {
+    const { session_id, base_equipment_id } = req.body as EquipAwakeInput;
+    const filter = { current_session: session_id };
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
+    }
+    if (!doc.box) {
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Box not found');
+    }
+    const equipment = doc.box.equipments!.find((eq) => eq.equipment_id === base_equipment_id);
 
-  const data = {
-    //TODO
-  };
-  encryptAndSend(data, res, req);
+    const data = {
+      equipment: equipment ?? {},
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in awake:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Equipment awake failed');
+  }
 };
 
-export const potentialupAutoSet = async (req: Request, res: Response) => {
-  const { eqp_obj_infos } = req.body;
-  //todo make real data
-  const data = {
-    base_equipment: {
-      auto_potential_composite: 12345,
-      awaked: 1,
-      created: 1700000000,
-      elv: 5,
-      endAwakeCount: 10,
-      endAwakeRemain: 3,
-      end_remain: 100,
-      equipment_id: "EQP_ABC123",
-      evolve_start_time: 1700001234,
-      favorite: 0,
-      is_awake: 1,
-      is_complete_auto_potential_composite: 0,
-      mst_equipment_id: 987654,
-      potential: 222,
-      slv: 3,
-      start_remain: 200,
-    },
-    payments: [
-      {
-        amount: 500,
-        mst_payment_id: 1001,
-      },
-    ],
-    resource_equipments: [
-      {
-        auto_potential_composite: 123,
-        awaked: 0,
-        created: 1699999999,
-        elv: 2,
-        endAwakeCount: 5,
-        endAwakeRemain: 1,
-        end_remain: 50,
-        equipment_id: "EQP_XYZ999",
-        evolve_start_time: 1700001111,
-        favorite: 1,
-        is_awake: 1,
-        is_complete_auto_potential_composite: 0,
-        mst_equipment_id: 444444,
-        potential: 333,
-        slv: 2,
-        start_remain: 75,
-      },
-    ],
-    resource_materials: [
-      {
-        amount: 20,
-        mst_material_id: 3001,
-      },
-      {
-        amount: 50,
-        mst_material_id: 3002,
-      },
-    ],
-    zeny: 999999,
-  };
-
-  encryptAndSend(data, res, req);
-};
-
-export const sale = async (req: Request, res: Response) => {
-  const { eqp_obj_ids } = req.body;
-  //todo real data
-  const data = {
-    equip_sell: {
-      eqp_obj_ids: ["EQP_OBJ_12345", "EQP_OBJ_67890", "EQP_OBJ_ABCDE"],
-      point: {
-        amount: 2500,
-        mst_event_point_id: 42,
-      },
-      zeny: 750000,
-    },
-  };
-  encryptAndSend(data, res, req);
-};
-
-export const favoriteSet = async (req: Request, res: Response) => {
-  const { is_favorite, eqp_obj_id } = req.body;
-  //todo real data
-  const data = {
-    favorite_set: {
-      equipment: {
-        auto_potential_composite: 123,
+export const potentialupAutoSet = (req: Request, res: Response) => {
+  try {
+    const { eqp_obj_infos: _eqp_obj_infos } = req.body as PotentialupAutoSetInput;
+    //todo make real data
+    const data = {
+      base_equipment: {
+        auto_potential_composite: 12345,
         awaked: 1,
         created: 1700000000,
         elv: 5,
         endAwakeCount: 10,
         endAwakeRemain: 3,
         end_remain: 100,
-        equipment_id: eqp_obj_id,
+        equipment_id: 'EQP_ABC123',
         evolve_start_time: 1700001234,
-        favorite: is_favorite,
+        favorite: 0,
         is_awake: 1,
         is_complete_auto_potential_composite: 0,
         mst_equipment_id: 987654,
@@ -390,58 +314,165 @@ export const favoriteSet = async (req: Request, res: Response) => {
         slv: 3,
         start_remain: 200,
       },
-    },
-  };
-  encryptAndSend(data, res, req);
+      payments: [
+        {
+          amount: 500,
+          mst_payment_id: 1001,
+        },
+      ],
+      resource_equipments: [
+        {
+          auto_potential_composite: 123,
+          awaked: 0,
+          created: 1699999999,
+          elv: 2,
+          endAwakeCount: 5,
+          endAwakeRemain: 1,
+          end_remain: 50,
+          equipment_id: 'EQP_XYZ999',
+          evolve_start_time: 1700001111,
+          favorite: 1,
+          is_awake: 1,
+          is_complete_auto_potential_composite: 0,
+          mst_equipment_id: 444444,
+          potential: 333,
+          slv: 2,
+          start_remain: 75,
+        },
+      ],
+      resource_materials: [
+        {
+          amount: 20,
+          mst_material_id: 3001,
+        },
+        {
+          amount: 50,
+          mst_material_id: 3002,
+        },
+      ],
+      zeny: 999999,
+    };
+
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in potentialupAutoSet:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Potential up auto set failed');
+  }
+};
+
+export const sale = (req: Request, res: Response) => {
+  try {
+    const { eqp_obj_ids: _eqp_obj_ids } = req.body as SaleInput;
+    //todo real data
+    const data = {
+      equip_sell: {
+        eqp_obj_ids: ['EQP_OBJ_12345', 'EQP_OBJ_67890', 'EQP_OBJ_ABCDE'],
+        point: {
+          amount: 2500,
+          mst_event_point_id: 42,
+        },
+        zeny: 750000,
+      },
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in sale:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Equipment sale failed');
+  }
+};
+
+export const favoriteSet = (req: Request, res: Response) => {
+  try {
+    const { is_favorite, eqp_obj_id } = req.body as FavoriteSetInput;
+    //todo real data
+    const data = {
+      favorite_set: {
+        equipment: {
+          auto_potential_composite: 123,
+          awaked: 1,
+          created: 1700000000,
+          elv: 5,
+          endAwakeCount: 10,
+          endAwakeRemain: 3,
+          end_remain: 100,
+          equipment_id: eqp_obj_id,
+          evolve_start_time: 1700001234,
+          favorite: is_favorite,
+          is_awake: 1,
+          is_complete_auto_potential_composite: 0,
+          mst_equipment_id: 987654,
+          potential: 222,
+          slv: 3,
+          start_remain: 200,
+        },
+      },
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in favoriteSet:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Set favorite failed');
+  }
 };
 
 export const leveupAuto = async (req: Request, res: Response) => {
-  const filter = { current_session: req.body.session_id };
-  let doc = await User.findOne(filter);
-  let targetIndex;
-  switch (req.body.type) {
-    case "hp":
-      // Increment HP
-      doc.box.monument.mlv.hp = doc.box.monument.mlv.hp + 1;
-      // Increase HR
-      doc.box.monument.hr = doc.box.monument.hr + 1;
-      // Find the index of the augite item
-      targetIndex = doc.box.monument.augite.findIndex(
-        (item) => item.mst_augite_id === 2047024966
-      );
+  try {
+    const { session_id, type } = req.body as MonumentLevelupInput;
+    const filter = { current_session: session_id };
+    const doc = await User.findOne(filter);
+    if (!doc) {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); // Not authenticated
+    }
+    if (!doc.box?.monument?.mlv) {
+      return encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Monument data not found');
+    }
+    let targetIndex;
+    switch (type) {
+      case 'hp': {
+        // Increment HP
+        doc.box.monument.mlv.hp = doc.box.monument.mlv.hp + 1;
+        // Increase HR
+        doc.box.monument.hr = doc.box.monument.hr + 1;
+        // Find the index of the augite item
+        targetIndex = doc.box.monument.augite.findIndex(
+          (item) => item.mst_augite_id === 2047024966,
+        );
 
-      // Replace the item in the array
-      doc.box.monument.augite[targetIndex].amount = Math.max(
-        doc.box.monument.augite[targetIndex].amount - 10,
-        0
-      );
-      
-      break;
-    case "atk":
-      doc.box.monument.mlv.atk = doc.box.monument.mlv.atk + 1;
-      // Increase HR
-      doc.box.monument.hr = doc.box.monument.hr + 1;
-      break;
-    case "def":
-      doc.box.monument.mlv.def = doc.box.monument.mlv.def + 1;
-      // Increase HR
-      doc.box.monument.hr = doc.box.monument.hr + 1;
-      break;
-    case "sp":
-      doc.box.monument.mlv.sp = doc.box.monument.mlv.sp + 1;
-      // Increase HR
-      doc.box.monument.hr = doc.box.monument.hr + 1;
-      break;
+        // Replace the item in the array
+        const augiteItem = targetIndex !== -1 ? doc.box.monument.augite[targetIndex] : undefined;
+        if (augiteItem) {
+          augiteItem.amount = Math.max((augiteItem.amount ?? 0) - 10, 0);
+        }
 
+        break;
+      }
+      case 'atk':
+        doc.box.monument.mlv.atk = doc.box.monument.mlv.atk + 1;
+        // Increase HR
+        doc.box.monument.hr = doc.box.monument.hr + 1;
+        break;
+      case 'def':
+        doc.box.monument.mlv.def = doc.box.monument.mlv.def + 1;
+        // Increase HR
+        doc.box.monument.hr = doc.box.monument.hr + 1;
+        break;
+      case 'sp':
+        doc.box.monument.mlv.sp = doc.box.monument.mlv.sp + 1;
+        // Increase HR
+        doc.box.monument.hr = doc.box.monument.hr + 1;
+        break;
+    }
+    const update = { box: doc.box };
+
+    await User.findByIdAndUpdate(doc.id, update);
+    const data = {
+      monument_levelup: {
+        capacity: doc.box.capacity,
+        monument: doc.box.monument,
+      },
+    };
+    encryptAndSend(data, res, req);
+  } catch (error) {
+    log.error('Error in leveupAuto:', error);
+    encryptAndSend({}, res, req, ERROR_CODE.GENERIC_ERROR, ERROR_CATEGORY.ERROR_DIALOG, 'Monument level up failed');
   }
-  const update = { box: doc.box };
-
-  await User.findByIdAndUpdate(doc.id, update);
-  const data = {
-    monument_levelup: {
-      capacity: doc.box.capacity,
-      monument: doc.box.monument,
-    },
-  };
-  encryptAndSend(data, res, req);
 };
