@@ -275,6 +275,26 @@ async function handleForward(
     }
   }
 
+  // Rewrite dispatch config so the client routes all traffic through the proxy
+  if (!responseIsEncrypted && url.endsWith('.json') && result.body.length < 4096) {
+    try {
+      const text = result.body.toString('utf-8');
+      const json = JSON.parse(text) as Record<string, unknown>;
+      if (typeof json['api'] === 'string' && typeof json['res'] === 'string') {
+        const proxyOrigin = `http://192.168.240.1:${config.port}`;
+        const original = { ...json };
+        json['api'] = `${proxyOrigin}/api`;
+        json['res'] = `${proxyOrigin}/res`;
+        json['web'] = `${proxyOrigin}/web`;
+        json['maintenance_bucket'] = `${proxyOrigin}/`;
+        responseBytes = Buffer.from(JSON.stringify(json));
+        log.info(`Rewrote dispatch config: api ${String(original['api'])} → ${String(json['api'])}`);
+      }
+    } catch {
+      // Not JSON or not dispatch config, pass through
+    }
+  }
+
   // Forward response headers (skip hop-by-hop)
   for (const [key, value] of Object.entries(result.headers)) {
     if (value === undefined) continue;
