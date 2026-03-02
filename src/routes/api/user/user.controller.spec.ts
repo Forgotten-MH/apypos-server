@@ -203,14 +203,14 @@ describe('user.controller', () => {
   });
 
   describe('OfferCheck', () => {
-    it('returns offer products', () => {
+    it('returns empty offer products', () => {
       const { req, res } = mockReqRes({});
 
       OfferCheck(req, res);
 
       expect(encryptAndSend).toHaveBeenCalledWith(
         expect.objectContaining({
-          offer_products: expect.arrayContaining([expect.objectContaining({ name: 'Offer Name' })]),
+          offer_products: [],
         }),
         res,
         req,

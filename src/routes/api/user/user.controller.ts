@@ -221,21 +221,7 @@ export const achievementAll = (req: Request, res: Response) => {
 export const OfferCheck = (req: Request, res: Response) => {
   try {
     const data = {
-      offer_products: [
-        {
-          additional_point: 0,
-          additional_state: 0,
-          amount: 1,
-          banner: 'coev_04480',
-          explain: 'Explain offer...',
-          id: 0,
-          is_started: 1,
-          name: 'Offer Name',
-          remain: 3600,
-          start: 0,
-          state: 1,
-        },
-      ],
+      offer_products: [],
     };
 
     encryptAndSend(data, res, req);
