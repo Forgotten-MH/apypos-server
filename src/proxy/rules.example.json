@@ -1,0 +1,16 @@
+[
+  {
+    "urlPattern": "/api/tutorial/flag/get",
+    "description": "Skip tutorial — set all tutorial flags complete",
+    "patch": {
+      "tutorial_flag": 65535
+    }
+  },
+  {
+    "urlPattern": "/api/user/status/get",
+    "description": "Set zenny to 999999",
+    "patch": {
+      "zenny": 999999
+    }
+  }
+]

@@ -52,7 +52,8 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src/",
-    "format": "prettier --write 'src/**/*.ts'"
+    "format": "prettier --write 'src/**/*.ts'",
+    "proxy": "tsx src/proxy/main.ts"
   },
   "engines": {
     "node": ">=20.0.0"
