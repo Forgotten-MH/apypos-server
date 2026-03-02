@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monster Hunter Explore — APK Patcher</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+    h1 { font-size: 1.5rem; color: #e94560; margin-bottom: 0.25rem; text-align: center; }
+    .subtitle { color: #888; font-size: 0.85rem; margin-bottom: 1.5rem; text-align: center; }
+
+    /* Drop zone */
+    .drop-zone {
+      border: 2px dashed #0f3460;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      margin-bottom: 1rem;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: #e94560;
+      background: rgba(233, 69, 96, 0.05);
+    }
+    .drop-zone.has-file { border-color: #4ecca3; border-style: solid; }
+    .drop-zone p { color: #888; font-size: 0.9rem; }
+    .drop-zone .filename { color: #4ecca3; font-weight: 600; font-size: 1rem; margin-top: 0.5rem; }
+    .drop-zone input { display: none; }
+
+    /* Form */
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 0.85rem; color: #aaa; margin-bottom: 0.35rem; }
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      background: #1a1a2e;
+      border: 1px solid #0f3460;
+      border-radius: 6px;
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      font-family: monospace;
+    }
+    .form-group input[type="text"]:focus { outline: none; border-color: #e94560; }
+    .form-group small { color: #666; font-size: 0.75rem; }
+
+    .checkbox-group { display: flex; gap: 1.5rem; margin-bottom: 1rem; }
+    .checkbox-group label {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.85rem; color: #aaa; cursor: pointer;
+    }
+    .checkbox-group input[type="checkbox"] { accent-color: #e94560; }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+      text-decoration: none;
+    }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-primary { background: #e94560; color: #fff; width: 100%; }
+    .btn-primary:hover:not(:disabled) { background: #c73650; }
+    .btn-success { background: #4ecca3; color: #1a1a2e; width: 100%; margin-top: 0.5rem; }
+    .btn-success:hover { background: #3dbb91; }
+
+    /* Progress */
+    .progress-section { margin-top: 1rem; display: none; }
+    .progress-section.visible { display: block; }
+    .progress-bar-outer {
+      width: 100%;
+      height: 6px;
+      background: #1a1a2e;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+    .progress-bar-inner {
+      height: 100%;
+      background: #e94560;
+      width: 0%;
+      transition: width 0.3s ease;
+      border-radius: 3px;
+    }
+    .progress-bar-inner.done { background: #4ecca3; }
+
+    /* Log */
+    .log-output {
+      background: #0d1117;
+      border: 1px solid #0f3460;
+      border-radius: 6px;
+      padding: 0.75rem;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 0.78rem;
+      line-height: 1.6;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .log-output .info { color: #8b949e; }
+    .log-output .ok { color: #4ecca3; }
+    .log-output .warn { color: #d29922; }
+    .log-output .err { color: #f85149; }
+    .log-output .head { color: #e94560; font-weight: bold; }
+
+    .back-link { display: block; text-align: center; margin-top: 1rem; color: #888; font-size: 0.8rem; }
+    .back-link a { color: #e94560; text-decoration: none; }
+    .back-link a:hover { text-decoration: underline; }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Monster Hunter Explore</h1>
+    <p class="subtitle">In-Browser APK Patcher</p>
+
+    <div class="drop-zone" id="dropZone">
+      <p>Drag &amp; drop your MHXR APK here, or click to browse</p>
+      <p class="filename hidden" id="fileName"></p>
+      <input type="file" id="fileInput" accept=".apk">
+    </div>
+
+    <div class="form-group">
+      <label for="serverAddr">Server address</label>
+      <input type="text" id="serverAddr" placeholder="192.168.240.1:8080">
+      <small>IP:port or hostname:port of the Apypos server</small>
+    </div>
+
+    <div class="checkbox-group">
+      <label><input type="checkbox" id="optGms" checked> GMS bypass</label>
+      <label><input type="checkbox" id="optDebug"> Debuggable</label>
+    </div>
+
+    <button class="btn btn-primary" id="btnPatch" disabled>Patch APK</button>
+    <a class="btn btn-success hidden" id="btnDownload" href="#">Download Patched APK</a>
+
+    <div class="progress-section" id="progressSection">
+      <div class="progress-bar-outer"><div class="progress-bar-inner" id="progressBar"></div></div>
+      <div class="log-output" id="logOutput"></div>
+    </div>
+
+    <p class="back-link">
+      Already have a patched APK? <a href="/web/download">Download pre-patched</a>
+    </p>
+  </div>
+
+<script>
+// ===========================================================================
+// Utility helpers
+// ===========================================================================
+function findBytes(haystack, needle, start = 0) {
+  outer: for (let i = start; i <= haystack.length - needle.length; i++) {
+    for (let j = 0; j < needle.length; j++) {
+      if (haystack[i + j] !== needle[j]) continue outer;
+    }
+    return i;
+  }
+  return -1;
+}
+
+function textToBytes(str) {
+  return new TextEncoder().encode(str);
+}
+
+function bytesToText(bytes) {
+  return new TextDecoder().decode(bytes);
+}
+
+function hexBytes(bytes) {
+  return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function writeU32LE(arr, offset, val) {
+  arr[offset]     = val & 0xff;
+  arr[offset + 1] = (val >>> 8) & 0xff;
+  arr[offset + 2] = (val >>> 16) & 0xff;
+  arr[offset + 3] = (val >>> 24) & 0xff;
+}
+
+function readU32LE(arr, offset) {
+  return (arr[offset] | (arr[offset+1] << 8) | (arr[offset+2] << 16) | (arr[offset+3] << 24)) >>> 0;
+}
+
+function readU16LE(arr, offset) {
+  return (arr[offset] | (arr[offset+1] << 8)) & 0xffff;
+}
+
+function writeU16LE(arr, offset, val) {
+  arr[offset]     = val & 0xff;
+  arr[offset + 1] = (val >>> 8) & 0xff;
+}
+
+// ===========================================================================
+// SoPatcher — Patches 1, 2, 3 (libMHS.so binary patches)
+// ===========================================================================
+class SoPatcher {
+  // Original URL strings in libMHS.so
+  static DISPATCH_URL   = textToBytes('https://mhxr-dispatch.s3-ap-northeast-1.amazonaws.com/');
+  static FALLBACK_URL   = textToBytes('http://203.191.249.158:13000/');
+  static HTTPS_FMT      = textToBytes('https://%s');
+  static HTTPS_SCHEME   = textToBytes('https://');
+
+  // Patch 2: sSafetyNet::isComplete() always true (arm64 only)
+  static P2_OFFSET   = 0x1af90e4;
+  static P2_EXPECTED = new Uint8Array([0x08,0x3c,0x40,0xb9, 0x1f,0x21,0x03,0x71, 0xe0,0x17,0x9f,0x1a, 0xc0,0x03,0x5f,0xd6]);
+  static P2_PATCH    = new Uint8Array([0x20,0x00,0x80,0x52, 0xc0,0x03,0x5f,0xd6, 0x1f,0x20,0x03,0xd5, 0x1f,0x20,0x03,0xd5]);
+
+  // Patch 3: sSafetyNet::move() set state=200, branch to epilogue (arm64 only)
+  static P3_PROLOGUE_OFFSET = 0x1af9064;
+  static P3_PROLOGUE = new Uint8Array([0xf3,0x0f,0x1e,0xf8, 0xfd,0x7b,0x01,0xa9, 0xfd,0x43,0x00,0x91, 0xf3,0x03,0x00,0xaa]);
+  static P3_OFFSET   = 0x1af9074;
+  static P3_PATCH    = new Uint8Array([0x08,0x19,0x80,0x52, 0x68,0x3e,0x00,0xb9, 0x0f,0x00,0x00,0x14]);
+
+  static patchUrls(soData, serverAddr, arch, log) {
+    const newUrl = textToBytes('http://' + serverAddr + '/');
+    const newHttpFmt = textToBytes('http://%s');
+    const newHttpScheme = textToBytes('http://');
+
+    const replacements = [
+      [SoPatcher.DISPATCH_URL, newUrl, 'dispatch S3 URL'],
+      [SoPatcher.FALLBACK_URL, newUrl, 'fallback IP URL'],
+      [SoPatcher.HTTPS_FMT, newHttpFmt, 'https format string'],
+      [SoPatcher.HTTPS_SCHEME, newHttpScheme, 'https scheme'],
+    ];
+
+    let patched = 0;
+    for (const [original, replacement, label] of replacements) {
+      if (replacement.length > original.length) {
+        log(`Patch 1 (${arch}): ${label} — new URL too long!`, 'err');
+        throw new Error(`New URL too long for ${label}`);
+      }
+      const idx = findBytes(soData, original);
+      if (idx === -1) {
+        // Check if already patched
+        const padded = new Uint8Array(original.length);
+        padded.set(replacement);
+        if (findBytes(soData, padded) !== -1) {
+          log(`Patch 1 (${arch}): ${label} already patched`, 'info');
+        } else {
+          log(`Patch 1 (${arch}): ${label} not found`, 'warn');
+        }
+        continue;
+      }
+      // Write replacement null-padded to original length
+      for (let i = 0; i < original.length; i++) {
+        soData[idx + i] = i < replacement.length ? replacement[i] : 0;
+      }
+      patched++;
+      log(`Patch 1 (${arch}): Replaced ${label} at 0x${idx.toString(16)}`, 'ok');
+    }
+    return patched;
+  }
+
+  static patchIsComplete(soData, log) {
+    const current = soData.slice(SoPatcher.P2_OFFSET, SoPatcher.P2_OFFSET + 16);
+    if (findBytes(current, SoPatcher.P2_PATCH) === 0) {
+      log('Patch 2 (isComplete): Already applied', 'info');
+      return;
+    }
+    if (findBytes(current, SoPatcher.P2_EXPECTED) !== 0) {
+      log(`Patch 2 (isComplete): Unexpected bytes at 0x${SoPatcher.P2_OFFSET.toString(16)}: ${hexBytes(current)}`, 'err');
+      throw new Error('Patch 2: unexpected bytes at isComplete offset');
+    }
+    soData.set(SoPatcher.P2_PATCH, SoPatcher.P2_OFFSET);
+    log(`Patch 2 (isComplete): Patched at 0x${SoPatcher.P2_OFFSET.toString(16)}`, 'ok');
+  }
+
+  static patchMove(soData, log) {
+    // Verify prologue
+    const prologue = soData.slice(SoPatcher.P3_PROLOGUE_OFFSET, SoPatcher.P3_PROLOGUE_OFFSET + 16);
+    const current = soData.slice(SoPatcher.P3_OFFSET, SoPatcher.P3_OFFSET + 12);
+
+    if (findBytes(current, SoPatcher.P3_PATCH) === 0) {
+      log('Patch 3 (move): Already applied', 'info');
+      return;
+    }
+    if (findBytes(prologue, SoPatcher.P3_PROLOGUE) !== 0) {
+      log(`Patch 3 (move): Unexpected prologue at 0x${SoPatcher.P3_PROLOGUE_OFFSET.toString(16)}`, 'err');
+      throw new Error('Patch 3: unexpected prologue');
+    }
+    soData.set(SoPatcher.P3_PATCH, SoPatcher.P3_OFFSET);
+    log(`Patch 3 (move): Patched at 0x${SoPatcher.P3_OFFSET.toString(16)}`, 'ok');
+  }
+}
+
+// ===========================================================================
+// DexPatcher — Patches 4, 5 (DEX bytecode replacement)
+// ===========================================================================
+class DexPatcher {
+  static readULEB128(data, offset) {
+    let result = 0, shift = 0, pos = offset;
+    while (true) {
+      const b = data[pos++];
+      result |= (b & 0x7f) << shift;
+      if ((b & 0x80) === 0) break;
+      shift += 7;
+    }
+    return [result, pos];
+  }
+
+  static readMUTF8(data, offset) {
+    // Read ULEB128 utf16_size then modified UTF-8 bytes until null
+    const [, pos] = DexPatcher.readULEB128(data, offset);
+    let end = pos;
+    while (data[end] !== 0) end++;
+    return bytesToText(data.slice(pos, end));
+  }
+
+  static getString(dex, stringIds, idx) {
+    const off = readU32LE(dex, stringIds + idx * 4);
+    return DexPatcher.readMUTF8(dex, off);
+  }
+
+  static getType(dex, stringIds, typeIds, idx) {
+    const strIdx = readU32LE(dex, typeIds + idx * 4);
+    return DexPatcher.getString(dex, stringIds, strIdx);
+  }
+
+  static parseDex(data) {
+    // Header
+    const stringIdsSize = readU32LE(data, 56);
+    const stringIdsOff  = readU32LE(data, 60);
+    const typeIdsSize   = readU32LE(data, 64);
+    const typeIdsOff    = readU32LE(data, 68);
+    const protoIdsSize  = readU32LE(data, 72);
+    const protoIdsOff   = readU32LE(data, 76);
+    const fieldIdsSize  = readU32LE(data, 80);
+    const fieldIdsOff   = readU32LE(data, 84);
+    const methodIdsSize = readU32LE(data, 88);
+    const methodIdsOff  = readU32LE(data, 92);
+    const classDefsSize = readU32LE(data, 96);
+    const classDefsOff  = readU32LE(data, 100);
+    return { stringIdsSize, stringIdsOff, typeIdsSize, typeIdsOff,
+             protoIdsSize, protoIdsOff, fieldIdsSize, fieldIdsOff,
+             methodIdsSize, methodIdsOff, classDefsSize, classDefsOff };
+  }
+
+  // Find string index by value
+  static findStringIdx(dex, hdr, str) {
+    for (let i = 0; i < hdr.stringIdsSize; i++) {
+      if (DexPatcher.getString(dex, hdr.stringIdsOff, i) === str) return i;
+    }
+    return -1;
+  }
+
+  // Find type index by descriptor
+  static findTypeIdx(dex, hdr, descriptor) {
+    for (let i = 0; i < hdr.typeIdsSize; i++) {
+      if (DexPatcher.getType(dex, hdr.stringIdsOff, hdr.typeIdsOff, i) === descriptor) return i;
+    }
+    return -1;
+  }
+
+  // Find field index
+  static findFieldIdx(dex, hdr, classDesc, name, typeDesc) {
+    const classTypeIdx = DexPatcher.findTypeIdx(dex, hdr, classDesc);
+    const nameStrIdx = DexPatcher.findStringIdx(dex, hdr, name);
+    const typeTypeIdx = DexPatcher.findTypeIdx(dex, hdr, typeDesc);
+    if (classTypeIdx < 0 || nameStrIdx < 0 || typeTypeIdx < 0) return -1;
+    for (let i = 0; i < hdr.fieldIdsSize; i++) {
+      const off = hdr.fieldIdsOff + i * 8;
+      const cIdx = readU16LE(dex, off);
+      const tIdx = readU16LE(dex, off + 2);
+      const nIdx = readU32LE(dex, off + 4);
+      if (cIdx === classTypeIdx && tIdx === typeTypeIdx && nIdx === nameStrIdx) return i;
+    }
+    return -1;
+  }
+
+  // Find method index
+  static findMethodIdx(dex, hdr, classDesc, name, protoReturn, protoParams) {
+    const classTypeIdx = DexPatcher.findTypeIdx(dex, hdr, classDesc);
+    const nameStrIdx = DexPatcher.findStringIdx(dex, hdr, name);
+    if (classTypeIdx < 0 || nameStrIdx < 0) return -1;
+
+    for (let i = 0; i < hdr.methodIdsSize; i++) {
+      const off = hdr.methodIdsOff + i * 8;
+      const cIdx = readU16LE(dex, off);
+      const nIdx = readU32LE(dex, off + 4);
+      if (cIdx !== classTypeIdx || nIdx !== nameStrIdx) continue;
+
+      // Verify proto if provided
+      if (protoReturn !== undefined) {
+        const pIdx = readU16LE(dex, off + 2);
+        const protoOff = hdr.protoIdsOff + pIdx * 12;
+        const retTypeIdx = readU32LE(dex, protoOff + 4);
+        const retType = DexPatcher.getType(dex, hdr.stringIdsOff, hdr.typeIdsOff, retTypeIdx);
+        if (retType !== protoReturn) continue;
+      }
+      return i;
+    }
+    return -1;
+  }
+
+  // Skip encoded_field or encoded_method entries in class_data
+  static skipEncodedFields(data, offset, count) {
+    let pos = offset;
+    for (let i = 0; i < count; i++) {
+      [, pos] = DexPatcher.readULEB128(data, pos); // field_idx_diff
+      [, pos] = DexPatcher.readULEB128(data, pos); // access_flags
+    }
+    return pos;
+  }
+
+  static skipEncodedMethods(data, offset, count) {
+    let pos = offset;
+    for (let i = 0; i < count; i++) {
+      [, pos] = DexPatcher.readULEB128(data, pos); // method_idx_diff
+      [, pos] = DexPatcher.readULEB128(data, pos); // access_flags
+      [, pos] = DexPatcher.readULEB128(data, pos); // code_off
+    }
+    return pos;
+  }
+
+  // Find code_off for a given method in a class
+  static findMethodCodeOff(dex, hdr, classDesc, methodName, protoReturn) {
+    const classTypeIdx = DexPatcher.findTypeIdx(dex, hdr, classDesc);
+    if (classTypeIdx < 0) return -1;
+
+    // Find class_def
+    let classDataOff = 0;
+    for (let i = 0; i < hdr.classDefsSize; i++) {
+      const cdOff = hdr.classDefsOff + i * 32;
+      if (readU32LE(dex, cdOff) === classTypeIdx) {
+        classDataOff = readU32LE(dex, cdOff + 24);
+        break;
+      }
+    }
+    if (!classDataOff) return -1;
+
+    // Parse class_data_item
+    let pos = classDataOff;
+    let staticFieldsSize, instanceFieldsSize, directMethodsSize, virtualMethodsSize;
+    [staticFieldsSize, pos] = DexPatcher.readULEB128(dex, pos);
+    [instanceFieldsSize, pos] = DexPatcher.readULEB128(dex, pos);
+    [directMethodsSize, pos] = DexPatcher.readULEB128(dex, pos);
+    [virtualMethodsSize, pos] = DexPatcher.readULEB128(dex, pos);
+
+    // Skip fields
+    pos = DexPatcher.skipEncodedFields(dex, pos, staticFieldsSize);
+    pos = DexPatcher.skipEncodedFields(dex, pos, instanceFieldsSize);
+
+    // Search direct + virtual methods
+    const totalMethods = directMethodsSize + virtualMethodsSize;
+    let methodIdx = 0;
+    for (let i = 0; i < totalMethods; i++) {
+      let idxDiff, accessFlags, codeOff;
+      [idxDiff, pos] = DexPatcher.readULEB128(dex, pos);
+      [accessFlags, pos] = DexPatcher.readULEB128(dex, pos);
+      [codeOff, pos] = DexPatcher.readULEB128(dex, pos);
+      methodIdx += idxDiff;
+
+      // Check method name
+      const mOff = hdr.methodIdsOff + methodIdx * 8;
+      const nIdx = readU32LE(dex, mOff + 4);
+      const mName = DexPatcher.getString(dex, hdr.stringIdsOff, nIdx);
+      if (mName !== methodName) continue;
+
+      // Optionally check return type
+      if (protoReturn !== undefined) {
+        const pIdx = readU16LE(dex, mOff + 2);
+        const protoOff = hdr.protoIdsOff + pIdx * 12;
+        const retTypeIdx = readU32LE(dex, protoOff + 4);
+        const retType = DexPatcher.getType(dex, hdr.stringIdsOff, hdr.typeIdsOff, retTypeIdx);
+        if (retType !== protoReturn) continue;
+      }
+      return codeOff;
+    }
+    return -1;
+  }
+
+  // Patch 4: Replace b.a(Context, b$a) with SafetyNet stub
+  static patchSafetyNetStub(dex, hdr, log) {
+    const codeOff = DexPatcher.findMethodCodeOff(dex, hdr,
+      'Ljp/co/capcom/android/explore/b;', 'a', 'I');
+    if (codeOff <= 0) {
+      log('Patch 4 (SafetyNet stub): Method b.a not found', 'warn');
+      return false;
+    }
+
+    // Resolve field/method indices
+    const fldG = DexPatcher.findFieldIdx(dex, hdr,
+      'Ljp/co/capcom/android/explore/b;', 'g', 'Ljava/lang/String;');
+    const fldH = DexPatcher.findFieldIdx(dex, hdr,
+      'Ljp/co/capcom/android/explore/b;', 'h', 'I');
+    const fldE = DexPatcher.findFieldIdx(dex, hdr,
+      'Ljp/co/capcom/android/explore/b;', 'e', 'Ljp/co/capcom/android/explore/b$a;');
+    const fldD = DexPatcher.findFieldIdx(dex, hdr,
+      'Ljp/co/capcom/android/explore/b;', 'd', 'I');
+    const mtdCallbackA = DexPatcher.findMethodIdx(dex, hdr,
+      'Ljp/co/capcom/android/explore/b$a;', 'a', 'V');
+    const strEmpty = DexPatcher.findStringIdx(dex, hdr, '');
+
+    if (fldG < 0 || fldH < 0 || fldE < 0 || fldD < 0 || mtdCallbackA < 0 || strEmpty < 0) {
+      log(`Patch 4: Could not resolve all indices (g=${fldG} h=${fldH} e=${fldE} d=${fldD} mtd=${mtdCallbackA} str=${strEmpty})`, 'err');
+      return false;
+    }
+
+    // code_item layout: registers_size(2) ins_size(2) outs_size(2) tries_size(2) debug_info_off(4) insns_size(4) insns...
+    // Update header
+    writeU16LE(dex, codeOff, 5);      // registers_size = 5 (v0,v1,p0=v2,p1=v3,p2=v4)
+    writeU16LE(dex, codeOff + 2, 3);  // ins_size = 3
+    writeU16LE(dex, codeOff + 4, 2);  // outs_size = 2
+    // tries_size stays 0
+
+    const origInsnsSize = readU32LE(dex, codeOff + 12);
+    const newInsnsSize = 14;
+    if (newInsnsSize > origInsnsSize) {
+      log(`Patch 4: New code (${newInsnsSize}) exceeds original (${origInsnsSize})`, 'err');
+      return false;
+    }
+
+    writeU32LE(dex, codeOff + 12, newInsnsSize);
+
+    // Write instructions at codeOff + 16
+    const insOff = codeOff + 16;
+    let w = insOff;
+
+    // const-string v0, ""
+    writeU16LE(dex, w, 0x1a00); w += 2;
+    writeU16LE(dex, w, strEmpty & 0xffff); w += 2;
+
+    // iput-object v0, p0, b->g:String
+    writeU16LE(dex, w, 0x5b02); w += 2;
+    writeU16LE(dex, w, fldG & 0xffff); w += 2;
+
+    // const/4 v0, 0
+    writeU16LE(dex, w, 0x0012); w += 2;
+
+    // iput v0, p0, b->h:I
+    writeU16LE(dex, w, 0x5902); w += 2;
+    writeU16LE(dex, w, fldH & 0xffff); w += 2;
+
+    // iput-object p2, p0, b->e:b$a
+    writeU16LE(dex, w, 0x5b42); w += 2;
+    writeU16LE(dex, w, fldE & 0xffff); w += 2;
+
+    // const/4 v1, 1
+    writeU16LE(dex, w, 0x1112); w += 2;
+
+    // iput v1, p0, b->d:I
+    writeU16LE(dex, w, 0x5912); w += 2;
+    writeU16LE(dex, w, fldD & 0xffff); w += 2;
+
+    // invoke-interface {p2, v0}, b$a->a(I)V
+    writeU16LE(dex, w, 0x7220); w += 2;
+    writeU16LE(dex, w, mtdCallbackA & 0xffff); w += 2;
+    writeU16LE(dex, w, 0x0004); w += 2; // p2=v4, v0
+
+    // const/4 v1, 2
+    writeU16LE(dex, w, 0x2112); w += 2;
+
+    // iput v1, p0, b->d:I
+    writeU16LE(dex, w, 0x5912); w += 2;
+    writeU16LE(dex, w, fldD & 0xffff); w += 2;
+
+    // return v0
+    writeU16LE(dex, w, 0x000f); w += 2;
+
+    // NOP-pad remainder
+    for (let i = newInsnsSize; i < origInsnsSize; i++) {
+      writeU16LE(dex, insOff + i * 2, 0x0000);
+    }
+
+    log(`Patch 4 (SafetyNet stub): Replaced b.a at code_off=0x${codeOff.toString(16)}`, 'ok');
+    return true;
+  }
+
+  // Patch 5: GMS bypass — stub methods to return-void or return ""
+  static patchGmsStubs(dex, hdr, log) {
+    const stubs = [
+      // 5a: GameHelper.onActivityResult → return-void
+      { cls: 'Lcom/google/example/games/basegameutils/GameHelper;',
+        method: 'onActivityResult', ret: 'V', label: 'GameHelper.onActivityResult' },
+      // 5b: MTFPActivity.sendRegistrationIdToBackend → return-void
+      { cls: 'Ljp/co/capcom/mtframework/android/MTFPActivity;',
+        method: 'sendRegistrationIdToBackend', ret: 'V', label: 'MTFPActivity.sendRegistrationIdToBackend' },
+      // 5b: MTFPActivity.getRegistrationId → return ""
+      { cls: 'Ljp/co/capcom/mtframework/android/MTFPActivity;',
+        method: 'getRegistrationId', ret: 'Ljava/lang/String;', label: 'MTFPActivity.getRegistrationId' },
+    ];
+
+    let count = 0;
+    for (const s of stubs) {
+      const codeOff = DexPatcher.findMethodCodeOff(dex, hdr, s.cls, s.method, s.ret);
+      if (codeOff <= 0) {
+        log(`Patch 5 (${s.label}): Method not found, skipping`, 'info');
+        continue;
+      }
+
+      const origInsnsSize = readU32LE(dex, codeOff + 12);
+      if (origInsnsSize < 1) continue;
+
+      if (s.ret === 'V') {
+        // return-void = 0x000e
+        writeU16LE(dex, codeOff, 1);      // registers_size = 1 (min)
+        writeU16LE(dex, codeOff + 2, readU16LE(dex, codeOff + 2)); // keep ins_size
+        writeU16LE(dex, codeOff + 4, 0);  // outs_size = 0
+        writeU32LE(dex, codeOff + 12, 1);
+        writeU16LE(dex, codeOff + 16, 0x000e);
+        for (let i = 1; i < origInsnsSize; i++) writeU16LE(dex, codeOff + 16 + i * 2, 0x0000);
+      } else if (s.ret === 'Ljava/lang/String;') {
+        // const-string v0, "" ; return-object v0
+        const strEmpty = DexPatcher.findStringIdx(dex, hdr, '');
+        if (strEmpty < 0) { log(`Patch 5 (${s.label}): empty string not found`, 'warn'); continue; }
+        const insSize = readU16LE(dex, codeOff + 2); // ins_size
+        writeU16LE(dex, codeOff, insSize + 1); // registers_size = ins_size + 1
+        writeU16LE(dex, codeOff + 4, 0);
+        writeU32LE(dex, codeOff + 12, 3);
+        writeU16LE(dex, codeOff + 16, 0x1a00); // const-string v0, ""
+        writeU16LE(dex, codeOff + 18, strEmpty & 0xffff);
+        writeU16LE(dex, codeOff + 20, 0x1100); // return-object v0
+        for (let i = 3; i < origInsnsSize; i++) writeU16LE(dex, codeOff + 16 + i * 2, 0x0000);
+      }
+      count++;
+      log(`Patch 5 (${s.label}): Stubbed at code_off=0x${codeOff.toString(16)}`, 'ok');
+    }
+    return count;
+  }
+
+  // Recompute DEX checksums (Adler-32 at offset 8, SHA-1 at offset 12)
+  static async fixChecksums(dex, log) {
+    // SHA-1 over bytes 32..end
+    const sha1Buf = await crypto.subtle.digest('SHA-1', dex.slice(32));
+    const sha1 = new Uint8Array(sha1Buf);
+    dex.set(sha1, 12);
+
+    // Adler-32 over bytes 12..end
+    let a = 1, b = 0;
+    for (let i = 12; i < dex.length; i++) {
+      a = (a + dex[i]) % 65521;
+      b = (b + a) % 65521;
+    }
+    const adler = ((b << 16) | a) >>> 0;
+    writeU32LE(dex, 8, adler);
+
+    log(`DEX checksums updated (SHA-1: ${hexBytes(sha1).slice(0, 16)}..., Adler-32: 0x${adler.toString(16)})`, 'ok');
+  }
+}
+
+// ===========================================================================
+// AxmlPatcher — Patch 6 (binary XML: usesCleartextTraffic, debuggable)
+// ===========================================================================
+class AxmlPatcher {
+  // AXML chunk types
+  static CHUNK_STRINGPOOL = 0x001c0001;
+  static CHUNK_RESOURCEIDS = 0x00080180;
+  static CHUNK_START_ELEMENT = 0x00100102;
+  static CHUNK_END_ELEMENT = 0x00100103;
+  static CHUNK_START_NS = 0x00100100;
+  static CHUNK_END_NS = 0x00100101;
+  static CHUNK_AXML = 0x00080003;
+
+  // Android resource IDs
+  static RES_usesCleartextTraffic = 0x010104ec;
+  static RES_debuggable = 0x0101000f;
+
+  // Typed value types
+  static TYPE_INT_BOOLEAN = 0x12;
+
+  static parse(data) {
+    const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
+    const magic = view.getUint32(0, true);
+    if (magic !== AxmlPatcher.CHUNK_AXML) throw new Error('Not a valid AXML file');
+    const fileSize = view.getUint32(4, true);
+
+    // Parse string pool
+    const spOff = 8;
+    const spType = view.getUint32(spOff, true);
+    const spSize = view.getUint32(spOff + 4, true);
+    const stringCount = view.getUint32(spOff + 8, true);
+    const styleCount = view.getUint32(spOff + 12, true);
+    const spFlags = view.getUint32(spOff + 16, true);
+    const stringsOff = view.getUint32(spOff + 20, true);
+    const stylesOff = view.getUint32(spOff + 24, true);
+    const isUtf8 = (spFlags & (1 << 8)) !== 0;
+
+    // Read string offsets
+    const stringOffsets = [];
+    for (let i = 0; i < stringCount; i++) {
+      stringOffsets.push(view.getUint32(spOff + 28 + i * 4, true));
+    }
+
+    // Read strings
+    const strDataStart = spOff + stringsOff;
+    const strings = [];
+    for (let i = 0; i < stringCount; i++) {
+      const sOff = strDataStart + stringOffsets[i];
+      if (isUtf8) {
+        // UTF-8: 1-2 byte char count, 1-2 byte byte count, then bytes, then null
+        let pos = sOff;
+        let charLen = data[pos++];
+        if (charLen & 0x80) { charLen = ((charLen & 0x7f) << 8) | data[pos++]; }
+        let byteLen = data[pos++];
+        if (byteLen & 0x80) { byteLen = ((byteLen & 0x7f) << 8) | data[pos++]; }
+        strings.push(bytesToText(data.slice(pos, pos + byteLen)));
+      } else {
+        // UTF-16LE: 2-byte or 4-byte length prefix, then UTF-16LE
+        let pos = sOff;
+        let charLen = view.getUint16(pos, true); pos += 2;
+        if (charLen & 0x8000) {
+          charLen = ((charLen & 0x7fff) << 16) | view.getUint16(pos, true);
+          pos += 2;
+        }
+        const str = new TextDecoder('utf-16le').decode(data.slice(pos, pos + charLen * 2));
+        strings.push(str);
+      }
+    }
+
+    // Resource IDs chunk (immediately after string pool)
+    let resIdsOff = spOff + spSize;
+    let resIds = [];
+    if (resIdsOff < data.length && view.getUint32(resIdsOff, true) === AxmlPatcher.CHUNK_RESOURCEIDS) {
+      const resChunkSize = view.getUint32(resIdsOff + 4, true);
+      const resCount = (resChunkSize - 8) / 4;
+      for (let i = 0; i < resCount; i++) {
+        resIds.push(view.getUint32(resIdsOff + 8 + i * 4, true));
+      }
+    }
+
+    // Parse element tree to find <application> tag and its attributes
+    const xmlChunksOff = resIdsOff + (resIds.length > 0 ? 8 + resIds.length * 4 : 0);
+
+    return { data, view, spOff, spSize, stringCount, styleCount, spFlags,
+             stringsOff, stylesOff, isUtf8, strings, resIdsOff, resIds,
+             xmlChunksOff, fileSize };
+  }
+
+  // Simpler approach: find the <application> start element and append attributes
+  static addApplicationAttribute(parsed, attrName, resId, boolVal, log) {
+    const { data, strings, resIds } = parsed;
+
+    // Check if attribute already exists by name
+    const existingIdx = strings.indexOf(attrName);
+    // Also check by resource ID in existing attributes
+    // We need to scan for existing <application> attributes with this resId
+
+    // Find android namespace string index
+    const nsIdx = strings.indexOf('http://schemas.android.com/apk/res/android');
+    if (nsIdx < 0) { log(`AXML: Android namespace not found`, 'err'); return null; }
+
+    // Check if the attribute already exists by looking for its resource ID in resIds
+    const existingResIdx = resIds.indexOf(resId);
+    if (existingResIdx >= 0) {
+      // The attribute's string is already in the pool — check if it's on <application>
+      // We'll scan the raw XML chunks for it
+      if (AxmlPatcher.hasAttributeOnApplication(data, existingResIdx, parsed)) {
+        log(`AXML: ${attrName} already present on <application>`, 'info');
+        return data;
+      }
+    }
+
+    // Strategy: we need to add the attribute to <application> StartElement.
+    // We'll do this by:
+    // 1. Add string to string pool (append at end)
+    // 2. Add resource ID at matching index in resource ID map
+    // 3. Find <application> StartElement chunk and add attribute
+
+    // For AXML binary modification, it's easier to rebuild the sections.
+    // But that's complex. Instead, let's use a targeted approach:
+    // - Append the new string to the string pool
+    // - Extend the resource ID chunk
+    // - Find the <application> start element and insert an attribute entry
+
+    // New string index
+    const newStrIdx = strings.length;
+
+    // Build the new AXML
+    return AxmlPatcher.rebuildWithAttribute(parsed, attrName, resId, boolVal, nsIdx, log);
+  }
+
+  static hasAttributeOnApplication(data, strIdx, parsed) {
+    const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
+    let pos = parsed.xmlChunksOff;
+    const end = data.length;
+
+    while (pos + 8 <= end) {
+      const chunkType = view.getUint32(pos, true);
+      const chunkSize = view.getUint32(pos + 4, true);
+      if (chunkSize < 8) break;
+
+      if (chunkType === AxmlPatcher.CHUNK_START_ELEMENT) {
+        // StartElement: type(4) size(4) lineNo(4) comment(4) nsIdx(4) nameIdx(4) attrStart(2) attrSize(2) attrCount(2) ...
+        const nameIdx = view.getUint32(pos + 20, true);
+        const name = parsed.strings[nameIdx];
+        if (name === 'application') {
+          const attrCount = view.getUint16(pos + 28, true);
+          const attrStart = view.getUint16(pos + 24, true);
+          const attrOff = pos + 16 + attrStart; // after lineNo(4)+comment(4)+ns(4)+name(4)+attrStart(2)+attrSize(2)+attrCount(2)+...
+          // Actually, attribute data starts at pos + 36 (fixed header is 36 bytes)
+          for (let a = 0; a < attrCount; a++) {
+            const aOff = pos + 36 + a * 20;
+            const aNameIdx = view.getUint32(aOff + 4, true);
+            if (aNameIdx === strIdx) return true;
+          }
+        }
+      }
+      pos += chunkSize;
+    }
+    return false;
+  }
+
+  static rebuildWithAttribute(parsed, attrName, resId, boolVal, nsIdx, log) {
+    const { data, strings, resIds, isUtf8, spOff, spSize,
+            stringCount, styleCount, spFlags, stringsOff, stylesOff } = parsed;
+    const view = new DataView(data.buffer, data.byteOffset, data.byteLength);
+
+    // We'll reconstruct the file:
+    // [AXML header 8] [StringPool (modified)] [ResourceIDs (modified)] [XML chunks (modified)]
+
+    const newStrIdx = strings.length;
+
+    // 1. Build new string pool with the extra string appended
+    const newStrings = [...strings, attrName];
+    const newStringPool = AxmlPatcher.buildStringPool(newStrings, styleCount, isUtf8, spFlags);
+
+    // 2. Build new resource ID chunk with the extra ID appended
+    const newResIds = [...resIds, resId];
+    const resIdChunkSize = 8 + newResIds.length * 4;
+    const resIdChunk = new Uint8Array(resIdChunkSize);
+    const resIdView = new DataView(resIdChunk.buffer);
+    resIdView.setUint32(0, AxmlPatcher.CHUNK_RESOURCEIDS, true);
+    resIdView.setUint32(4, resIdChunkSize, true);
+    for (let i = 0; i < newResIds.length; i++) {
+      resIdView.setUint32(8 + i * 4, newResIds[i], true);
+    }
+
+    // 3. Copy XML chunks, modifying <application> StartElement to add the attribute
+    const oldXmlStart = parsed.resIdsOff + (resIds.length > 0 ? 8 + resIds.length * 4 : 0);
+    const oldXmlChunks = data.slice(oldXmlStart);
+    const newXmlChunks = AxmlPatcher.addAttrToApplication(
+      oldXmlChunks, newStrIdx, nsIdx, boolVal, parsed.strings, log
+    );
+
+    if (!newXmlChunks) return null;
+
+    // 4. Assemble final file
+    const totalSize = 8 + newStringPool.length + resIdChunk.length + newXmlChunks.length;
+    const result = new Uint8Array(totalSize);
+    const resultView = new DataView(result.buffer);
+    resultView.setUint32(0, AxmlPatcher.CHUNK_AXML, true);
+    resultView.setUint32(4, totalSize, true);
+    result.set(newStringPool, 8);
+    result.set(resIdChunk, 8 + newStringPool.length);
+    result.set(newXmlChunks, 8 + newStringPool.length + resIdChunk.length);
+
+    log(`AXML: Added ${attrName} (resId=0x${resId.toString(16)})`, 'ok');
+    return result;
+  }
+
+  static buildStringPool(strings, styleCount, isUtf8, flags) {
+    // Encode all strings
+    const encodedStrings = [];
+    for (const s of strings) {
+      if (isUtf8) {
+        const bytes = textToBytes(s);
+        const parts = [];
+        // char count (1 or 2 bytes)
+        if (s.length > 0x7f) { parts.push((s.length >> 8) | 0x80, s.length & 0xff); }
+        else { parts.push(s.length); }
+        // byte count (1 or 2 bytes)
+        if (bytes.length > 0x7f) { parts.push((bytes.length >> 8) | 0x80, bytes.length & 0xff); }
+        else { parts.push(bytes.length); }
+        parts.push(...bytes, 0); // null terminator
+        encodedStrings.push(new Uint8Array(parts));
+      } else {
+        const encoded = new TextEncoder().encode(s);
+        // UTF-16LE encoding
+        const charLen = s.length;
+        const utf16 = new Uint8Array(charLen * 2);
+        for (let i = 0; i < charLen; i++) {
+          const c = s.charCodeAt(i);
+          utf16[i * 2] = c & 0xff;
+          utf16[i * 2 + 1] = (c >> 8) & 0xff;
+        }
+        const parts = [];
+        // char count (2 or 4 bytes)
+        if (charLen > 0x7fff) {
+          parts.push((charLen >> 16) | 0x80, (charLen >> 24) & 0xff, charLen & 0xff, (charLen >> 8) & 0xff);
+        } else {
+          parts.push(charLen & 0xff, (charLen >> 8) & 0xff);
+        }
+        parts.push(...utf16, 0, 0); // null terminator (2 bytes for UTF-16)
+        encodedStrings.push(new Uint8Array(parts));
+      }
+    }
+
+    // Compute offsets
+    const offsetsSize = strings.length * 4;
+    const headerSize = 28; // chunk type(4) + size(4) + stringCount(4) + styleCount(4) + flags(4) + stringsOff(4) + stylesOff(4)
+    const strDataStart = headerSize + offsetsSize;
+    let strDataSize = 0;
+    const offsets = [];
+    for (const enc of encodedStrings) {
+      offsets.push(strDataSize);
+      strDataSize += enc.length;
+    }
+    // Align to 4 bytes
+    const padded = (strDataSize + 3) & ~3;
+
+    const totalSize = strDataStart + padded;
+    const pool = new Uint8Array(totalSize);
+    const pv = new DataView(pool.buffer);
+
+    pv.setUint32(0, 0x001c0001, true); // type
+    pv.setUint32(4, totalSize, true);
+    pv.setUint32(8, strings.length, true);
+    pv.setUint32(12, styleCount, true);
+    pv.setUint32(16, flags, true);
+    pv.setUint32(20, strDataStart - 8, true); // strings offset relative to chunk + 8? No — relative to pool header
+    // Actually stringsOff is relative to the chunk start, pointing to where string data begins
+    // It should be headerSize + offsetsSize = strDataStart, relative to spOff (chunk start)
+    pv.setUint32(20, headerSize + offsetsSize, true);
+    pv.setUint32(24, 0, true); // stylesOff (no styles)
+
+    // String offsets
+    for (let i = 0; i < offsets.length; i++) {
+      pv.setUint32(28 + i * 4, offsets[i], true);
+    }
+
+    // String data
+    let pos = strDataStart;
+    for (const enc of encodedStrings) {
+      pool.set(enc, pos);
+      pos += enc.length;
+    }
+
+    return pool;
+  }
+
+  static addAttrToApplication(xmlChunks, newStrIdx, nsIdx, boolVal, oldStrings, log) {
+    // Walk XML chunks, find <application> StartElement, insert attribute
+    const view = new DataView(xmlChunks.buffer, xmlChunks.byteOffset, xmlChunks.byteLength);
+    const pieces = [];
+    let pos = 0;
+    let found = false;
+
+    while (pos + 8 <= xmlChunks.length) {
+      const chunkType = view.getUint32(pos, true);
+      const chunkSize = view.getUint32(pos + 4, true);
+      if (chunkSize < 8 || pos + chunkSize > xmlChunks.length) break;
+
+      if (!found && chunkType === AxmlPatcher.CHUNK_START_ELEMENT) {
+        const nameIdx = view.getUint32(pos + 20, true);
+        if (oldStrings[nameIdx] === 'application') {
+          // Modify this chunk to add an attribute
+          const modified = AxmlPatcher.insertAttribute(xmlChunks.slice(pos, pos + chunkSize),
+            newStrIdx, nsIdx, boolVal);
+          pieces.push(modified);
+          found = true;
+          pos += chunkSize;
+          continue;
+        }
+      }
+
+      pieces.push(xmlChunks.slice(pos, pos + chunkSize));
+      pos += chunkSize;
+    }
+
+    if (!found) {
+      log('AXML: <application> StartElement not found', 'err');
+      return null;
+    }
+
+    // Concatenate
+    const totalLen = pieces.reduce((s, p) => s + p.length, 0);
+    const result = new Uint8Array(totalLen);
+    let off = 0;
+    for (const p of pieces) {
+      result.set(p, off);
+      off += p.length;
+    }
+    return result;
+  }
+
+  static insertAttribute(startElemChunk, nameIdx, nsIdx, boolVal) {
+    const view = new DataView(startElemChunk.buffer, startElemChunk.byteOffset, startElemChunk.byteLength);
+    const oldSize = view.getUint32(4, true);
+    const attrCount = view.getUint16(28, true);
+
+    // Each attribute is 20 bytes: ns(4) name(4) rawValue(4) typedValueSize(2) 0x00(1) type(1) data(4)
+    const newAttr = new Uint8Array(20);
+    const nav = new DataView(newAttr.buffer);
+    nav.setUint32(0, nsIdx, true);        // namespace index
+    nav.setUint32(4, nameIdx, true);       // name index
+    nav.setInt32(8, -1, true);             // raw value (none = -1)
+    nav.setUint16(12, 8, true);            // typed value size
+    nav.setUint8(14, 0);                   // padding
+    nav.setUint8(15, AxmlPatcher.TYPE_INT_BOOLEAN); // type
+    nav.setUint32(16, boolVal ? 0xffffffff : 0, true); // data
+
+    // Build new chunk: old header + old attrs + new attr
+    const newSize = oldSize + 20;
+    const result = new Uint8Array(newSize);
+    // Copy everything up to end of existing attributes
+    result.set(startElemChunk.slice(0, oldSize), 0);
+    // But we need to insert before the end. Attributes start at offset 36.
+    // So: bytes [0..36+attrCount*20) + newAttr + bytes [36+attrCount*20..end)
+    const attrEnd = 36 + attrCount * 20;
+    const part1 = startElemChunk.slice(0, attrEnd);
+    const part2 = startElemChunk.slice(attrEnd);
+
+    result.set(part1, 0);
+    result.set(newAttr, attrEnd);
+    result.set(part2, attrEnd + 20);
+
+    // Update chunk size and attribute count
+    const rv = new DataView(result.buffer);
+    rv.setUint32(4, newSize, true);
+    rv.setUint16(28, attrCount + 1, true);
+
+    return result;
+  }
+}
+
+// ===========================================================================
+// ApkSigner — JAR v1 signing
+// ===========================================================================
+class ApkSigner {
+  static async sha256(data) {
+    const buf = await crypto.subtle.digest('SHA-256', data);
+    return new Uint8Array(buf);
+  }
+
+  static base64(bytes) {
+    let binary = '';
+    for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+    return btoa(binary);
+  }
+
+  static async buildManifest(zip) {
+    let manifest = 'Manifest-Version: 1.0\r\nCreated-By: MHXR Web Patcher\r\n\r\n';
+    const entries = [];
+
+    for (const [name, entry] of Object.entries(zip.files)) {
+      if (entry.dir) continue;
+      if (name.startsWith('META-INF/')) continue;
+      const data = await entry.async('uint8array');
+      const hash = await ApkSigner.sha256(data);
+      const section = `Name: ${name}\r\nSHA-256-Digest: ${ApkSigner.base64(hash)}\r\n\r\n`;
+      manifest += section;
+      entries.push({ name, section });
+    }
+
+    return { manifest, entries };
+  }
+
+  static async buildSignatureFile(manifest, entries) {
+    const manifestBytes = textToBytes(manifest);
+    const mainHash = await ApkSigner.sha256(manifestBytes);
+    let sf = `Signature-Version: 1.0\r\nCreated-By: MHXR Web Patcher\r\nSHA-256-Digest-Manifest: ${ApkSigner.base64(mainHash)}\r\n\r\n`;
+
+    for (const e of entries) {
+      const sectionHash = await ApkSigner.sha256(textToBytes(e.section));
+      sf += `Name: ${e.name}\r\nSHA-256-Digest: ${ApkSigner.base64(sectionHash)}\r\n\r\n`;
+    }
+
+    return sf;
+  }
+
+  static buildPkcs7(sfBytes, privateKey, certificate) {
+    // Use node-forge to create PKCS#7 SignedData
+    const p7 = forge.pkcs7.createSignedData();
+    p7.content = forge.util.createBuffer(sfBytes);
+    p7.addCertificate(certificate);
+    p7.addSigner({
+      key: privateKey,
+      certificate: certificate,
+      digestAlgorithm: forge.pki.oids.sha256,
+      authenticatedAttributes: [
+        { type: forge.pki.oids.contentType, value: forge.pki.oids.data },
+        { type: forge.pki.oids.messageDigest },
+      ],
+    });
+    p7.sign({ detached: true });
+
+    const asn1 = p7.toAsn1();
+    const der = forge.asn1.toDer(asn1);
+    return new Uint8Array(forge.util.binary.raw.decode(der.getBytes()));
+  }
+
+  static generateKeyAndCert() {
+    const keys = forge.pki.rsa.generateKeyPair(2048);
+    const cert = forge.pki.createCertificate();
+    cert.publicKey = keys.publicKey;
+    cert.serialNumber = '01';
+    cert.validity.notBefore = new Date();
+    cert.validity.notAfter = new Date();
+    cert.validity.notAfter.setFullYear(cert.validity.notAfter.getFullYear() + 25);
+    const attrs = [{ name: 'commonName', value: 'MHXR Patcher' }];
+    cert.setSubject(attrs);
+    cert.setIssuer(attrs);
+    cert.sign(keys.privateKey, forge.md.sha256.create());
+    return { privateKey: keys.privateKey, certificate: cert };
+  }
+
+  static async sign(zip, log) {
+    log('Signing: Generating RSA key pair...', 'info');
+    const { privateKey, certificate } = ApkSigner.generateKeyAndCert();
+
+    // Remove old signing artifacts
+    const toRemove = [];
+    for (const name of Object.keys(zip.files)) {
+      if (/^META-INF\/(.*\.(SF|RSA|DSA|EC|MF)|MANIFEST\.MF)$/i.test(name)) {
+        toRemove.push(name);
+      }
+    }
+    for (const name of toRemove) {
+      zip.remove(name);
+      log(`Signing: Removed ${name}`, 'info');
+    }
+
+    log('Signing: Computing digests...', 'info');
+    const { manifest, entries } = await ApkSigner.buildManifest(zip);
+
+    const sf = await ApkSigner.buildSignatureFile(manifest, entries);
+
+    log('Signing: Creating PKCS#7 signature...', 'info');
+    const sfBytes = textToBytes(sf);
+    const pkcs7 = ApkSigner.buildPkcs7(sfBytes, privateKey, certificate);
+
+    // Add to ZIP
+    zip.file('META-INF/MANIFEST.MF', manifest);
+    zip.file('META-INF/CERT.SF', sf);
+    zip.file('META-INF/CERT.RSA', pkcs7);
+
+    log(`Signing: Complete (${entries.length} entries signed)`, 'ok');
+  }
+}
+
+// ===========================================================================
+// UI Glue
+// ===========================================================================
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const fileName = document.getElementById('fileName');
+const serverAddr = document.getElementById('serverAddr');
+const btnPatch = document.getElementById('btnPatch');
+const btnDownload = document.getElementById('btnDownload');
+const progressSection = document.getElementById('progressSection');
+const progressBar = document.getElementById('progressBar');
+const logOutput = document.getElementById('logOutput');
+
+let selectedFile = null;
+
+// Auto-fill server address from current page
+(function() {
+  const host = window.location.hostname || '192.168.240.1';
+  const port = window.location.port || '8080';
+  serverAddr.value = host + ':' + port;
+})();
+
+// File selection
+dropZone.addEventListener('click', () => fileInput.click());
+fileInput.addEventListener('change', (e) => {
+  if (e.target.files.length > 0) selectFile(e.target.files[0]);
+});
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  if (e.dataTransfer.files.length > 0) selectFile(e.dataTransfer.files[0]);
+});
+
+function selectFile(file) {
+  selectedFile = file;
+  fileName.textContent = file.name + ' (' + (file.size / 1024 / 1024).toFixed(1) + ' MB)';
+  fileName.classList.remove('hidden');
+  dropZone.classList.add('has-file');
+  dropZone.querySelector('p:first-child').textContent = 'APK selected:';
+  updatePatchButton();
+}
+
+function updatePatchButton() {
+  btnPatch.disabled = !selectedFile || !serverAddr.value.trim();
+}
+serverAddr.addEventListener('input', updatePatchButton);
+
+function log(msg, cls = 'info') {
+  const span = document.createElement('span');
+  span.className = cls;
+  span.textContent = msg + '\n';
+  logOutput.appendChild(span);
+  logOutput.scrollTop = logOutput.scrollHeight;
+}
+
+function setProgress(pct) {
+  progressBar.style.width = pct + '%';
+}
+
+// Main patch pipeline
+btnPatch.addEventListener('click', async () => {
+  if (!selectedFile) return;
+
+  const addr = serverAddr.value.trim();
+  if (!addr) { alert('Enter a server address'); return; }
+  if (!/^[\w.\-]+(:\d{1,5})?$/.test(addr)) { alert('Invalid server address format'); return; }
+
+  const newUrl = 'http://' + addr + '/';
+  if (newUrl.length > 54) { alert('Server URL too long (max 46 chars for address)'); return; }
+
+  const doGms = document.getElementById('optGms').checked;
+  const doDebug = document.getElementById('optDebug').checked;
+
+  btnPatch.disabled = true;
+  btnDownload.classList.add('hidden');
+  progressSection.classList.add('visible');
+  logOutput.innerHTML = '';
+  setProgress(0);
+
+  try {
+    // Load JSZip and node-forge if not already loaded
+    if (typeof JSZip === 'undefined') {
+      log('Loading JSZip...', 'info');
+      await loadScript('https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js');
+    }
+    if (typeof forge === 'undefined') {
+      log('Loading node-forge...', 'info');
+      await loadScript('https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js');
+    }
+    setProgress(5);
+
+    // Read APK
+    log('Reading APK...', 'head');
+    const apkData = await selectedFile.arrayBuffer();
+    const zip = await JSZip.loadAsync(apkData);
+    setProgress(10);
+
+    // Validate: check for libMHS.so
+    if (!zip.file('lib/arm64-v8a/libMHS.so')) {
+      throw new Error('lib/arm64-v8a/libMHS.so not found — is this the MHXR v09.03.06 APK?');
+    }
+
+    // --- Patch 1: URL redirect (both architectures) ---
+    log('\n--- Patch 1: Dispatch URL redirect ---', 'head');
+    for (const arch of ['arm64-v8a', 'armeabi-v7a']) {
+      const soPath = `lib/${arch}/libMHS.so`;
+      const soEntry = zip.file(soPath);
+      if (!soEntry) { log(`${arch}/libMHS.so not found, skipping`, 'info'); continue; }
+      const soData = new Uint8Array(await soEntry.async('arraybuffer'));
+      SoPatcher.patchUrls(soData, addr, arch, log);
+
+      // Patches 2+3 only for arm64
+      if (arch === 'arm64-v8a') {
+        log('\n--- Patches 2+3: SafetyNet native bypass ---', 'head');
+        SoPatcher.patchIsComplete(soData, log);
+        SoPatcher.patchMove(soData, log);
+      }
+
+      // Write back — preserve STORE compression for .so files
+      zip.file(soPath, soData, { compression: 'STORE' });
+    }
+    setProgress(30);
+
+    // --- Patches 4+5: DEX bytecode ---
+    log('\n--- Patch 4: SafetyNet Java stub (DEX) ---', 'head');
+    const dexEntry = zip.file('classes.dex');
+    if (!dexEntry) throw new Error('classes.dex not found');
+    const dexData = new Uint8Array(await dexEntry.async('arraybuffer'));
+    const dexHdr = DexPatcher.parseDex(dexData);
+
+    DexPatcher.patchSafetyNetStub(dexData, dexHdr, log);
+    setProgress(40);
+
+    if (doGms) {
+      log('\n--- Patch 5: GMS bypass (DEX) ---', 'head');
+      DexPatcher.patchGmsStubs(dexData, dexHdr, log);
+    }
+    setProgress(50);
+
+    // Fix DEX checksums
+    log('\nUpdating DEX checksums...', 'info');
+    await DexPatcher.fixChecksums(dexData, log);
+    zip.file('classes.dex', dexData, { compression: 'DEFLATE' });
+    setProgress(55);
+
+    // --- Patch 6: AndroidManifest.xml binary XML ---
+    log('\n--- Patch 6: Cleartext HTTP (AndroidManifest.xml) ---', 'head');
+    const manifestEntry = zip.file('AndroidManifest.xml');
+    if (!manifestEntry) throw new Error('AndroidManifest.xml not found');
+    const manifestData = new Uint8Array(await manifestEntry.async('arraybuffer'));
+    let parsed = AxmlPatcher.parse(manifestData);
+
+    let newManifest = AxmlPatcher.addApplicationAttribute(
+      parsed, 'usesCleartextTraffic', AxmlPatcher.RES_usesCleartextTraffic, true, log);
+
+    if (newManifest) {
+      if (doDebug) {
+        parsed = AxmlPatcher.parse(newManifest);
+        const withDebug = AxmlPatcher.addApplicationAttribute(
+          parsed, 'debuggable', AxmlPatcher.RES_debuggable, true, log);
+        if (withDebug) newManifest = withDebug;
+      }
+      zip.file('AndroidManifest.xml', newManifest, { compression: 'DEFLATE' });
+    }
+    setProgress(65);
+
+    // --- Sign ---
+    log('\n--- JAR v1 Signing ---', 'head');
+    await ApkSigner.sign(zip, log);
+    setProgress(80);
+
+    // --- Generate output ---
+    log('\nGenerating patched APK...', 'head');
+    const outputBlob = await zip.generateAsync(
+      { type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } },
+      (meta) => {
+        setProgress(80 + Math.round(meta.percent * 0.2));
+      }
+    );
+    setProgress(100);
+    progressBar.classList.add('done');
+
+    log(`\nDone! Patched APK: ${(outputBlob.size / 1024 / 1024).toFixed(1)} MB`, 'ok');
+
+    // Show download button
+    const url = URL.createObjectURL(outputBlob);
+    btnDownload.href = url;
+    btnDownload.download = selectedFile.name.replace('.apk', '-patched.apk');
+    btnDownload.classList.remove('hidden');
+    btnDownload.textContent = 'Download ' + btnDownload.download;
+
+  } catch (err) {
+    log(`\nFATAL: ${err.message}`, 'err');
+    console.error(err);
+    setProgress(0);
+  }
+
+  btnPatch.disabled = false;
+});
+
+function loadScript(url) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = resolve;
+    s.onerror = () => reject(new Error('Failed to load ' + url));
+    document.head.appendChild(s);
+  });
+}
+</script>
+</body>
+</html>

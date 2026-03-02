@@ -9,6 +9,7 @@ webRouter.get('/schedule/index', webController.getScheduleIndex);
 webRouter.post('/schedule/index', webController.getScheduleIndex);
 webRouter.get('/notice/first_dl', webController.getFirstDL);
 webRouter.get('/download', webController.getDownload);
+webRouter.get('/patcher', webController.getPatcher);
 webRouter.get('/*splat', webController.getWebContent);
 webRouter.post('/*splat', webController.getWebContent);
 

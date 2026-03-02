@@ -21,7 +21,8 @@ package-lock.json
 yarn-error.log
 
 # Game resource files (large binaries, not in repo)
-src/public/
+src/public/*
+!src/public/web-res/
 *.fpk
 
 # Generated download lists

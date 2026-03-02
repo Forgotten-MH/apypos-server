@@ -36,3 +36,8 @@ export const getFirstDL = (req: Request, res: Response) => {
   const filePath = path.join(__dirname, '..', '..', 'public', 'web-res', 'first-dl.html');
   res.sendFile(filePath);
 };
+
+export const getPatcher = (req: Request, res: Response) => {
+  const filePath = path.join(__dirname, '..', '..', 'public', 'web-res', 'patcher.html');
+  res.sendFile(filePath);
+};
