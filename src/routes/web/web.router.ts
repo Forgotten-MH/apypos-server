@@ -8,7 +8,7 @@ webRouter.post('/notice/index', webController.getNoticeIndex);
 webRouter.get('/schedule/index', webController.getScheduleIndex);
 webRouter.post('/schedule/index', webController.getScheduleIndex);
 webRouter.get('/notice/first_dl', webController.getFirstDL);
-// webRouter.get("/*", webController.getWebContent);
-// webRouter.post("/*", webController.getWebContent);
+webRouter.get('/*splat', webController.getWebContent);
+webRouter.post('/*splat', webController.getWebContent);
 
 export default webRouter;
