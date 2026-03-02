@@ -3,15 +3,15 @@ import { Request, Response } from 'express';
 
 vi.mock('../../../model/user');
 vi.mock('../../../model/questSheet');
-vi.mock('../../../model/events');
+vi.mock('../../../model/events/eventMeta');
 vi.mock('../../../model/events/assualts');
 vi.mock('../../../model/events/m16');
 vi.mock('../../../model/events/score');
 vi.mock('../../../model/events/standing');
 vi.mock('../../../model/events/tickets');
 vi.mock('../../../model/events/tour');
-vi.mock(import('../../../model/events/utils'), async (importOriginal) => {
-  const actual = await importOriginal();
+vi.mock('../../../model/events/utils', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../../../model/events/utils.js')>();
   return {
     ...actual,
     enrichEvent: vi.fn((data: unknown) => data),
@@ -32,7 +32,7 @@ vi.mock('fs/promises', () => ({
 
 import User from '../../../model/user.js';
 import QuestSheet from '../../../model/questSheet.js';
-import Event from '../../../model/events.js';
+import { Event } from '../../../model/events/index.js';
 import AssualtEvents from '../../../model/events/assualts.js';
 import M16Events from '../../../model/events/m16.js';
 import ScoreEvents from '../../../model/events/score.js';
@@ -41,20 +41,9 @@ import TicketEvents from '../../../model/events/tickets.js';
 import TourEvents from '../../../model/events/tour.js';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
-import {
-  questProgress,
-  questResultEnd,
-  eventTicketFree,
-  eventNormalStart,
-  eventTicketStart,
-  eventScoreStart,
-  eternalStart,
-  eternalAll,
-  eventListAll,
-  islandStart,
-  islandEnd,
-  islandMapAll,
-} from './quest.controller.js';
+import { questProgress, questResultEnd, eternalStart, eternalAll } from './quest.controller.js';
+import { eventTicketFree, eventNormalStart, eventTicketStart, eventScoreStart, eventListAll } from './questEvent.controller.js';
+import { islandStart, islandEnd, islandMapAll } from './questIsland.controller.js';
 
 function mockReqRes(body: Record<string, unknown> = {}) {
   const req = { body, ip: '127.0.0.1', get: vi.fn() } as unknown as Request;

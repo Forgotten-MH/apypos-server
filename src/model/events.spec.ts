@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import Event from './events.js';
+import Event from './events/eventMeta.js';
 
 describe('Event model', () => {
   it('is registered with correct name', () => {

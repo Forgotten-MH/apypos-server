@@ -27,6 +27,7 @@ import presentRouter from './api/present/present.router.js';
 import friendRouter from './api/friend/friend.router.js';
 import courseRouter from './api/course/course.router.js';
 import purchaseRouter from './api/purchase/purchase.router.js';
+import kpiRouter from './api/kpi/kpi.router.js';
 import systemRouter from './api/system/system.router.js';
 
 const router = Router();
@@ -57,7 +58,7 @@ router.use('/api/present', presentRouter);
 router.use('/api/friend', friendRouter);
 router.use('/api/course', courseRouter);
 router.use('/api/purchase', purchaseRouter);
-router.use('/api/kpi', purchaseRouter);
+router.use('/api/kpi', kpiRouter);
 router.use('/api/system', systemRouter);
 
 // For version json

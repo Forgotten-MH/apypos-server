@@ -1,6 +1,6 @@
 import Guild from '../model/guild.js';
 import User from '../model/user.js';
-import { generateUniqueId } from './crypto/encryptionHelpers.js';
+import { generateUniqueId } from '../utils/generateUniqueId.js';
 import { createLogger } from '../middleware/logger.js';
 const log = createLogger('guildService');
 

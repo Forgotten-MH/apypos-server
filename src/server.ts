@@ -16,49 +16,17 @@ import {
 import { createLogger } from './middleware/logger.js';
 
 const log = createLogger('server');
-import normalTutorialQuestSheets from './json/questDB/normal.extended.complete.json' with { type: 'json' };
-import trainingQuestSheets from './json/questDB/training.extended.complete.json' with { type: 'json' };
-import scoreQuestSheets from './json/questDB/score.extended.complete.json' with { type: 'json' };
-import eternalQuestSheets from './json/questDB/eternal.extended.complete.json' with { type: 'json' };
-import ticketQuestSheets from './json/questDB/ticket.extended.complete.json' with { type: 'json' };
-import eventQuestSheets from './json/questDB/event.extended.blank.json' with { type: 'json' };
-import ticketEvents from './json/ticket_events.json' with { type: 'json' };
-import coevEvents from './json/coev_events.json' with { type: 'json' };
-
-import easyEvents from './json/easy_events.json' with { type: 'json' };
-import normEvents from './json/norm_events.json' with { type: 'json' };
-import hardEvents from './json/hard_events.json' with { type: 'json' };
-import forbEvents from './json/forb_events.json' with { type: 'json' };
-
-// Type definition for quest sheet JSON imports
-interface QuestSheetJson {
-  rQuestSheet: {
-    mQuestDataList: Record<string, unknown>[];
-  };
-}
-
-// Cast JSON imports to resolve deep nested type access
-const typedNormal = normalTutorialQuestSheets as unknown as QuestSheetJson;
-const typedTraining = trainingQuestSheets as unknown as QuestSheetJson;
-const typedScore = scoreQuestSheets as unknown as QuestSheetJson;
-const typedEternal = eternalQuestSheets as unknown as QuestSheetJson;
-const typedTicket = ticketQuestSheets as unknown as QuestSheetJson;
-const typedEvent = eventQuestSheets as unknown as QuestSheetJson;
 
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Server } from 'socket.io';
-import Event from './model/events.js';
-import QuestSheet from './model/questSheet.js';
 
 import { onConnect } from './multiServer.js';
-import AssualtEvents from './model/events/assualts.js';
-import TicketEvents from './model/events/tickets.js';
-import ScoreEvents from './model/events/score.js';
 
 import http from 'http';
 import https from 'https';
-import { restoreSessions } from './services/crypto/encryptionHelpers.js';
+import { restoreSessions } from './services/session/sessionService.js';
+import { seedDatabase } from './services/seedService.js';
 
 const useHttps = PORT === 443;
 const defaultKeysDir = join(import.meta.dirname, '..', 'keys');
@@ -128,131 +96,7 @@ mongoose
     io.on('connection', onConnect);
 
     server.listen(PORT, () => {
-      void Event.countDocuments({})
-        .then((count) => {
-          log.info(`Number of Events: ${count}`);
-          if (count == 0) {
-            const eventDefault = new Event();
-            void eventDefault.save();
-            log.info('Event Data imported successfully.');
-          } else {
-            log.info('Event Data is not empty. Skipping import.');
-          }
-        })
-        .catch((err: unknown) => {
-          log.error('Error:', err);
-        });
-      void AssualtEvents.countDocuments({})
-        .then((count) => {
-          log.info(`Number of Assualt Events: ${count}`);
-          if (count == 0) {
-            easyEvents.forEach((easyEvent) => {
-              void AssualtEvents.create({
-                appear_remain: Date.now(), //Only start when this hits 0
-                disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                start_remain: Date.now(), //Only show in UI when this hits 0
-                ...easyEvent,
-              });
-            });
-            normEvents.forEach((normEvent) => {
-              void AssualtEvents.create({
-                appear_remain: Date.now(), //Only start when this hits 0
-                disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                start_remain: Date.now(), //Only show in UI when this hits 0
-                ...normEvent,
-              });
-            });
-            hardEvents.forEach((hardEvent) => {
-              void AssualtEvents.create({
-                appear_remain: Date.now(), //Only start when this hits 0
-                disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                start_remain: Date.now(), //Only show in UI when this hits 0
-                ...hardEvent,
-              });
-            });
-            forbEvents.forEach((forbEvent) => {
-              void AssualtEvents.create({
-                appear_remain: Date.now(), //Only start when this hits 0
-                disappear_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                start_remain: Date.now(), //Only show in UI when this hits 0
-                ...forbEvent,
-              });
-            });
-
-            log.info('✅ Assualt Event Data imported successfully.');
-          } else {
-            log.info('⚠️ Assualt Event Data is not empty. Skipping import.');
-          }
-        })
-        .catch((err: unknown) => {
-          log.error('Error:', err);
-        });
-      void ScoreEvents.countDocuments({})
-        .then((count) => {
-          log.info(`Number of Score Events: ${count}`);
-          if (count == 0) {
-            coevEvents.forEach((coevEvent) => {
-              void ScoreEvents.create({
-                end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                start_remain: Date.now(),
-                ...coevEvent,
-              });
-            });
-
-            log.info('✅ Score Event Data imported successfully.');
-          } else {
-            log.info('⚠️ Score Event Data is not empty. Skipping import.');
-          }
-        })
-        .catch((err: unknown) => {
-          log.error('Error:', err);
-        });
-      void TicketEvents.countDocuments({})
-        .then((count) => {
-          log.info(`Number of Ticket Events: ${count}`);
-          if (count == 0) {
-            ticketEvents.forEach((ticketEvent) => {
-              void TicketEvents.create({
-                buy_end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                buy_start_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                clear_time: 0,
-                end_remain: Date.now() + 30 * 24 * 60 * 60 * 1000,
-                start_remain: Date.now(),
-                ...ticketEvent,
-              });
-            });
-
-            log.info('✅ Ticket Event Data imported successfully.');
-          } else {
-            log.info('⚠️ Ticket Event Data is not empty. Skipping import.');
-          }
-        })
-        .catch((err: unknown) => {
-          log.error('Error:', err);
-        });
-      void QuestSheet.countDocuments({})
-        .then((count) => {
-          log.info(`Number of Quests: ${count}`);
-          if (count === 0) {
-            void QuestSheet.insertMany(typedNormal.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(typedTraining.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(typedScore.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(typedEternal.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(typedTicket.rQuestSheet.mQuestDataList);
-            void QuestSheet.insertMany(typedEvent.rQuestSheet.mQuestDataList);
-
-            log.info('✅ Quest Data imported successfully.');
-          } else {
-            log.info('⚠️ Quest Data is not empty. Skipping import.');
-          }
-        })
-        .catch((err: unknown) => {
-          log.error('Error:', err);
-        });
+      void seedDatabase(log);
 
       //TODO Instatiate entire ocean map here.
 

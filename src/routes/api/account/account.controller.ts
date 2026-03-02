@@ -1,35 +1,27 @@
 import { Request, Response } from 'express';
 import { encryptAndSend } from '../../../services/crypto/encryptionHelpers.js';
 import { ERROR_CODE, ERROR_CATEGORY } from '../../../constants/error.codes.js';
-import User from '../../../model/user.js';
 import { createLogger } from '../../../middleware/logger.js';
+import {
+  generateToken,
+  updateMigrationData,
+  processMigrationAuth,
+  createUser,
+  loginUser,
+} from '../../../services/accountService.js';
 import type { MigrationReadyInput, MigrationAuthInput, RegistInput, LoginInput } from './account.schema.js';
 const log = createLogger('account');
-
-function generateToken(length: number) {
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let token = '';
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    token += characters[randomIndex];
-  }
-  return token;
-}
 
 export const migrationReady = async (req: Request, res: Response) => {
   try {
     const { login_id, secret_id, mst_himitsu_question_id, himitsu_answer, migration_pass } = req.body as MigrationReadyInput;
     const migration_id = generateToken(8);
-    const filter = { login_id: login_id, secret_id: secret_id };
-    const update = {
-      'transfer.mst_himitsu_question_id': mst_himitsu_question_id,
-      'transfer.himitsu_answer': himitsu_answer,
-      'transfer.migration_pass': migration_pass,
-      'transfer.migration_id': migration_id,
-    };
 
-    const doc = await User.findOneAndUpdate(filter, update, {
-      new: true,
+    const doc = await updateMigrationData(login_id, secret_id, {
+      mst_himitsu_question_id,
+      himitsu_answer,
+      migration_pass,
+      migration_id,
     });
     if (!doc) {
       return encryptAndSend({}, res, req, ERROR_CODE.LOGIN_FAILED);
@@ -48,15 +40,7 @@ export const migrationAuth = async (req: Request, res: Response) => {
   try {
     const { migration_id, migration_pass, secret_id, uu_id } = req.body as MigrationAuthInput;
 
-    const filter = {
-      'transfer.migration_id': migration_id,
-      'transfer.migration_pass': migration_pass,
-    };
-    const update = { uu_id: uu_id, secret_id: secret_id };
-
-    const doc = await User.findOneAndUpdate(filter, update, {
-      new: true,
-    });
+    const doc = await processMigrationAuth(migration_id, migration_pass, uu_id, secret_id);
 
     if (!doc) {
       return encryptAndSend({}, res, req, ERROR_CODE.LOGIN_FAILED);
@@ -76,18 +60,7 @@ export const registerAccount = async (req: Request, res: Response) => {
   try {
     const { uu_id, secret_id, session_id } = req.body as RegistInput;
 
-    //TODO: Generate random login,user and game ids
-    const newUser = new User({
-      uu_id: uu_id,
-      secret_id: secret_id,
-      login_id: generateToken(8),
-      user_id: generateToken(24),
-      game_id: generateToken(8),
-      current_session: session_id,
-      tutorial_step: 110,
-    });
-
-    await newUser.save();
+    const newUser = await createUser(uu_id, secret_id, session_id ?? '');
 
     const responseData = {
       game_id: newUser.game_id,
@@ -144,20 +117,17 @@ export const registerAccount = async (req: Request, res: Response) => {
 export const loginAccount = async (req: Request, res: Response) => {
   try {
     const { uu_id, secret_id, session_id } = req.body as LoginInput;
-    //1. Does user exist?
-    const filter = { uu_id };
-    let doc = await User.findOne(filter);
-    if (!doc) {
-      return encryptAndSend({}, res, req, ERROR_CODE.LOGIN_FAILED); //Login failed. Would you like to create another account?
+
+    const result = await loginUser(uu_id, secret_id, session_id ?? '');
+
+    if (result.error === 'NOT_FOUND') {
+      return encryptAndSend({}, res, req, ERROR_CODE.LOGIN_FAILED);
     }
-    if (doc.secret_id !== secret_id) {
-      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
+    if (result.error === 'NOT_AUTHENTICATED') {
+      return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED);
     }
-    //3. Create Session
-    const update = { current_session: session_id };
-    doc = await User.findOneAndUpdate(filter, update, {
-      new: true,
-    });
+
+    const doc = result.user;
 
     let login = {
       auto_course_remain_time: 3600,
@@ -166,57 +136,16 @@ export const loginAccount = async (req: Request, res: Response) => {
         day: 1,
         disp_name: 'event_login_bonus_info',
         end: '2026/12/30 00:05:00',
-        login_bonus_reward_list: [
-          // {
-          //   idx: 1,
-          //   item_list: {
-          //     equipments: [
-          //       {
-          //         auto_potential_composite: 1,
-          //         awaked: 0,
-          //         created: 1,
-          //         elv: 1,
-          //         endAwakeCount: 5,
-          //         endAwakeRemain: 10,
-          //         end_remain: 15,
-          //         equipment_id: "AD_BODY006",
-          //         evolve_start_time: 1609459200,
-          //         favorite: 1,
-          //         is_awake: 0,
-          //         is_complete_auto_potential_composite: 1,
-          //         mst_equipment_id: 1801022340,
-          //         potential: 100,
-          //         slv: 1,
-          //         start_remain: 20,
-          //       },
-          //     ],
-          //     zenny: 1000000,
-          //     pickup: 1,
-          //   },
-          // },
-        ],
+        login_bonus_reward_list: [],
         message: 'Message FOR EVENT',
         start: '2020/12/30 00:05:00',
       },
-      game_id: doc!.game_id,
-      gender: doc!.model_info?.gender,
+      game_id: doc.game_id,
+      gender: doc.model_info?.gender,
       is_review: 1,
       now_sale_premium_login_bonus_id: 0,
-      popup_info: [
-        // {
-        //   id: 1,
-        //   url: "/popup1",
-        // },
-      ],
-      specific_popup_info: [
-        // {
-        //   display_time: 1, //how long pop up lasts
-        //   id: 1,
-        //   title: "Test",
-        //   url: "/test",
-        // },
-      ],
-      // reserve_room_id: "test", //triggers /multi/reserver/join on start up if within the object...
+      popup_info: [],
+      specific_popup_info: [],
       stretch_effect_info: {
         exchange_present: 0,
         free_auto_add: 0,
@@ -251,8 +180,8 @@ export const loginAccount = async (req: Request, res: Response) => {
           },
         },
       },
-      tutorial_step: doc!.tutorial_step,
-      user_id: doc!.user_id,
+      tutorial_step: doc.tutorial_step,
+      user_id: doc.user_id,
     };
 
     const return_login_bonus_info_active = false;
@@ -264,9 +193,7 @@ export const loginAccount = async (req: Request, res: Response) => {
           {
             idx: 1,
             item_list: {
-              collections: [
-                //{ mst_collection_id: 0 }
-              ],
+              collections: [],
               equipments: [
                 {
                   auto_potential_composite: 0,
@@ -287,110 +214,18 @@ export const loginAccount = async (req: Request, res: Response) => {
                   start_remain: 0,
                 },
               ],
-              growth_items: [
-                {
-                  amount: 0,
-                  mst_growth_item_id: 0,
-                },
-              ],
-              katamaris: [
-                {
-                  mst_katamari_type_id: 0,
-                  equipments: [
-                    {
-                      auto_potential_composite: 0,
-                      awaked: 0,
-                      created: 0,
-                      elv: 0,
-                      endAwakeCount: 0,
-                      endAwakeRemain: 0,
-                      end_remain: 0,
-                      equipment_id: '',
-                      evolve_start_time: 0,
-                      favorite: 0,
-                      is_awake: 0,
-                      is_complete_auto_potential_composite: 0,
-                      mst_equipment_id: 0,
-                      potential: 0,
-                      slv: 0,
-                      start_remain: 0,
-                    },
-                  ],
-                },
-              ],
-              limiteds: [
-                {
-                  amount: 0,
-                  mst_limited_id: 0,
-                },
-              ],
-              matatabis: [
-                {
-                  amount: 0,
-                  mst_matatabi_id: 0,
-                },
-              ],
-              materials: [
-                {
-                  amount: 0,
-                  mst_material_id: 0,
-                },
-              ],
-              monument: {
-                augite: [
-                  // {
-                  //   amount: 0,
-                  //   mst_augite_id: 0,
-                  //   mst_monument_type_id: 0,
-                  // },
-                ],
-                hr: 0,
-                mlv: {
-                  atk: 0,
-                  def: 0,
-                  hp: 0,
-                  sp: 0,
-                },
-              },
-              otomos: [
-                // {
-                //   created: 0,
-                //   exp: 0,
-                //   mst_otomo_id: 2092467563,
-                //   otomo_id: "OT_OTOMO_CHAR_ID_001",
-                //   subskill: [0],
-                // },
-              ],
-              payments: [
-                {
-                  amount: 50,
-                  mst_payment_id: 1573159746,
-                },
-              ],
-              pcoins: [
-                {
-                  amount: 0,
-                  mst_pcoin_id: 0,
-                },
-              ],
-              points: [
-                {
-                  amount: 0,
-                  mst_event_point_id: 3190222199,
-                },
-              ],
-              powers: [
-                {
-                  amount: 0,
-                  mst_power_id: 1550991572,
-                },
-              ],
-              stamp_sets: [
-                {
-                  amount: 0,
-                  mst_stamp_set_id: 67667029,
-                },
-              ],
+              growth_items: [{ amount: 0, mst_growth_item_id: 0 }],
+              katamaris: [{ mst_katamari_type_id: 0, equipments: [{ auto_potential_composite: 0, awaked: 0, created: 0, elv: 0, endAwakeCount: 0, endAwakeRemain: 0, end_remain: 0, equipment_id: '', evolve_start_time: 0, favorite: 0, is_awake: 0, is_complete_auto_potential_composite: 0, mst_equipment_id: 0, potential: 0, slv: 0, start_remain: 0 }] }],
+              limiteds: [{ amount: 0, mst_limited_id: 0 }],
+              matatabis: [{ amount: 0, mst_matatabi_id: 0 }],
+              materials: [{ amount: 0, mst_material_id: 0 }],
+              monument: { augite: [], hr: 0, mlv: { atk: 0, def: 0, hp: 0, sp: 0 } },
+              otomos: [],
+              payments: [{ amount: 50, mst_payment_id: 1573159746 }],
+              pcoins: [{ amount: 0, mst_pcoin_id: 0 }],
+              points: [{ amount: 0, mst_event_point_id: 3190222199 }],
+              powers: [{ amount: 0, mst_power_id: 1550991572 }],
+              stamp_sets: [{ amount: 0, mst_stamp_set_id: 67667029 }],
               zenny: 0,
               pickup: 0,
             },
@@ -413,133 +248,20 @@ export const loginAccount = async (req: Request, res: Response) => {
           {
             idx: 1,
             item_list: {
-              collections: [
-                //{ mst_collection_id: 0 }
-              ],
-              equipments: [
-                {
-                  auto_potential_composite: 0,
-                  awaked: 0,
-                  created: 0,
-                  elv: 0,
-                  endAwakeCount: 0,
-                  endAwakeRemain: 0,
-                  end_remain: 0,
-                  equipment_id: '',
-                  evolve_start_time: 0,
-                  favorite: 0,
-                  is_awake: 0,
-                  is_complete_auto_potential_composite: 0,
-                  mst_equipment_id: 0,
-                  potential: 0,
-                  slv: 0,
-                  start_remain: 0,
-                },
-              ],
-              growth_items: [
-                {
-                  amount: 0,
-                  mst_growth_item_id: 0,
-                },
-              ],
-              katamaris: [
-                {
-                  mst_katamari_type_id: 0,
-                  equipments: [
-                    {
-                      auto_potential_composite: 0,
-                      awaked: 0,
-                      created: 0,
-                      elv: 0,
-                      endAwakeCount: 0,
-                      endAwakeRemain: 0,
-                      end_remain: 0,
-                      equipment_id: '',
-                      evolve_start_time: 0,
-                      favorite: 0,
-                      is_awake: 0,
-                      is_complete_auto_potential_composite: 0,
-                      mst_equipment_id: 0,
-                      potential: 0,
-                      slv: 0,
-                      start_remain: 0,
-                    },
-                  ],
-                },
-              ],
-              limiteds: [
-                {
-                  amount: 0,
-                  mst_limited_id: 0,
-                },
-              ],
-              matatabis: [
-                {
-                  amount: 0,
-                  mst_matatabi_id: 0,
-                },
-              ],
-              materials: [
-                {
-                  amount: 0,
-                  mst_material_id: 0,
-                },
-              ],
-              monument: {
-                augite: [
-                  // {
-                  //   amount: 0,
-                  //   mst_augite_id: 0,
-                  //   mst_monument_type_id: 0,
-                  // },
-                ],
-                hr: 0,
-                mlv: {
-                  atk: 0,
-                  def: 0,
-                  hp: 0,
-                  sp: 0,
-                },
-              },
-              otomos: [
-                // {
-                //   created: 0,
-                //   exp: 0,
-                //   mst_otomo_id: 2092467563,
-                //   otomo_id: "OT_OTOMO_CHAR_ID_001",
-                //   subskill: [0],
-                // },
-              ],
-              payments: [
-                {
-                  amount: 50,
-                  mst_payment_id: 1573159746,
-                },
-              ],
-              pcoins: [
-                {
-                  amount: 0,
-                  mst_pcoin_id: 0,
-                },
-              ],
-              points: [
-                {
-                  amount: 0,
-                  mst_event_point_id: 3190222199,
-                },
-              ],
-              powers: [
-                {
-                  amount: 0,
-                  mst_power_id: 0,
-                },
-              ],
-              stamp_sets: [
-                {
-                  amount: 0,
-                  mst_stamp_set_id: 487830804,
-                },
-              ],
+              collections: [],
+              equipments: [{ auto_potential_composite: 0, awaked: 0, created: 0, elv: 0, endAwakeCount: 0, endAwakeRemain: 0, end_remain: 0, equipment_id: '', evolve_start_time: 0, favorite: 0, is_awake: 0, is_complete_auto_potential_composite: 0, mst_equipment_id: 0, potential: 0, slv: 0, start_remain: 0 }],
+              growth_items: [{ amount: 0, mst_growth_item_id: 0 }],
+              katamaris: [{ mst_katamari_type_id: 0, equipments: [{ auto_potential_composite: 0, awaked: 0, created: 0, elv: 0, endAwakeCount: 0, endAwakeRemain: 0, end_remain: 0, equipment_id: '', evolve_start_time: 0, favorite: 0, is_awake: 0, is_complete_auto_potential_composite: 0, mst_equipment_id: 0, potential: 0, slv: 0, start_remain: 0 }] }],
+              limiteds: [{ amount: 0, mst_limited_id: 0 }],
+              matatabis: [{ amount: 0, mst_matatabi_id: 0 }],
+              materials: [{ amount: 0, mst_material_id: 0 }],
+              monument: { augite: [], hr: 0, mlv: { atk: 0, def: 0, hp: 0, sp: 0 } },
+              otomos: [],
+              payments: [{ amount: 50, mst_payment_id: 1573159746 }],
+              pcoins: [{ amount: 0, mst_pcoin_id: 0 }],
+              points: [{ amount: 0, mst_event_point_id: 3190222199 }],
+              powers: [{ amount: 0, mst_power_id: 0 }],
+              stamp_sets: [{ amount: 0, mst_stamp_set_id: 487830804 }],
               zenny: 0,
               pickup: 0,
             },
@@ -560,130 +282,19 @@ export const loginAccount = async (req: Request, res: Response) => {
           {
             idx: 1,
             item_list: {
-              equipments: [
-                {
-                  auto_potential_composite: 1,
-                  awaked: 0,
-                  created: 1,
-                  elv: 1,
-                  endAwakeCount: 5,
-                  endAwakeRemain: 10,
-                  end_remain: 15,
-                  equipment_id: 'AD_BODY006',
-                  evolve_start_time: 1609459200,
-                  favorite: 1,
-                  is_awake: 0,
-                  is_complete_auto_potential_composite: 1,
-                  mst_equipment_id: 1801022340,
-                  potential: 100,
-                  slv: 1,
-                  start_remain: 20,
-                },
-              ],
-              growth_items: [
-                {
-                  amount: 0,
-                  mst_growth_item_id: 0,
-                },
-              ],
-              katamaris: [
-                {
-                  mst_katamari_type_id: 0,
-                  equipments: [
-                    {
-                      auto_potential_composite: 0,
-                      awaked: 0,
-                      created: 0,
-                      elv: 0,
-                      endAwakeCount: 0,
-                      endAwakeRemain: 0,
-                      end_remain: 0,
-                      equipment_id: '',
-                      evolve_start_time: 0,
-                      favorite: 0,
-                      is_awake: 0,
-                      is_complete_auto_potential_composite: 0,
-                      mst_equipment_id: 0,
-                      potential: 0,
-                      slv: 0,
-                      start_remain: 0,
-                    },
-                  ],
-                },
-              ],
-              limiteds: [
-                {
-                  amount: 0,
-                  mst_limited_id: 0,
-                },
-              ],
-              matatabis: [
-                {
-                  amount: 0,
-                  mst_matatabi_id: 0,
-                },
-              ],
-              materials: [
-                {
-                  amount: 1,
-                  mst_material_id: 2507637144,
-                },
-              ],
-              monument: {
-                augite: [
-                  // {
-                  //   amount: 0,
-                  //   mst_augite_id: 0,
-                  //   mst_monument_type_id: 0,
-                  // },
-                ],
-                hr: 0,
-                mlv: {
-                  atk: 0,
-                  def: 0,
-                  hp: 0,
-                  sp: 0,
-                },
-              },
-              otomos: [
-                // {
-                //   created: 0,
-                //   exp: 0,
-                //   mst_otomo_id: 2092467563,
-                //   otomo_id: "OT_OTOMO_CHAR_ID_001",
-                //   subskill: [0],
-                // },
-              ],
-              payments: [
-                {
-                  amount: 50,
-                  mst_payment_id: 1573159746,
-                },
-              ],
-              pcoins: [
-                {
-                  amount: 0,
-                  mst_pcoin_id: 0,
-                },
-              ],
-              points: [
-                {
-                  amount: 0,
-                  mst_event_point_id: 3190222199,
-                },
-              ],
-              powers: [
-                {
-                  amount: 0,
-                  mst_power_id: 0,
-                },
-              ],
-              stamp_sets: [
-                {
-                  amount: 0,
-                  mst_stamp_set_id: 487830804,
-                },
-              ],
+              equipments: [{ auto_potential_composite: 1, awaked: 0, created: 1, elv: 1, endAwakeCount: 5, endAwakeRemain: 10, end_remain: 15, equipment_id: 'AD_BODY006', evolve_start_time: 1609459200, favorite: 1, is_awake: 0, is_complete_auto_potential_composite: 1, mst_equipment_id: 1801022340, potential: 100, slv: 1, start_remain: 20 }],
+              growth_items: [{ amount: 0, mst_growth_item_id: 0 }],
+              katamaris: [{ mst_katamari_type_id: 0, equipments: [{ auto_potential_composite: 0, awaked: 0, created: 0, elv: 0, endAwakeCount: 0, endAwakeRemain: 0, end_remain: 0, equipment_id: '', evolve_start_time: 0, favorite: 0, is_awake: 0, is_complete_auto_potential_composite: 0, mst_equipment_id: 0, potential: 0, slv: 0, start_remain: 0 }] }],
+              limiteds: [{ amount: 0, mst_limited_id: 0 }],
+              matatabis: [{ amount: 0, mst_matatabi_id: 0 }],
+              materials: [{ amount: 1, mst_material_id: 2507637144 }],
+              monument: { augite: [], hr: 0, mlv: { atk: 0, def: 0, hp: 0, sp: 0 } },
+              otomos: [],
+              payments: [{ amount: 50, mst_payment_id: 1573159746 }],
+              pcoins: [{ amount: 0, mst_pcoin_id: 0 }],
+              points: [{ amount: 0, mst_event_point_id: 3190222199 }],
+              powers: [{ amount: 0, mst_power_id: 0 }],
+              stamp_sets: [{ amount: 0, mst_stamp_set_id: 487830804 }],
               zenny: 0,
               pickup: 0,
             },
@@ -699,266 +310,40 @@ export const loginAccount = async (req: Request, res: Response) => {
         day: 1,
         today_item_list: {
           item_list: {
-            collections: [
-              // { mst_collection_id: 0 }
-            ],
-            equipments: [
-              {
-                auto_potential_composite: 0,
-                awaked: 0,
-                created: 0,
-                elv: 0,
-                endAwakeCount: 0,
-                endAwakeRemain: 0,
-                end_remain: 0,
-                equipment_id: '',
-                evolve_start_time: 0,
-                favorite: 0,
-                is_awake: 0,
-                is_complete_auto_potential_composite: 0,
-                mst_equipment_id: 0,
-                potential: 0,
-                slv: 0,
-                start_remain: 0,
-              },
-            ],
-            growth_items: [
-              {
-                amount: 0,
-                mst_growth_item_id: 0,
-              },
-            ],
-            katamaris: [
-              {
-                mst_katamari_type_id: 0,
-                equipments: [
-                  {
-                    auto_potential_composite: 0,
-                    awaked: 0,
-                    created: 0,
-                    elv: 0,
-                    endAwakeCount: 0,
-                    endAwakeRemain: 0,
-                    end_remain: 0,
-                    equipment_id: '',
-                    evolve_start_time: 0,
-                    favorite: 0,
-                    is_awake: 0,
-                    is_complete_auto_potential_composite: 0,
-                    mst_equipment_id: 0,
-                    potential: 0,
-                    slv: 0,
-                    start_remain: 0,
-                  },
-                ],
-              },
-            ],
-            limiteds: [
-              {
-                amount: 0,
-                mst_limited_id: 0,
-              },
-            ],
-            matatabis: [
-              {
-                amount: 0,
-                mst_matatabi_id: 0,
-              },
-            ],
-            materials: [
-              {
-                amount: 0,
-                mst_material_id: 0,
-              },
-            ],
-            monument: {
-              augite: [
-                // {
-                //   amount: 0,
-                //   mst_augite_id: 0,
-                //   mst_monument_type_id: 0,
-                // },
-              ],
-              hr: 0,
-              mlv: {
-                atk: 0,
-                def: 0,
-                hp: 0,
-                sp: 0,
-              },
-            },
-            otomos: [
-              // {
-              //   created: 0,
-              //   exp: 0,
-              //   mst_otomo_id: 2092467563,
-              //   otomo_id: "OT_OTOMO_CHAR_ID_001",
-              //   subskill: [0],
-              // },
-            ],
-            payments: [
-              {
-                amount: 50,
-                mst_payment_id: 1573159746,
-              },
-            ],
-            pcoins: [
-              {
-                amount: 0,
-                mst_pcoin_id: 0,
-              },
-            ],
-            points: [
-              {
-                amount: 0,
-                mst_event_point_id: 3190222199,
-              },
-            ],
-            powers: [
-              {
-                amount: 0,
-                mst_power_id: 0,
-              },
-            ],
-            stamp_sets: [
-              {
-                amount: 0,
-                mst_stamp_set_id: 487830804,
-              },
-            ],
+            collections: [],
+            equipments: [{ auto_potential_composite: 0, awaked: 0, created: 0, elv: 0, endAwakeCount: 0, endAwakeRemain: 0, end_remain: 0, equipment_id: '', evolve_start_time: 0, favorite: 0, is_awake: 0, is_complete_auto_potential_composite: 0, mst_equipment_id: 0, potential: 0, slv: 0, start_remain: 0 }],
+            growth_items: [{ amount: 0, mst_growth_item_id: 0 }],
+            katamaris: [{ mst_katamari_type_id: 0, equipments: [{ auto_potential_composite: 0, awaked: 0, created: 0, elv: 0, endAwakeCount: 0, endAwakeRemain: 0, end_remain: 0, equipment_id: '', evolve_start_time: 0, favorite: 0, is_awake: 0, is_complete_auto_potential_composite: 0, mst_equipment_id: 0, potential: 0, slv: 0, start_remain: 0 }] }],
+            limiteds: [{ amount: 0, mst_limited_id: 0 }],
+            matatabis: [{ amount: 0, mst_matatabi_id: 0 }],
+            materials: [{ amount: 0, mst_material_id: 0 }],
+            monument: { augite: [], hr: 0, mlv: { atk: 0, def: 0, hp: 0, sp: 0 } },
+            otomos: [],
+            payments: [{ amount: 50, mst_payment_id: 1573159746 }],
+            pcoins: [{ amount: 0, mst_pcoin_id: 0 }],
+            points: [{ amount: 0, mst_event_point_id: 3190222199 }],
+            powers: [{ amount: 0, mst_power_id: 0 }],
+            stamp_sets: [{ amount: 0, mst_stamp_set_id: 487830804 }],
             zenny: 0,
             pickup: 0,
           },
         },
         tomorrow_item_list: {
           item_list: {
-            collections: [
-              //{ mst_collection_id: 0 }
-            ],
-            equipments: [
-              {
-                auto_potential_composite: 0,
-                awaked: 0,
-                created: 0,
-                elv: 0,
-                endAwakeCount: 0,
-                endAwakeRemain: 0,
-                end_remain: 0,
-                equipment_id: '',
-                evolve_start_time: 0,
-                favorite: 0,
-                is_awake: 0,
-                is_complete_auto_potential_composite: 0,
-                mst_equipment_id: 0,
-                potential: 0,
-                slv: 0,
-                start_remain: 0,
-              },
-            ],
-            growth_items: [
-              {
-                amount: 0,
-                mst_growth_item_id: 0,
-              },
-            ],
-            katamaris: [
-              {
-                mst_katamari_type_id: 0,
-                equipments: [
-                  {
-                    auto_potential_composite: 0,
-                    awaked: 0,
-                    created: 0,
-                    elv: 0,
-                    endAwakeCount: 0,
-                    endAwakeRemain: 0,
-                    end_remain: 0,
-                    equipment_id: 0,
-                    evolve_start_time: 0,
-                    favorite: 0,
-                    is_awake: 0,
-                    is_complete_auto_potential_composite: 0,
-                    mst_equipment_id: 0,
-                    potential: 0,
-                    slv: 0,
-                    start_remain: 0,
-                  },
-                ],
-              },
-            ],
-            limiteds: [
-              {
-                amount: 0,
-                mst_limited_id: 0,
-              },
-            ],
-            matatabis: [
-              {
-                amount: 0,
-                mst_matatabi_id: 0,
-              },
-            ],
-            materials: [
-              {
-                amount: 0,
-                mst_material_id: 0,
-              },
-            ],
-            monument: {
-              augite: [
-                // {
-                //   amount: 0,
-                //   mst_augite_id: 0,
-                //   mst_monument_type_id: 0,
-                // },
-              ],
-              hr: 0,
-              mlv: {
-                atk: 0,
-                def: 0,
-                hp: 0,
-                sp: 0,
-              },
-            },
-            otomos: [
-              // {
-              //   created: 0,
-              //   exp: 0,
-              //   mst_otomo_id: 2092467563,
-              //   otomo_id: "OT_OTOMO_CHAR_ID_001",
-              //   subskill: [0],
-              // },
-            ],
-            payments: [
-              {
-                amount: 50,
-                mst_payment_id: 1573159746,
-              },
-            ],
-            pcoins: [
-              {
-                amount: 0,
-                mst_pcoin_id: 0,
-              },
-            ],
-            points: [
-              {
-                amount: 0,
-                mst_event_point_id: 3190222199,
-              },
-            ],
-            powers: [
-              {
-                amount: 0,
-                mst_power_id: 0,
-              },
-            ],
-            stamp_sets: [
-              {
-                amount: 0,
-                mst_stamp_set_id: 487830804,
-              },
-            ],
+            collections: [],
+            equipments: [{ auto_potential_composite: 0, awaked: 0, created: 0, elv: 0, endAwakeCount: 0, endAwakeRemain: 0, end_remain: 0, equipment_id: '', evolve_start_time: 0, favorite: 0, is_awake: 0, is_complete_auto_potential_composite: 0, mst_equipment_id: 0, potential: 0, slv: 0, start_remain: 0 }],
+            growth_items: [{ amount: 0, mst_growth_item_id: 0 }],
+            katamaris: [{ mst_katamari_type_id: 0, equipments: [{ auto_potential_composite: 0, awaked: 0, created: 0, elv: 0, endAwakeCount: 0, endAwakeRemain: 0, end_remain: 0, equipment_id: 0, evolve_start_time: 0, favorite: 0, is_awake: 0, is_complete_auto_potential_composite: 0, mst_equipment_id: 0, potential: 0, slv: 0, start_remain: 0 }] }],
+            limiteds: [{ amount: 0, mst_limited_id: 0 }],
+            matatabis: [{ amount: 0, mst_matatabi_id: 0 }],
+            materials: [{ amount: 0, mst_material_id: 0 }],
+            monument: { augite: [], hr: 0, mlv: { atk: 0, def: 0, hp: 0, sp: 0 } },
+            otomos: [],
+            payments: [{ amount: 50, mst_payment_id: 1573159746 }],
+            pcoins: [{ amount: 0, mst_pcoin_id: 0 }],
+            points: [{ amount: 0, mst_event_point_id: 3190222199 }],
+            powers: [{ amount: 0, mst_power_id: 0 }],
+            stamp_sets: [{ amount: 0, mst_stamp_set_id: 487830804 }],
             zenny: 0,
             pickup: 0,
           },

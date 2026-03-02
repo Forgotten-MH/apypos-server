@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import * as questController from './quest.controller.js';
+import * as questIslandController from './questIsland.controller.js';
+import * as questEventController from './questEvent.controller.js';
 import * as questForestController from './questForest.controller.js';
 import * as questTrainingController from './questTraining.controller.js';
 import { validate } from '../../../middleware/validation.js';
@@ -25,10 +27,10 @@ questRouter.post('/retire', notImplemented.blankResponseEncrypted);
 questRouter.post('/continue', notImplemented.blankResponseEncrypted);
 
 //Island
-questRouter.post('/island/map/all', validate(IslandMapAllSchema), questController.islandMapAll);
+questRouter.post('/island/map/all', validate(IslandMapAllSchema), questIslandController.islandMapAll);
 //questRouter.post("/island/map/ocean", );
-questRouter.post('/island/start', validate(IslandStartSchema), questController.islandStart);
-questRouter.post('/island/end', validate(IslandEndSchema), questController.islandEnd);
+questRouter.post('/island/start', validate(IslandStartSchema), questIslandController.islandStart);
+questRouter.post('/island/end', validate(IslandEndSchema), questIslandController.islandEnd);
 //questRouter.post("/island/restart", );
 
 //Eternal
@@ -37,20 +39,20 @@ questRouter.post('/eternal/start', validate(EternalStartSchema), questController
 //questRouter.post("/eternal/restart", );
 
 //Event
-questRouter.post('/event/list/all', validate(SessionOnlySchema), questController.eventListAll);
+questRouter.post('/event/list/all', validate(SessionOnlySchema), questEventController.eventListAll);
 //questRouter.post("event/m16/end", );
 questRouter.post('/event/m16/restart', notImplemented.blankResponseEncrypted);
 //questRouter.post("/event/m16/start", );
 //questRouter.post("/event/normal/end", );
 //questRouter.post("/event/normal/restart", );
-questRouter.post('/event/normal/start', validate(EventStartSchema), questController.eventNormalStart);
-questRouter.post('/event/score/end', validate(IslandEndSchema), questController.islandEnd);
+questRouter.post('/event/normal/start', validate(EventStartSchema), questEventController.eventNormalStart);
+questRouter.post('/event/score/end', validate(IslandEndSchema), questIslandController.islandEnd);
 //questRouter.post("/event/score/restart", );
-questRouter.post('/event/score/start', validate(EventStartSchema), questController.eventScoreStart);
-questRouter.post('/event/ticket/end', validate(IslandEndSchema), questController.islandEnd);
-questRouter.post('/event/ticket/free', validate(SessionOnlySchema), questController.eventTicketFree);
+questRouter.post('/event/score/start', validate(EventStartSchema), questEventController.eventScoreStart);
+questRouter.post('/event/ticket/end', validate(IslandEndSchema), questIslandController.islandEnd);
+questRouter.post('/event/ticket/free', validate(SessionOnlySchema), questEventController.eventTicketFree);
 //questRouter.post("/event/ticket/restart", );
-questRouter.post('/event/ticket/start', validate(EventStartSchema), questController.eventTicketStart);
+questRouter.post('/event/ticket/start', validate(EventStartSchema), questEventController.eventTicketStart);
 
 // Forest
 questRouter.post('/forest/end', validate(SessionOnlySchema), questForestController.questForestEnd);

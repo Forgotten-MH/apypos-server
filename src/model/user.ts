@@ -24,7 +24,8 @@ import type {
   NyankenCooldown,
   SelectedPartner,
 } from '../types/game.js';
-import {
+import userDefaults from '../json/user-defaults.json' with { type: 'json' };
+const {
   DEFAULT_EQUIPMENT,
   DEFAULT_OTOMOS,
   DEFAULT_PARTNERS,
@@ -32,7 +33,7 @@ import {
   DEFAULT_SOCIAL_EQUIP_SETS,
   DEFAULT_OTOMOTEAM,
   DEFAULT_OCEAN_LIST,
-} from './defaults/user.defaults.js';
+} = userDefaults;
 const { Schema, model } = mongoose;
 
 export interface IUser extends Document {
