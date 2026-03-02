@@ -1374,15 +1374,12 @@ export const islandMapAll = async (req: Request, res: Response) => {
       return encryptAndSend({}, res, req, ERROR_CODE.NOT_AUTHENTICATED); //Not authenticated
     }
 
-    // let final_ocean = await enrichOceanData(doc.ocean_list.toObject());
-    // const data = {
-    //   ocean_list: final_ocean,
-    // };
+    const oceanPlain = doc.tutorial_step == 0xffff
+      ? full_island
+      : doc.ocean_list.map((o) => o.toObject());
+    const clearedPlain = doc.cleared_quests.map((q) => q.toObject());
 
-    const final_ocean = await enrichOceanData(
-      doc.tutorial_step == 0xffff ? full_island : [...doc.ocean_list],
-      [...doc.cleared_quests],
-    );
+    const final_ocean = await enrichOceanData(oceanPlain, clearedPlain);
     log.debug('FINAL ocean data: %o', final_ocean);
     const data = {
       ocean_list: final_ocean,
