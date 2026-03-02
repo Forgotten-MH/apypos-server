@@ -1328,7 +1328,7 @@ btnPatch.addEventListener('click', async () => {
       }
 
       // Write back — preserve STORE compression for .so files
-      zip.file(soPath, soData, { compression: 'STORE' });
+      zip.file(soPath, soData);
     }
     setProgress(30);
 
@@ -1383,7 +1383,7 @@ btnPatch.addEventListener('click', async () => {
     // --- Generate output ---
     log('\nGenerating patched APK...', 'head');
     const outputBlob = await zip.generateAsync(
-      { type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } },
+      { type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 9 } },
       (meta) => {
         setProgress(80 + Math.round(meta.percent * 0.2));
       }
