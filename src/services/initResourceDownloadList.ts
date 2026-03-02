@@ -25,9 +25,17 @@ function walkDir(dir: string, fileCallback: (filePath: string) => void) {
 
 export function makeDownloadList(type: string, os: string) {
   if (!fs.existsSync(folderPath + os + '/' + type + '/download.list')) {
+    const targetDir = folderPath + os + '/' + type;
+    if (!fs.existsSync(targetDir)) {
+      log.warn(`Resource directory missing: ${targetDir} — writing empty download.list. Run 'yarn setup' to create the directory structure.`);
+      fs.mkdirSync(targetDir, { recursive: true });
+      fs.writeFileSync(path.join(targetDir, 'download.list'), '');
+      return;
+    }
+
     const data: { filePath: string; crc: number; fileSize: number }[] = [];
 
-    walkDir(folderPath + os + '/' + type, (filePath) => {
+    walkDir(targetDir, (filePath) => {
       if (path.extname(filePath) === '.fpk') {
         log.debug('Processing File:', filePath);
         const fileData = fs.readFileSync(filePath);

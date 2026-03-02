@@ -17,7 +17,7 @@ import { createLogger } from './middleware/logger.js';
 
 const log = createLogger('server');
 
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { Server } from 'socket.io';
 
@@ -59,6 +59,20 @@ mongoose
       log.error(
         "Failed to create FPK download lists. Please ensure the FPK files are located in './src/public/res/' and the server is properly configured.",
         error,
+      );
+    }
+
+    // Check if any FPK resources were found across all categories
+    const resDownloadDir = join(import.meta.dirname, 'public', 'res', 'download');
+    const hasAnyResources = platforms.some((platform) =>
+      downloadCategories.some((category) => {
+        const listPath = join(resDownloadDir, platform, category, 'download.list');
+        return existsSync(listPath) && readFileSync(listPath, 'utf-8').trim().length > 0;
+      }),
+    );
+    if (!hasAnyResources) {
+      log.warn(
+        "No FPK resource files found. The server will start but clients cannot download game assets. Run 'yarn setup --import-resources <path>' to import resources.",
       );
     }
     app.use((req, res, next) => {

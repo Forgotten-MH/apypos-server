@@ -54,7 +54,8 @@
     "lint": "eslint src/",
     "format": "prettier --write 'src/**/*.ts'",
     "proxy": "tsx src/proxy/main.ts",
-    "fpk": "tsx src/tools/fpk/main.ts"
+    "fpk": "tsx src/tools/fpk/main.ts",
+    "setup": "tsx src/tools/setup/main.ts"
   },
   "engines": {
     "node": ">=20.0.0"
