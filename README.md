@@ -113,6 +113,12 @@ yarn run start:dev
 
 The server will be available at `http://localhost:80` (or your configured port).
 
+## Client Setup
+
+To connect the MHXR game client to your server, the APK needs to be patched with your server's address. Use the **[online patcher](https://houmgaor.github.io/mhxr-patcher/)** — it runs entirely in your browser, no install needed.
+
+Alternatively, the Python patcher in `scripts/patcher/` can be used offline (requires Java + apktool). See `docs/APK_PATCHING_GUIDE.md` for full details on what each patch does.
+
 ## Commands
 
 | Command | Description |
