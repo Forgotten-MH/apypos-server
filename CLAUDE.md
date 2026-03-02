@@ -26,6 +26,14 @@ Run a single test file:
 npx vitest run src/services/crypto/encryptionService.spec.ts
 ```
 
+Utility scripts:
+```bash
+yarn generate-island       # Generate ocean/island data (tsx src/services/oceanService.ts)
+yarn generate-questList    # Generate quest lists (tsx src/services/questList.ts)
+yarn bf-dec                # Test Blowfish decryption (tsx src/bin/testDecryption.ts)
+yarn proxy                 # MITM proxy CLI (see Proxy section below)
+```
+
 Docker (includes MongoDB + Mongo-Express UI on port 8083):
 ```bash
 docker-compose up
@@ -64,19 +72,41 @@ Sessions are managed in-memory in `src/services/crypto/encryptionHelpers.ts` wit
 
 `src/multiServer.ts` handles room-based multiplayer with a 16-byte binary packet header format (room ID, player ID, sequence, emit type, flags, length). Events: `entry`, `cancel`, `match`, `data`, `host_change_request`, `lock/unlock`, `kick`.
 
+### MITM Proxy (`src/proxy/`)
+
+Development proxy for recording, replaying, and modifying encrypted MHXR traffic. Three modes:
+
+```bash
+yarn proxy record [--upstream URL] [--port PORT] [--verbose]   # Record exchanges to JSON
+yarn proxy replay <recording.json> [--port PORT] [--verbose]   # Replay from recording
+yarn proxy live [--upstream URL] [--rules FILE] [--port PORT]  # Forward with rule modifications
+```
+
+Control endpoints on localhost: `GET /__proxy/status`, `POST /__proxy/mode/live`, `POST /__proxy/mode/replay`, `GET /__proxy/session`. Automatically rewrites dispatch config to route client traffic through the proxy.
+
 ## Code Patterns
 
 ### Route Structure
 
 Each API group follows: `src/routes/api/[name]/[name].router.ts` (Express router) + `[name].controller.ts` (handler logic). Controllers extract session via `getUserFromSession()`, query Mongoose models, and return via `encryptAndSend()`. Some groups have sub-routes (e.g., `user/equipset/`, `user/model/`, `user/otomoteam/`).
 
+### Zod Validation
+
+Schemas use `.loose()` (passthrough) because the game client sends extra fields not in the schema. Validation middleware in `src/middleware/validation.ts` calls `encryptAndSend()` with `ERROR_CODE.INVALID_REQUEST` on failure. Pattern:
+
+```typescript
+// schema: z.object({ session_id: z.string(), ... }).loose()
+// router: userRouter.post('/get', validate(SessionOnlySchema), controller.get)
+// controller: const { field } = req.body as SchemaInput;
+```
+
 ### Testing
 
-Tests use Vitest with `mongodb-memory-server` for database tests and `supertest` for HTTP endpoint tests. Test files are co-located as `*.spec.ts` next to the code they test. Build (`tsconfig.build.json`) excludes spec files.
+Tests use Vitest with `mongodb-memory-server` for database tests and `supertest` for HTTP endpoint tests. Test files are co-located as `*.spec.ts` next to the code they test. Build (`tsconfig.build.json`) excludes spec files. Coverage excludes `src/proxy/`.
 
 ### Error Codes
 
-Error codes in responses: `4004` and `2004` = not authenticated. Error envelope fields: `error_code`, `error_category`, `error_detail`.
+Error codes in responses: `4004` and `2004` = not authenticated. Error envelope fields: `error_code`, `error_category`, `error_detail`. Constants defined in `src/constants/error.codes.ts`. Error categories: `NONE`, `AUTO_RETRY`, `ERROR_DIALOG`, `RETRY_PROMPT`.
 
 ### Data Sources
 
@@ -95,6 +125,10 @@ Uses `strictTypeChecked` from typescript-eslint. The `no-unsafe-*` family of rul
 ## Environment
 
 Copy `.env.example` to `.env`. Key variables: `IP`, `PORT`, `DB_*` (MongoDB connection), `RES_URL`, `WEB_URL`, `DEBUG` (logs full request/response bodies when true), `IS_MAINTENANCE`.
+
+### Protocol Constants
+
+Defined in `src/constants/protocol.ts`: `RES_VER: 282`, `BANNER_VER: 91`, `APP_VER: "09.03.06"`. These are included in every response envelope and must match the game client version.
 
 ## Key Notes
 
