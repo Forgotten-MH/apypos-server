@@ -2652,9 +2652,9 @@ mongodb@~7.0:
     mongodb-connection-string-url "^7.0.0"
 
 mongoose@^9:
-  version "9.2.3"
-  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-9.2.3.tgz#0494ae4179f4a71f8a49aecc1062ab26dfb9ac3a"
-  integrity sha512-4XFKKkXUOsdY+p07eJyio4mk0rzZOT4n5r5tLqZNeRZ/IsS68vS8Szw8uShX4p7S687XGGc+MFAp+6K1OIN0aw==
+  version "9.2.4"
+  resolved "https://registry.yarnpkg.com/mongoose/-/mongoose-9.2.4.tgz#1bed2b788ff4de6791ec2d71e313a2fc262a48f6"
+  integrity sha512-XNh+jiztVMddDFDCv8TWxVxi/rGx+0FfsK3Ftj6hcYzEmhTcos2uC144OJRmUFPHSu3hJr6Pgip++Ab2+Da35Q==
   dependencies:
     kareem "3.2.0"
     mongodb "~7.0"
