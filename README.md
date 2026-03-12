@@ -119,6 +119,9 @@ To connect the MHXR game client to your server, the APK needs to be patched with
 
 Alternatively, the Python patcher in `scripts/patcher/` can be used offline (requires Java + apktool). See `docs/APK_PATCHING_GUIDE.md` for full details on what each patch does.
 
+> [!NOTE]
+> **iOS version wanted** — We currently only have the Android APK (v09.03.06). If you have a copy of the iOS IPA or know where one can be found, please [open an issue](https://github.com/Forgotten-MH/apypos-server/issues) or get in touch. The server already supports iOS resource files, but we need the app itself for testing and preservation.
+
 ## Commands
 
 | Command | Description |
