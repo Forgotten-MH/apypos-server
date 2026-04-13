@@ -23,7 +23,7 @@
     "supertest": "^7.2.2",
     "tsx": "^4",
     "typescript": "^5.2.2",
-    "typescript-eslint": "^8.56.1",
+    "typescript-eslint": "^8.58.1",
     "vitest": "^4.0.18"
   },
   "dependencies": {
