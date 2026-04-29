@@ -21,6 +21,9 @@ multiRouter.post('/room/join', validate(RoomJoinSchema), multiController.roomJoi
 multiRouter.post('/room/create', validate(RoomCreateSchema), multiController.roomCreate);
 multiRouter.post('/room/quick', validate(RoomQuickSchema), multiController.roomQuick);
 multiRouter.post('/room/get', validate(RoomGetSchema), multiController.roomGet);
+// IDA 验证: cAPIRoomInfo::getPath 使用 GET multi/member/info
+// 同时保留 POST 兼容
+multiRouter.get('/member/info', multiController.memberInfo);
 multiRouter.post('/member/info', validate(MemberInfoSchema), multiController.memberInfo);
 multiRouter.post('/invite/targets', validate(SessionOnlySchema), multiController.inviteList); //todo
 

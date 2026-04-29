@@ -107,7 +107,7 @@ mongoose
       next();
     });
 
-    io.on('connection', onConnect);
+    io.on('connection', (socket) => onConnect(io, socket));
 
     server.listen(PORT, () => {
       void seedDatabase(log);

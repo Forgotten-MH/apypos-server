@@ -51,9 +51,10 @@ ubyte array[pktlength];
     sMHiSessionManager::setDataListener(sMHiSessionManager::mpInstance,4,param_1,onReceiveChat,0);                 pkt id for this is 4 but its actually 9 so 4+5
     uVar2 = sMHiSessionManager::setDataListener(sMHiSessionManager::mpInstance,5,param_1,onReceiveNotice,0);       pkt id for this is 5 but its actually 10 so 5+5
 
-    // as of today not been able to trigger these. 
-    sMHiSessionManager::setDataListener(sMHiSessionManager::mpInstance,1,param_1,onReceiveParam,0); //Player actions? sAppProcedure::applyRecvData
-    sMHiSessionManager::setDataListener(sMHiSessionManager::mpInstance,3,param_1,onReceiveActivity,0); sAppProcedure::applyRecvActivity
+    // IDA verified (sAppProcedure::startup @ 0x1793cb4, setDataListener @ 0x17afcd8):
+    //   setDataListener(a2) → setReceiveCallback(a2 + 5)  ← +5 rule confirmed in IDA
+    sMHiSessionManager::setDataListener(sMHiSessionManager::mpInstance,1,param_1,onReceiveParam,0);     // flag1 = 1+5 = 6
+    sMHiSessionManager::setDataListener(sMHiSessionManager::mpInstance,3,param_1,onReceiveActivity,0);  // flag1 = 3+5 = 8
    */
   offset += 1;
   header.writeUInt16LE(pktlen, offset);
@@ -63,6 +64,8 @@ ubyte array[pktlength];
 }
 
 function createMaintenance({ durationSecondsTill }: { durationSecondsTill: number }) {
+  // pktId=0x0a: setDataListener(5, onReceiveNotice) → 5+5=10=0x0a
+  // IDA onReceiveNotice @ 0x179c468: reads *a3 as uint32 LE (seconds), requires a4>=4
   const pktId = FLAG1.NOTICE;
   const data = Buffer.alloc(4);
   log.debug('Maintenance Message Sent: ', durationSecondsTill);
@@ -90,8 +93,11 @@ export function createMaintenancePacket({ durationSecondsTill }: { durationSecon
 ///////////////
 
 function createChat(message: string) {
+  // IDA onReceiveChat @ 0x179c188:
+  //   name  = payload[0..15]  (sa = *(_OWORD *)s, read as 16-byte block)
+  //   message = payload[54]   (v6 = s + 54 = 0x36, confirmed by disasm)
   const data = Buffer.alloc(100);
-  const messageStartIndex = 0x36;
+  const messageStartIndex = 0x36; // IDA verified: v6 = s + 54 (0x36)
   const name = 'Command User';
   log.debug('Message From: ', name, '-', message);
   data.write(name, 0x00, 'ascii');
@@ -123,13 +129,14 @@ export function createChatPacket(roomNo: number, messsage: string) {
 ///////////////
 
 function createInfo(msgType: number) {
+  // pktId=0x07: setDataListener(2, onReceiveInfo) → 2+5=7=0x07
+  // IDA onReceiveInfo @ 0x179bd18: switch on *((_BYTE*)a3 + 1) → msgType at payload[1]
   const pktId = FLAG1.INFO;
 
-  // Allocate a buffer: 54 bytes padding + "hello\0" = 60 bytes total
-  const data = Buffer.alloc(100); // Total size: 15 bytes
+  const data = Buffer.alloc(100);
 
-  data.writeUInt8(0x00, 0); // Header (unused)
-  data.writeUInt8(msgType, 1); // msgType = 5
+  data.writeUInt8(0x00, 0); // payload[0]: unused header byte
+  data.writeUInt8(msgType, 1); // payload[1]: msgType — IDA verified: switch(*((_BYTE*)a3+1))
   switch (msgType) {
     case 0x00: // moveRoom16Start()
       // No extra data
@@ -210,6 +217,9 @@ export function createInfoPacket() {
 }
 
 function createActivity() {
+  // pktId=0x08: setDataListener(3, onReceiveActivity) → 3+5=8=0x08
+  // IDA sAppProcedure::startup @ 0x1793d20: MOV W1,#3 → BL setDataListener → onReceiveActivity
+  // ⚠️ 原代码错误使用 0x06，0x06 实际触发 onReceiveParam（listener 1），已修复
   const pktId = FLAG1.ACTIVITY;
   const data = Buffer.from([
     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f, 0x10,
@@ -262,17 +272,6 @@ export function createSessionPacket() {
   return Buffer.concat([header, data]);
 }
 
-function _createRandomBuffer(minLength = 50, maxLength = 300) {
-  const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
-  const buffer = Buffer.alloc(length);
-
-  for (let i = 0; i < length; i++) {
-    buffer[i] = Math.floor(Math.random() * 256); // byte value from 0 to 255
-  }
-
-  return buffer;
-}
-
 export function parseHeader(buffer: Buffer) {
   if (buffer.length < HEADER_SIZE) {
     throw new Error('Buffer too short to contain valid header');
@@ -303,18 +302,9 @@ export function parseHeader(buffer: Buffer) {
   const flag2 = buffer.readUInt32LE(offset);
   offset += 4;
 
-  // Payload is everything after the header bytes
-  const payload = buffer.subarray(offset);
-  log.debug({
-    roomNumber,
-    playerId,
-    seq,
-    unk2,
-    emitTypeHex,
-    flag1,
-    pktlen,
-    flag2,
-  });
+  // Payload: only read pktlen bytes (not the entire remaining buffer!)
+  // This is crucial when multiple packets are sent in one buffer
+  const payload = buffer.subarray(offset, offset + pktlen);
   return {
     header: {
       roomNumber,
