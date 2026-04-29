@@ -416,43 +416,47 @@ export function onConnect(io: Server, socket: Socket) {
     const userId = getUserId(socket);
     const affectedRooms: number[] = [];
 
-    // Find all rooms this socket is in
+    // Collect affected rooms first (avoid modifying Map during iteration)
+    const affectedRoomEntries: [number, RoomState][] = [];
     for (const [roomNumber, room] of rooms.entries()) {
       if (room.members.has(socket.id)) {
-        affectedRooms.push(roomNumber);
-
-        const wasHost = room.hostSocketId === socket.id;
-        const leavingPlayerId = room.memberPlayerIds.get(socket.id);
-
-        // Remove from room
-        const updatedRoom = removeMemberFromRoom(roomNumber, socket);
-        socket.leave(String(roomNumber));
-
-        if (updatedRoom && leavingPlayerId !== undefined) {
-          // Broadcast leave to remaining members
-          // IDA verified: disconnect also triggers onLeaveMember, uses "leave" event
-          const leavePayload = Buffer.alloc(4);
-          leavePayload.writeUInt32LE(leavingPlayerId, 0);
-
-          const leaveHeader = createHeader({
-            roomNumber: roomNumber,
-            playerId: SERVER_PLAYER_ID,
-            seq: DEFAULT_SEQ,
-            unk2: 0x0,
-            emitTypeHex: 0x0,
-            flag1: FLAG1.SESSION,
-            pktlen: leavePayload.length,
-            flag2: DEFAULT_FLAG2,
-          });
-
-          const leaveData = Buffer.concat([leaveHeader, leavePayload]);
-          logDebug(`[Disconnect] Broadcasting leave playerId=${leavingPlayerId} to ${updatedRoom.members.size} members`);
-
-          // IDA: disconnect triggers onLeaveMember, use "leave" event (not "leave_ok")
-          socket.to(String(roomNumber)).emit('leave', leaveData);
-        }
+        affectedRoomEntries.push([roomNumber, room]);
       }
     }
+
+    for (const [roomNumber, room] of affectedRoomEntries) {
+      const leavingPlayerId = room.memberPlayerIds.get(socket.id);
+
+      // Remove from room
+      const updatedRoom = removeMemberFromRoom(roomNumber, socket);
+      socket.leave(String(roomNumber));
+
+      if (updatedRoom && leavingPlayerId !== undefined) {
+        // Broadcast leave to remaining members
+        // IDA verified: disconnect also triggers onLeaveMember, uses "leave" event
+        const leavePayload = Buffer.alloc(4);
+        leavePayload.writeUInt32LE(leavingPlayerId, 0);
+
+        const leaveHeader = createHeader({
+          roomNumber: roomNumber,
+          playerId: SERVER_PLAYER_ID,
+          seq: DEFAULT_SEQ,
+          unk2: 0x0,
+          emitTypeHex: 0x0,
+          flag1: FLAG1.SESSION,
+          pktlen: leavePayload.length,
+          flag2: DEFAULT_FLAG2,
+        });
+
+        const leaveData = Buffer.concat([leaveHeader, leavePayload]);
+        logDebug(`[Disconnect] Broadcasting leave playerId=${leavingPlayerId} to ${updatedRoom.members.size} members`);
+
+        // IDA: disconnect triggers onLeaveMember, use "leave" event (not "leave_ok")
+        socket.to(String(roomNumber)).emit('leave', leaveData);
+      }
+    }
+
+    const affectedRooms = affectedRoomEntries.map(([n]) => n);
 
     if (affectedRooms.length > 0) {
       logDebug(`[Disconnect] Cleanup completed for rooms: ${affectedRooms.join(', ')}`);
