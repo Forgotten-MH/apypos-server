@@ -7,12 +7,14 @@ const server = 'http://' + IP + '/';
 export const roomReserve = (req: Request, res: Response) => {
   const { quest_id, quick_match, reserve, restart } = req.body as RoomReserveInput;
   const data = {
+    // ⚠️ Fix: url field needed for Lobby visibility (IDA: cAPIReserveRoom::Response::setup)
+    url: server,
     rooms: {
       _id: '1',
       auto_flag: 0,
       created: Math.floor(Date.now() / 1000),
       host_id: '123',
-      hose_name: 'name',
+      host_name: 'name', // ⚠️ Fix: was "hose_name" (typo)
       is_locked: 0,
       kick: 0,
       member_count: 1,
@@ -34,12 +36,14 @@ export const roomReserve = (req: Request, res: Response) => {
 export const roomReserveJoin = (req: Request, res: Response) => {
   const { quest_id, quick_match, reserve, restart } = req.body as RoomReserveInput;
   const data = {
+    // ⚠️ Fix: url field for Lobby visibility
+    url: server,
     rooms: {
       _id: '1',
       auto_flag: 0,
       created: Math.floor(Date.now() / 1000),
       host_id: '123',
-      hose_name: 'name',
+      host_name: 'name', // ⚠️ Fix: was "hose_name" (typo)
       is_locked: 0,
       kick: 0,
       member_count: 1,
@@ -69,7 +73,7 @@ export const roomSearch = (req: Request, res: Response) => {
         auto_flag: auto_flag,
         created: Math.floor(Date.now() / 1000),
         host_id: '123',
-        hose_name: 'Rsey',
+        host_name: 'Rsey', // ⚠️ Fix: was "hose_name" (typo)
         is_locked: 0,
         kick: kick,
         member_count: members.length,
@@ -97,7 +101,7 @@ export const roomJoin = (req: Request, res: Response) => {
       auto_flag: auto_flag,
       created: Math.floor(Date.now() / 1000),
       host_id: 'sdsdsdsdsdsdsdsdsdsdsdsds',
-      hose_name: 'name',
+      host_name: 'name', // ⚠️ Fix: was "hose_name" (typo)
       is_locked: 0,
       kick: kick,
       member_count: 1,
@@ -228,7 +232,9 @@ export const inviteList = (req: Request, res: Response) => {
 };
 
 export const memberInfo = (req: Request, res: Response) => {
-  const { sequence } = req.body as MemberInfoInput;
+  // IDA verified: cAPIRoomInfo::getPath uses GET multi/member/info
+  // Support both POST (body) and GET (query) params
+  const sequence = req.body?.sequence ?? req.query?.sequence;
   const data = {
     free: [], //numbers
     group: [], //numbers

@@ -17,10 +17,10 @@ export const EMIT_TYPE = {
 // setDataListener(N) -> pkt id N+5 (e.g. 2 -> 7, 4 -> 9, 5 -> 10)
 export const FLAG1 = {
   SESSION: 0x03, // setSystemCallback(3) -> onSessionEvent
-  ACTIVITY: 0x06, // setDataListener(1) -> onReceiveActivity (1+5)
-  INFO: 0x07, // setDataListener(2) -> onReceiveInfo (2+5)
-  CHAT: 0x09, // setDataListener(4) -> onReceiveChat (4+5)
-  NOTICE: 0x0a, // setDataListener(5) -> onReceiveNotice (5+5)
+  ACTIVITY: 0x08, // setDataListener(3) -> onReceiveActivity (3+5=8) — IDA verified: sAppProcedure::startup MOV W1,#3
+  INFO: 0x07, // setDataListener(2) -> onReceiveInfo (2+5=7)
+  CHAT: 0x09, // setDataListener(4) -> onReceiveChat (4+5=9)
+  NOTICE: 0x0a, // setDataListener(5) -> onReceiveNotice (5+5=10)
 } as const;
 
 export const HEADER_SIZE = 16;
