@@ -36,7 +36,7 @@
     "mongoose": "^9",
     "socket.io": "4",
     "winston": "^3.10.0",
-    "zod": "^4.3.6"
+    "zod": "^4.4.2"
   },
   "scripts": {
     "install:clean": "cross-env rimraf node_modules/ yarn.lock && yarn install",
