@@ -38,6 +38,7 @@ services:
       IP: ${IP:-0.0.0.0}
       PORT: ${PORT:-80}
       WEB_URL: ${WEB_URL:-http://0.0.0.0/web}
+      RES_URL: ${RES_URL:-http://0.0.0.0/}
       DB_IP: mongo
       DB_PORT: "27017"
       DB_NAME: apypos

@@ -1,31 +1,24 @@
-import { Router } from 'express';
-import * as multiController from './multi.controller.js';
-import { validate } from '../../../middleware/validation.js';
-import {
-  RoomReserveSchema,
-  RoomSearchSchema,
-  RoomJoinSchema,
-  RoomCreateSchema,
-  RoomQuickSchema,
-  RoomGetSchema,
-  MemberInfoSchema,
-} from './multi.schema.js';
-import { SessionOnlySchema } from '../../../schemas/common.schema.js';
+import { Router } from "express";
+import { roomCreate, roomJoin, roomLeave, roomSearch, roomGet, roomQuick, roomLock, roomKick, roomReady, roomReserve, roomReserveJoin, memberInfo, inviteList, groupJoin, groupLeave } from "./multi.controller.js";
 
-const multiRouter = Router();
-multiRouter.post('/room/reserve', validate(RoomReserveSchema), multiController.roomReserve);
+const MultiReserveRoom = Router();
 
-multiRouter.post('/room/reserve/join', validate(RoomReserveSchema), multiController.roomReserveJoin);
-multiRouter.post('/room/search', validate(RoomSearchSchema), multiController.roomSearch);
-multiRouter.post('/room/join', validate(RoomJoinSchema), multiController.roomJoin);
-multiRouter.post('/room/create', validate(RoomCreateSchema), multiController.roomCreate);
-multiRouter.post('/room/quick', validate(RoomQuickSchema), multiController.roomQuick);
-multiRouter.post('/room/get', validate(RoomGetSchema), multiController.roomGet);
-// IDA 验证: cAPIRoomInfo::getPath 使用 GET multi/member/info
-// 同时保留 POST 兼容
-multiRouter.get('/member/info', multiController.memberInfo);
-multiRouter.post('/member/info', validate(MemberInfoSchema), multiController.memberInfo);
-multiRouter.post('/invite/targets', validate(SessionOnlySchema), multiController.inviteList); //todo
+MultiReserveRoom.post("/room/create", roomCreate);
+MultiReserveRoom.post("/room/join", roomJoin);
+MultiReserveRoom.post("/room/leave", roomLeave);
+MultiReserveRoom.post("/room/search", roomSearch);
+MultiReserveRoom.post("/room/get", roomGet);
+MultiReserveRoom.post("/room/quick", roomQuick);
+MultiReserveRoom.post("/room/lock", roomLock);
+MultiReserveRoom.post("/room/kick", roomKick);
+MultiReserveRoom.post("/room/ready", roomReady);
+MultiReserveRoom.post("/room/reserve", roomReserve);
+MultiReserveRoom.post("/room/reserve/join", roomReserveJoin);
+MultiReserveRoom.get("/member/info", memberInfo);
+MultiReserveRoom.post("/member/info", memberInfo);
+MultiReserveRoom.post("/invite/targets", inviteList);
+MultiReserveRoom.post("/invite/list", inviteList);
+MultiReserveRoom.post("/group/join", groupJoin);
+MultiReserveRoom.post("/group/leave", groupLeave);
 
-multiRouter.post('/invite/list', validate(SessionOnlySchema), multiController.inviteList);
-export default multiRouter;
+export default MultiReserveRoom;

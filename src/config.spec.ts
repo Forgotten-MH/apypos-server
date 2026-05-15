@@ -15,6 +15,7 @@ import {
   SSL_KEY_PATH,
   SSL_CERT_PATH,
   SSL_CA_PATH,
+  ENABLE_VALIDATION,
 } from './config.js';
 
 describe('config', () => {
@@ -34,6 +35,7 @@ describe('config', () => {
     expect(typeof SSL_KEY_PATH).toBe('string');
     expect(typeof SSL_CERT_PATH).toBe('string');
     expect(typeof SSL_CA_PATH).toBe('string');
+    expect(typeof ENABLE_VALIDATION).toBe('boolean');
   });
 
   it('PORT defaults to a valid number', () => {
