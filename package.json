@@ -11,7 +11,7 @@
     "@types/node": "^25",
     "@types/supertest": "^7.2.0",
     "@vitest/coverage-v8": "^4.0.18",
-    "commitizen": "^4.3.0",
+    "commitizen": "^4.3.2",
     "cross-env": "^10",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^10",
