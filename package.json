@@ -11,19 +11,19 @@
     "@types/node": "^25",
     "@types/supertest": "^7.2.0",
     "@vitest/coverage-v8": "^4.0.18",
-    "commitizen": "^4.3.0",
+    "commitizen": "^4.3.2",
     "cross-env": "^10",
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "^10",
     "eslint-config-prettier": "^10.1.8",
-    "mongodb-memory-server": "^11.0.1",
+    "mongodb-memory-server": "^11.2.0",
     "nodemon": "^3.0.1",
     "prettier": "^3.8.4",
     "rimraf": "^6",
     "supertest": "^7.2.2",
     "tsx": "^4",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.0",
+    "typescript-eslint": "^8.63.0",
     "vitest": "^4.0.18"
   },
   "dependencies": {
@@ -36,7 +36,7 @@
     "mongoose": "^9",
     "socket.io": "4",
     "winston": "^3.10.0",
-    "zod": "^4.3.6"
+    "zod": "^4.4.3"
   },
   "scripts": {
     "install:clean": "cross-env rimraf node_modules/ yarn.lock && yarn install",
