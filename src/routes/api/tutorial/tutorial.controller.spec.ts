@@ -82,7 +82,7 @@ describe('tutorial.controller', () => {
     });
 
     it('returns nyanken data with updated tutorial step', async () => {
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_step: 6010 } as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_step: 6010 });
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await nyankenGo(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -102,7 +102,7 @@ describe('tutorial.controller', () => {
     });
 
     it('returns reward data on success', async () => {
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_step: 7010, box: { equipments: [] } } as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_step: 7010, box: { equipments: [] } });
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await nyankenResult(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -131,7 +131,7 @@ describe('tutorial.controller', () => {
 
     it('appends flags and returns updated list', async () => {
       vi.mocked(User.findOne).mockResolvedValue({ tutorial_flags: [110] } as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_flags: [110, 210] } as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_flags: [110, 210] });
       const { req, res } = mockReqRes({ session_id: 'sess-1', flags: [210] });
       await TutorialFlagSet(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith({ flags: [110, 210] }, res, req);
@@ -177,7 +177,7 @@ describe('tutorial.controller', () => {
 
     it('advances tutorial step 110 to 210', async () => {
       vi.mocked(User.findOne).mockResolvedValue({ tutorial_step: 110 } as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_step: 210 } as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_step: 210 });
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await stepUP(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -189,7 +189,7 @@ describe('tutorial.controller', () => {
 
     it('advances tutorial step 7010 to 0xFFFF', async () => {
       vi.mocked(User.findOne).mockResolvedValue({ tutorial_step: 7010 } as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_step: 0xffff } as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({ tutorial_step: 0xffff });
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await stepUP(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -216,8 +216,8 @@ describe('tutorial.controller', () => {
       };
       vi.mocked(User.findOne).mockResolvedValue(mockDoc as never);
       vi.mocked(User.findOneAndUpdate)
-        .mockResolvedValueOnce({ ...mockDoc, tutorial_step: 5010 } as never) // step update
-        .mockResolvedValueOnce({ ...mockDoc } as never); // box update
+        .mockResolvedValueOnce({ ...mockDoc, tutorial_step: 5010 }) // step update
+        .mockResolvedValueOnce({ ...mockDoc }); // box update
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await TutorialQuestEnd(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(

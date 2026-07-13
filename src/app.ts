@@ -17,7 +17,7 @@ function sanitize(obj: unknown): unknown {
   }
   if (obj !== null && typeof obj === 'object') {
     const clean: Record<string, unknown> = {};
-    for (const key of Object.keys(obj as Record<string, unknown>)) {
+    for (const key of Object.keys(obj)) {
       if (!key.startsWith('$')) {
         clean[key] = sanitize((obj as Record<string, unknown>)[key]);
       }

@@ -303,7 +303,7 @@ describe('quest.controller', () => {
     it('returns QUEST_INFO_FAILED when quest has no blocks', async () => {
       vi.mocked(User.findOne).mockResolvedValue({ cleared_quests: [] } as never);
       vi.mocked(QuestSheet.findOne).mockResolvedValue(null);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({} as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({});
       const { req, res } = mockReqRes({ mst_quest_id: 100, session_id: 'sess-1' });
       await islandStart(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith({}, res, req, ERROR_CODE.QUEST_INFO_FAILED);
@@ -312,7 +312,7 @@ describe('quest.controller', () => {
     it('adds quest to cleared_quests on first play', async () => {
       vi.mocked(User.findOne).mockResolvedValue({ cleared_quests: [] } as never);
       vi.mocked(QuestSheet.findOne).mockResolvedValue({ mBlocks: [10] } as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({} as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({});
       const { req, res } = mockReqRes({ mst_quest_id: 100, session_id: 'sess-1' });
       await islandStart(req, res);
 
@@ -335,7 +335,7 @@ describe('quest.controller', () => {
         cleared_quests: [{ mst_quest_id: 100 }],
       } as never);
       vi.mocked(QuestSheet.findOne).mockResolvedValue({ mBlocks: [10] } as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({} as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({});
       const { req, res } = mockReqRes({ mst_quest_id: 100, session_id: 'sess-1' });
       await islandStart(req, res);
 
@@ -363,7 +363,7 @@ describe('quest.controller', () => {
     it('inserts new cleared quest with clear_time', async () => {
       vi.mocked(QuestSheet.findOne).mockResolvedValue({ mRewardItemList: [] } as never);
       vi.mocked(User.findOne).mockResolvedValue({ cleared_quests: [] } as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({} as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({});
       const { req, res } = mockReqRes({
         mst_quest_id: 200,
         clear_time: 45,
@@ -383,7 +383,7 @@ describe('quest.controller', () => {
       vi.mocked(User.findOne).mockResolvedValue({
         cleared_quests: [{ mst_quest_id: 200, clear_time: 60 }],
       } as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({} as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({});
       const { req, res } = mockReqRes({
         mst_quest_id: 200,
         clear_time: 30,
@@ -401,7 +401,7 @@ describe('quest.controller', () => {
     it('returns reward data on success', async () => {
       vi.mocked(QuestSheet.findOne).mockResolvedValue({ mRewardItemList: [] } as never);
       vi.mocked(User.findOne).mockResolvedValue({ cleared_quests: [] } as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({} as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({});
       const { req, res } = mockReqRes({
         mst_quest_id: 200,
         clear_time: 45,

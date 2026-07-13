@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const { Schema, model } = mongoose;
 
-interface IRoomMember {
+export interface IRoomMember {
   user_id: string;
   character_name: string;
   game_id: string;
@@ -19,7 +19,49 @@ interface IRoomMember {
   };
 }
 
-interface IRoom extends mongoose.Document {
+export interface RoomInfo {
+  _id: string;
+  room_id: number;
+  host_id: string;
+  host_name: string;
+  name: string;
+  quest_id: number;
+  phase: number;
+  is_locked: number;
+  member_count: number;
+  members: string[];
+  auto_flag: number;
+  quick_match: number;
+  kick: number;
+  restart: number;
+  tag: number;
+  reserve_members: string[];
+  server_url: string;
+  type: number;
+  created: number;
+}
+
+export interface RoomCreationData {
+  host_id: string;
+  host_name: string;
+  room_name: string;
+  quest_id: number;
+  quest_name?: string;
+  auto_flag?: number;
+  quick_match?: number;
+  kick?: number;
+  restart?: number;
+  tag?: number;
+  max_members?: number;
+  is_private?: boolean;
+  is_locked?: boolean;
+  description?: string;
+  server_url: string;
+  type?: number;
+  reserve_members?: string[];
+}
+
+export interface IRoom extends mongoose.Document {
   room_id: number;
   host_id: string;
   host_name: string;
@@ -31,7 +73,7 @@ interface IRoom extends mongoose.Document {
   is_private: boolean;
   max_members: number;
   member_count: number;
-  members: IRoomMember[];
+  members: mongoose.Types.DocumentArray<IRoomMember>;
   reserve_members: string[];
   auto_flag: number;
   quick_match: number;
@@ -55,14 +97,14 @@ interface IRoom extends mongoose.Document {
   removeMember(userId: string): IRoom;
   setMemberReady(userId: string, isReady: boolean): IRoom;
   allMembersReady(): boolean;
-  toRoomInfo(): any;
+  toRoomInfo(): RoomInfo;
 }
 
 interface IRoomModel extends mongoose.Model<IRoom> {
   findAvailableRooms(questId?: number, maxMembers?: number): Promise<IRoom[]>;
-  createRoom(roomData: any): Promise<IRoom>;
-  cleanupExpiredRooms(): Promise<any>;
-  cleanupUserRooms(userId: string): Promise<any>;
+  createRoom(roomData: RoomCreationData): Promise<IRoom>;
+  cleanupExpiredRooms(): Promise<mongoose.mongo.DeleteResult>;
+  cleanupUserRooms(userId: string): Promise<mongoose.mongo.DeleteResult>;
 }
 
 const RoomMemberSchema = new Schema({
@@ -82,7 +124,7 @@ const RoomMemberSchema = new Schema({
   }
 }, { _id: false });
 
-const RoomSchema = new Schema({
+const RoomSchema = new Schema<IRoom, IRoomModel>({
   room_id: { type: Number, required: true, unique: true },
   host_id: { type: String, required: true },
   host_name: { type: String, required: true },
@@ -140,12 +182,12 @@ RoomSchema.virtual('is_active').get(function () {
   return (now.getTime() - this.last_activity.getTime()) < inactiveTime;
 });
 
-RoomSchema.methods.addMember = function (userId: string, characterName: string, gameId: string) {
+RoomSchema.methods.addMember = function (this: IRoom, userId: string, characterName: string, gameId: string) {
   if (this.is_full) {
     throw new Error('Room is full');
   }
 
-  if (this.members.some((member: any) => member.user_id === userId)) {
+  if (this.members.some((member) => member.user_id === userId)) {
     throw new Error('User already in room');
   }
 
@@ -164,8 +206,8 @@ RoomSchema.methods.addMember = function (userId: string, characterName: string, 
   return this;
 };
 
-RoomSchema.methods.removeMember = function (userId: string) {
-  const memberIndex = this.members.findIndex((member: any) => member.user_id === userId);
+RoomSchema.methods.removeMember = function (this: IRoom, userId: string) {
+  const memberIndex = this.members.findIndex((member) => member.user_id === userId);
   if (memberIndex === -1) {
     throw new Error('User not in room');
   }
@@ -192,8 +234,8 @@ RoomSchema.methods.removeMember = function (userId: string) {
   return this;
 };
 
-RoomSchema.methods.setMemberReady = function (userId: string, isReady: boolean) {
-  const member = this.members.find((member: any) => member.user_id === userId);
+RoomSchema.methods.setMemberReady = function (this: IRoom, userId: string, isReady: boolean) {
+  const member = this.members.find((member) => member.user_id === userId);
   if (!member) {
     throw new Error('User not in room');
   }
@@ -205,11 +247,11 @@ RoomSchema.methods.setMemberReady = function (userId: string, isReady: boolean) 
   return this;
 };
 
-RoomSchema.methods.allMembersReady = function () {
-  return this.members.every((member: any) => member.is_ready);
+RoomSchema.methods.allMembersReady = function (this: IRoom) {
+  return this.members.every((member) => member.is_ready);
 };
 
-RoomSchema.methods.toRoomInfo = function () {
+RoomSchema.methods.toRoomInfo = function (this: IRoom): RoomInfo {
   return {
     _id: this._id.toString(),
     room_id: this.room_id,
@@ -220,7 +262,7 @@ RoomSchema.methods.toRoomInfo = function () {
     phase: this.phase,
     is_locked: this.is_locked ? 1 : 0,
     member_count: this.member_count,
-    members: this.members.map((m: any) => m.user_id),
+    members: this.members.map((m) => m.user_id),
     auto_flag: this.auto_flag,
     quick_match: this.quick_match,
     kick: this.kick,
@@ -234,28 +276,22 @@ RoomSchema.methods.toRoomInfo = function () {
 };
 
 
-RoomSchema.statics.findAvailableRooms = function (questId?: number, maxMembers?: number) {
-  const query: any = {
+RoomSchema.statics.findAvailableRooms = function (this: IRoomModel, questId?: number, maxMembers?: number) {
+  const query: mongoose.QueryFilter<IRoom> = {
     phase: 0,
     is_locked: false,
     is_private: false,
-    $expr: { $lt: ['$member_count', '$max_members'] }
+    $expr: { $lt: ['$member_count', '$max_members'] },
+    ...(questId ? { quest_id: questId } : {}),
+    ...(maxMembers ? { max_members: { $gte: maxMembers } } : {}),
   };
-
-  if (questId) {
-    query.quest_id = questId;
-  }
-
-  if (maxMembers) {
-    query.max_members = { $gte: maxMembers };
-  }
 
   return this.find(query)
     .sort({ created_at: -1 })
     .limit(20);
 };
 
-RoomSchema.statics.createRoom = async function (roomData: any) {
+RoomSchema.statics.createRoom = async function (this: IRoomModel, roomData: RoomCreationData) {
   const lastRoom = await this.findOne().sort({ room_id: -1 });
   const roomId = lastRoom ? lastRoom.room_id + 1 : 1000;
 
@@ -268,7 +304,7 @@ RoomSchema.statics.createRoom = async function (roomData: any) {
   return await room.save();
 };
 
-RoomSchema.statics.cleanupExpiredRooms = function () {
+RoomSchema.statics.cleanupExpiredRooms = function (this: IRoomModel) {
   const now = new Date();
   const expiredTime = new Date(now.getTime() - 30 * 60 * 1000);
 
@@ -295,7 +331,7 @@ RoomSchema.statics.cleanupExpiredRooms = function () {
   });
 };
 
-RoomSchema.statics.cleanupUserRooms = function (userId: string) {
+RoomSchema.statics.cleanupUserRooms = function (this: IRoomModel, userId: string) {
   console.log(`[Room Cleanup] Cleaning rooms for user: ${userId}`);
 
   return this.deleteMany({

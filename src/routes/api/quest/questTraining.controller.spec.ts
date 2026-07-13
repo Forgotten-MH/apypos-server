@@ -68,7 +68,7 @@ describe('questTraining.controller', () => {
         uu_id: 'user-1',
         cleared_quests: [],
       } as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue({} as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue({});
 
       const questId = calcMstId('TRAINING00001');
       const { req, res } = mockReqRes({

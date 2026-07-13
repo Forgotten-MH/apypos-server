@@ -78,7 +78,7 @@ describe('seedService', () => {
   describe('seedDatabase', () => {
     it('seeds all collections when database is empty', async () => {
       vi.mocked(Event.countDocuments).mockResolvedValue(0);
-      vi.mocked(Event.prototype.save).mockResolvedValue(undefined as never);
+      vi.mocked(Event.prototype.save).mockResolvedValue(undefined);
       vi.mocked(AssualtEvents.countDocuments).mockResolvedValue(0);
       vi.mocked(AssualtEvents.create).mockResolvedValue({} as never);
       vi.mocked(ScoreEvents.countDocuments).mockResolvedValue(0);

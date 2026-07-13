@@ -35,7 +35,6 @@ export function createHeader({
   header.writeUInt16LE(pktlen, offset);
   offset += 2;
   header.writeUInt32LE(flag2, offset);
-  offset += 4;
   return header;
 }
 
@@ -67,8 +66,8 @@ export function createMaintenancePacket({ durationSecondsTill }: { durationSecon
 
 function createChat(message: string) {
   const data = Buffer.alloc(100);
-  let messageStartIndex = 0x36; 
-  let name = "Command User";
+  const messageStartIndex = 0x36; 
+  const name = "Command User";
   console.log("Message From: ",name,"-",message)
   data.write(name, 0x00, "ascii");
   data[0x00 + name.length] = 0x00; 
@@ -251,7 +250,7 @@ export function parseHeader(buffer: Buffer) {
   offset += 4;
 
   
-  const payload = buffer.slice(offset, offset + pktlen);
+  const payload = buffer.subarray(offset, offset + pktlen);
 
   return {
     header: {

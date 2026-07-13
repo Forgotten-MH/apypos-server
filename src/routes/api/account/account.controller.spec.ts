@@ -85,7 +85,7 @@ describe('account.controller', () => {
         model_info: { gender: 0 },
       };
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(User.findOneAndUpdate).mockResolvedValue(mockUser as never);
+      vi.mocked(User.findOneAndUpdate).mockResolvedValue(mockUser);
 
       const { req, res } = mockReqRes({
         uu_id: 'test-uuid',
@@ -152,7 +152,7 @@ describe('account.controller', () => {
     it('updates migration data and returns migration_id', async () => {
       vi.mocked(User.findOneAndUpdate).mockResolvedValue({
         transfer: { migration_id: 'MIG12345' },
-      } as never);
+      });
 
       const { req, res } = mockReqRes({
         login_id: 'LOGIN123',
@@ -190,7 +190,7 @@ describe('account.controller', () => {
       vi.mocked(User.findOneAndUpdate).mockResolvedValue({
         login_id: 'LOGIN123',
         user_id: 'USER456',
-      } as never);
+      });
 
       const { req, res } = mockReqRes({
         migration_id: 'MIG123',

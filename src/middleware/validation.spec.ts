@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 
 vi.mock('../services/crypto/encryptionHelpers');
+vi.mock('../config', () => ({ ENABLE_VALIDATION: true }));
 
 import { encryptAndSend } from '../services/crypto/encryptionHelpers.js';
 import { validate } from './validation.js';

@@ -80,7 +80,7 @@ export function parseXfs(buf: Buffer): XfsDocument {
     const properties: XfsPropertyDef[] = [];
     for (let p = 0; p < propNum; p++) {
       const nameOffset = buf.readUInt32LE(pos);
-      const type = buf.readUInt8(pos + 4) as DtiType;
+      const type = buf.readUInt8(pos + 4);
       const attr = buf.readUInt8(pos + 5);
       const bytesDisabled = buf.readUInt16LE(pos + 6);
       const bytes = bytesDisabled & 0x7fff;
@@ -352,7 +352,7 @@ export function jsonToXfs(json: XfsJson): XfsDocument {
       (jp): XfsPropertyDef => ({
         nameOffset: jp.nameOffset,
         name: jp.name,
-        type: jp.type as DtiType,
+        type: jp.type,
         attr: jp.attr,
         bytes: jp.bytes,
         disabled: jp.disabled,

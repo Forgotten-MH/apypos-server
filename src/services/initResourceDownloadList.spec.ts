@@ -31,17 +31,17 @@ describe('initResourceDownloadList', () => {
   });
 
   it('generates download.list from FPK files', () => {
-    vi.mocked(fs.existsSync).mockReturnValue(false);
+    vi.mocked(fs.existsSync).mockImplementation((p) => !String(p).endsWith('download.list'));
     // Simulate directory structure: one directory with one FPK file
-    vi.mocked(fs.readdirSync).mockImplementation((dir: fs.PathLike) => {
+    vi.mocked(fs.readdirSync as (path: fs.PathLike) => string[]).mockImplementation((dir) => {
       const dirStr = String(dir);
       if (dirStr.endsWith('stdDL')) {
-        return ['v0282'] as unknown as fs.Dirent[];
+        return ['v0282'];
       }
       if (dirStr.endsWith('v0282')) {
-        return ['sound.01.fpk'] as unknown as fs.Dirent[];
+        return ['sound.01.fpk'];
       }
-      return [] as unknown as fs.Dirent[];
+      return [];
     });
     vi.mocked(fs.statSync).mockImplementation((filePath: fs.PathLike) => {
       const pathStr = String(filePath);
@@ -71,16 +71,16 @@ describe('initResourceDownloadList', () => {
   });
 
   it('strips v0282 from file paths in output', () => {
-    vi.mocked(fs.existsSync).mockReturnValue(false);
-    vi.mocked(fs.readdirSync).mockImplementation((dir: fs.PathLike) => {
+    vi.mocked(fs.existsSync).mockImplementation((p) => !String(p).endsWith('download.list'));
+    vi.mocked(fs.readdirSync as (path: fs.PathLike) => string[]).mockImplementation((dir) => {
       const dirStr = String(dir);
       if (dirStr.endsWith('stdDL')) {
-        return ['v0282'] as unknown as fs.Dirent[];
+        return ['v0282'];
       }
       if (dirStr.endsWith('v0282')) {
-        return ['test.fpk'] as unknown as fs.Dirent[];
+        return ['test.fpk'];
       }
-      return [] as unknown as fs.Dirent[];
+      return [];
     });
     vi.mocked(fs.statSync).mockImplementation((filePath: fs.PathLike) => {
       const pathStr = String(filePath);
@@ -107,10 +107,8 @@ describe('initResourceDownloadList', () => {
   });
 
   it('skips non-FPK files', () => {
-    vi.mocked(fs.existsSync).mockReturnValue(false);
-    vi.mocked(fs.readdirSync).mockReturnValue(
-      ['readme.txt', 'data.json'] as unknown as fs.Dirent[],
-    );
+    vi.mocked(fs.existsSync).mockImplementation((p) => !String(p).endsWith('download.list'));
+    vi.mocked(fs.readdirSync as (path: fs.PathLike) => string[]).mockReturnValue(['readme.txt', 'data.json']);
     vi.mocked(fs.statSync).mockReturnValue({
       isDirectory: () => false,
       size: 100,
@@ -133,13 +131,13 @@ describe('initResourceDownloadList', () => {
   });
 
   it('handles writeFile error without throwing', () => {
-    vi.mocked(fs.existsSync).mockReturnValue(false);
-    vi.mocked(fs.readdirSync).mockReturnValue([] as unknown as fs.Dirent[]);
+    vi.mocked(fs.existsSync).mockImplementation((p) => !String(p).endsWith('download.list'));
+    vi.mocked(fs.readdirSync as (path: fs.PathLike) => string[]).mockReturnValue([]);
 
     vi.mocked(fs.writeFile).mockImplementation(
       (...args: unknown[]) => {
         const cb = args[args.length - 1] as (err: NodeJS.ErrnoException | null) => void;
-        cb(new Error('disk full') as NodeJS.ErrnoException);
+        cb(new Error('disk full'));
       },
     );
 

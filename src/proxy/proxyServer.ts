@@ -228,7 +228,7 @@ async function handleForward(
     config.upstream,
     method,
     url,
-    req.headers as Record<string, string | string[] | undefined>,
+    req.headers,
     rawBody,
   );
 

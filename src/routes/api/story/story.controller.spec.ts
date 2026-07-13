@@ -142,7 +142,7 @@ describe('story.controller', () => {
         box: { monument: { augite: [], hr: 0, mlv: { atk: 0, def: 0, hp: 0, sp: 0 } } },
       };
       vi.mocked(User.findOne).mockResolvedValue(mockDoc as never);
-      vi.mocked(User.findByIdAndUpdate).mockResolvedValue(null as never);
+      vi.mocked(User.findByIdAndUpdate).mockResolvedValue(null);
 
       const { req, res } = mockReqRes({
         mst_ocean_id: 3525753088,

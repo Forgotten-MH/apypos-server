@@ -34,7 +34,7 @@ describe('userModel.controller', () => {
       vi.mocked(User.findOneAndUpdate).mockResolvedValue({
         model_info: mockModelInfo,
         tutorial_step: 210,
-      } as never);
+      });
 
       const { req, res } = mockReqRes({
         session_id: 'sess-1',
@@ -90,7 +90,7 @@ describe('userModel.controller', () => {
       const mockModelInfo = { face: 2, gender: 1, hair: 3 };
       vi.mocked(User.findOneAndUpdate).mockResolvedValue({
         model_info: mockModelInfo,
-      } as never);
+      });
 
       const { req, res } = mockReqRes({
         session_id: 'sess-1',
@@ -110,7 +110,7 @@ describe('userModel.controller', () => {
       const inputModel = { face: 1, gender: -1, hair: 2 };
       vi.mocked(User.findOneAndUpdate).mockResolvedValue({
         model_info: { ...inputModel, gender: 0 },
-      } as never);
+      });
 
       const { req, res } = mockReqRes({
         session_id: 'sess-1',

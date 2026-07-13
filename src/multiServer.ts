@@ -1,3 +1,5 @@
+import type { Event, Server, Socket } from "socket.io";
+import Room from "./model/room.js";
 import User from "./model/user.js";
 import { parseHeader, createHeader, createChatPacket, createMaintenancePacket } from "./multiUtils.js";
 
@@ -25,7 +27,7 @@ const userToSocket: Map<string, string> = new Map();
 
 const DEBUG_MULTIPLAYER = process.env.DEBUG_MULTIPLAYER === 'true' || false;
 
-function logDebug(message: string, ...args: any[]) {
+function logDebug(message: string, ...args: unknown[]) {
   if (DEBUG_MULTIPLAYER) {
     console.log(`[Multiplayer Debug] ${message}`, ...args);
   }
@@ -63,7 +65,7 @@ function ensureRoom(roomNumber: number): RoomState {
 }
 
 
-async function authenticateUser(socket: any, sessionId: string): Promise<string | null> {
+async function authenticateUser(socket: Socket, sessionId: string): Promise<string | null> {
   try {
     if (!sessionId) {
       logDebug("No session ID provided for authentication");
@@ -102,12 +104,12 @@ async function authenticateUser(socket: any, sessionId: string): Promise<string 
 }
 
 
-function getUserId(socket: any): string | null {
+function getUserId(socket: Socket): string | null {
   return socketToUser.get(socket.id) || null;
 }
 
 
-function cleanupUserMapping(socket: any) {
+function cleanupUserMapping(socket: Socket) {
   const userId = socketToUser.get(socket.id);
   if (userId) {
     socketToUser.delete(socket.id);
@@ -116,7 +118,7 @@ function cleanupUserMapping(socket: any) {
   }
 }
 
-function addMemberToRoom(roomNumber: number, socket: any, playerId?: number): RoomState {
+function addMemberToRoom(roomNumber: number, socket: Socket, playerId?: number): RoomState {
   const room = ensureRoom(roomNumber);
   const userId = getUserId(socket);
   
@@ -137,7 +139,7 @@ function addMemberToRoom(roomNumber: number, socket: any, playerId?: number): Ro
   return room;
 }
 
-function removeMemberFromRoom(roomNumber: number, socket: any): RoomState | null {
+function removeMemberFromRoom(roomNumber: number, socket: Socket): RoomState | null {
   const room = rooms.get(roomNumber);
   if (!room) return null;
   
@@ -175,89 +177,20 @@ function removeMemberFromRoom(roomNumber: number, socket: any): RoomState | null
   return room;
 }
 
-function isHost(socket: any, roomNumber: number): boolean {
+function isHost(socket: Socket, roomNumber: number): boolean {
   const room = rooms.get(roomNumber);
   const userId = getUserId(socket);
   return !!room && room.hostSocketId === socket.id && room.hostUserId === userId;
 }
 
-function isRoomMember(socket: any, roomNumber: number): boolean {
+function isRoomMember(socket: Socket, roomNumber: number): boolean {
   const room = rooms.get(roomNumber);
   return !!room && room.members.has(socket.id);
 }
 
-function isAuthenticated(socket: any): boolean {
+function isAuthenticated(socket: Socket): boolean {
   return getUserId(socket) !== null;
 }
-
-function broadcastToRoom(roomNumber: number, event: string, data: any, excludeSocket?: any) {
-  const room = rooms.get(roomNumber);
-  if (!room) return;
-  
-  const targetSockets = Array.from(room.members);
-  if (excludeSocket) {
-    const excludeIndex = targetSockets.indexOf(excludeSocket.id);
-    if (excludeIndex > -1) {
-      targetSockets.splice(excludeIndex, 1);
-    }
-  }
-  
-  logDebug(`Broadcasting ${event} to room ${roomNumber}`, { 
-    targetCount: targetSockets.length,
-    excludeSocket: excludeSocket?.id 
-  });
-  
-  
-  if (excludeSocket) {
-    excludeSocket.to(String(roomNumber)).emit(event, data);
-  } else {
-    
-    logDebug(`Note: Full room broadcast requires io instance for ${event}`);
-  }
-}
-
-//Client Sends...
-const recv = [
-  "host_change_request",
-  "leave",
-  //"create",
-  "join",
-  "lock",
-  "unlock",
-  "kick",
-  "entry",
-  "cancel",
-  "data",
-];
-//Server Sends...
-const events = [
-  //   "entry",
-  "data",
-  "notice",
-  //   "create_ok",
-  //   "create_ng",
-  "join_ok",
-  "join_ng",
-  "entry",
-  "entry_ok",
-  "entry_ng",
-  "cancel",
-  "cancel_ok",
-  "cancel_ng",
-  "match",
-  "match_ok",
-  "terminate",
-  "terminate_ok",
-  "lock",
-  "lock_ok",
-  "lock_ng",
-  "unlock",
-  "unlock_ok",
-  "leave",
-  "leave_ok",
-  "host_change",
-];
-
 
 export function cleanupExpiredRoomsFromMemory() {
   let cleanedCount = 0;
@@ -291,14 +224,14 @@ export function cleanupAllRoomsFromMemory() {
   return roomCount;
 }
 
-export function onConnect(io: any, socket: any) {
+export function onConnect(io: Server, socket: Socket) {
   console.log("Client connected:", socket.id);
 
   socket.setMaxListeners(50); 
 
  
-  socket.use((packet: any, next: any) => {
-    const [event, data] = packet;
+  socket.use((packet: Event, next: (err?: Error) => void) => {
+    const [event] = packet;
     
     
     const publicEvents = [
@@ -321,7 +254,7 @@ export function onConnect(io: any, socket: any) {
   });
 
  
-  socket.on("authenticate", async (data: any) => {
+  socket.on("authenticate", async (data: { session_id: string }) => {
     try {
       const { session_id } = data;
       const userId = await authenticateUser(socket, session_id);
@@ -339,18 +272,18 @@ export function onConnect(io: any, socket: any) {
     }
   });
 
-  socket.on("heartbeat", (date: any) => {
+  socket.on("heartbeat", () => {
     setTimeout(() => {
       logDebug(`heartbeat → ${socket.id}`);
       socket.emit("heartbeat", Date.now());
     });
   });
-  socket.on("create", async (data: any) => {
+  socket.on("create", async (data: Buffer) => {
     const { header, payload } = parseHeader(data);
     logDebug(`[Create] from socket ${socket.id}, room=${header.roomNumber}, hex=${data.toString('hex')}`);
     try {
       let userId = getUserId(socket);
-      const extractedUserId = payload.slice(0, 24).toString("ascii").replace(/\0/g, '');
+      const extractedUserId = payload.subarray(0, 24).toString("ascii").replace(/\0/g, '');
 
       
       if (!userId && extractedUserId) {
@@ -381,11 +314,11 @@ export function onConnect(io: any, socket: any) {
         }
       }
       
-      socket.join(String(header.roomNumber));
+      void socket.join(String(header.roomNumber));
       const room = addMemberToRoom(header.roomNumber, socket);
       
       // Extract room metadata from payload if available
-      const user_id = payload.slice(0, 24).toString("ascii").replace(/\0/g, '');
+      const user_id = payload.subarray(0, 24).toString("ascii").replace(/\0/g, '');
       const questId = payload.readUInt32LE(24);
       
       // Update room metadata
@@ -434,13 +367,13 @@ export function onConnect(io: any, socket: any) {
       socket.emit("create_ng", data);
     }
   });
-  socket.on("join", async (data: any) => {
+  socket.on("join", async (data: Buffer) => {
     const { header, payload } = parseHeader(data);
     logDebug(`[Join] from socket ${socket.id}, room=${header.roomNumber}, hex=${data.toString('hex')}`);
     try {
       const room = ensureRoom(header.roomNumber);
       let userId = getUserId(socket);
-      const extractedUserId = payload.slice(0, 24).toString("ascii").replace(/\0/g, '');
+      const extractedUserId = payload.subarray(0, 24).toString("ascii").replace(/\0/g, '');
 
       
       if (!userId && extractedUserId) {
@@ -493,7 +426,7 @@ export function onConnect(io: any, socket: any) {
         return;
       }
       
-      socket.join(String(header.roomNumber));
+      void socket.join(String(header.roomNumber));
       
      
       const newPlayerId = room.members.size; 
@@ -588,8 +521,8 @@ export function onConnect(io: any, socket: any) {
 
   });
 
-  socket.on("leave", async (data: any) => {
-    const { header, payload } = parseHeader(data);
+  socket.on("leave", async (data: Buffer) => {
+    const { header } = parseHeader(data);
     logDebug(`[Leave] from socket ${socket.id}, room=${header.roomNumber}, hex=${data.toString('hex')}`);
     try {
       const userId = getUserId(socket);
@@ -608,7 +541,6 @@ export function onConnect(io: any, socket: any) {
      
       if (userId) {
         try {
-          const Room = require("./model/room").default;
           const dbRoom = await Room.findOne({ room_id: header.roomNumber });
           if (dbRoom) {
             try {
@@ -631,7 +563,7 @@ export function onConnect(io: any, socket: any) {
 
       
       const updatedRoom = removeMemberFromRoom(header.roomNumber, socket);
-      socket.leave(String(header.roomNumber));
+      void socket.leave(String(header.roomNumber));
 
       
       socket.emit("leave_ok", data);
@@ -666,7 +598,7 @@ export function onConnect(io: any, socket: any) {
   });
 
   // Lock room - only host can lock
-  socket.on("lock", (data: any) => {
+  socket.on("lock", (data: Buffer) => {
     try {
       const { header } = parseHeader(data);
       if (!isHost(socket, header.roomNumber)) {
@@ -692,7 +624,7 @@ export function onConnect(io: any, socket: any) {
   });
 
   // Unlock room - only host can unlock
-  socket.on("unlock", (data: any) => {
+  socket.on("unlock", (data: Buffer) => {
     try {
       const { header } = parseHeader(data);
       if (!isHost(socket, header.roomNumber)) {
@@ -717,7 +649,7 @@ export function onConnect(io: any, socket: any) {
   });
 
   // Kick member - only host can kick
-  socket.on("kick", (data: any) => {
+  socket.on("kick", (data: Buffer) => {
     try {
       const { header, payload } = parseHeader(data);
       if (!isHost(socket, header.roomNumber)) {
@@ -745,7 +677,7 @@ export function onConnect(io: any, socket: any) {
   });
 
   
-  socket.on("host_change_request", (data: any) => {
+  socket.on("host_change_request", (data: Buffer) => {
     try {
       const { header } = parseHeader(data);
       const room = rooms.get(header.roomNumber);
@@ -779,7 +711,7 @@ export function onConnect(io: any, socket: any) {
   });
 
   // Cancel operation
-  socket.on("cancel", (data: any) => {
+  socket.on("cancel", (data: Buffer) => {
     try {
       const { header } = parseHeader(data);
       if (!isRoomMember(socket, header.roomNumber)) {
@@ -797,7 +729,7 @@ export function onConnect(io: any, socket: any) {
   });
 
   
-  socket.on("entry", (data: any) => {
+  socket.on("entry", (data: Buffer) => {
     try {
       const { header, payload } = parseHeader(data);
       if (!isRoomMember(socket, header.roomNumber)) {
@@ -845,9 +777,9 @@ export function onConnect(io: any, socket: any) {
   });
 
   
-  socket.on("match", (data: any) => {
+  socket.on("match", (data: Buffer) => {
     try {
-      const { header, payload } = parseHeader(data);
+      const { header } = parseHeader(data);
       if (!isRoomMember(socket, header.roomNumber)) {
         socket.emit("match_ng", data);
         return;
@@ -889,7 +821,7 @@ export function onConnect(io: any, socket: any) {
   });
 
 
-  socket.on("terminate", (data: any) => {
+  socket.on("terminate", (data: Buffer) => {
     try {
       const { header } = parseHeader(data);
       if (!isRoomMember(socket, header.roomNumber)) {
@@ -927,26 +859,26 @@ export function onConnect(io: any, socket: any) {
     }
   });
 
-  socket.on("data", async (data: any) => {
+  socket.on("data", (data: Buffer) => {
     let bufferOffset = 0;
     while (bufferOffset + 16 <= data.length) {
     const packetStart = bufferOffset;
-    const { header, payload } = parseHeader(data.slice(packetStart));
+    const { header, payload } = parseHeader(data.subarray(packetStart));
     bufferOffset += 16 + header.pktlen;
     const userId = getUserId(socket);
 
-    logDebug(`[Data] user=${userId} socket=${socket.id} flag1=0x${header.flag1.toString(16)} room=${header.roomNumber} pktlen=${header.pktlen} hex=${data.slice(packetStart, bufferOffset).toString('hex')}`);
+    logDebug(`[Data] user=${userId} socket=${socket.id} flag1=0x${header.flag1.toString(16)} room=${header.roomNumber} pktlen=${header.pktlen} hex=${data.subarray(packetStart, bufferOffset).toString('hex')}`);
 
     switch (header.flag1) {
       case 0x03:
         
         logDebug(`[Data] flag1=0x03: heartbeat from playerId=${header.playerId}, room=${header.roomNumber}`);
-        socket.to(String(header.roomNumber)).emit("data", data.slice(packetStart, bufferOffset));
+        socket.to(String(header.roomNumber)).emit("data", data.subarray(packetStart, bufferOffset));
 
         break;
       
-      case 0x06:
-        
+      case 0x06: {
+
         if (payload.length < 4) {
           logDebug(`[Data] flag1=0x06 rejected: payload too short (${payload.length})`);
           break;
@@ -1021,8 +953,9 @@ export function onConnect(io: any, socket: any) {
         const broadcastDataAction = Buffer.concat([broadcastHeaderAction, fixedPayload]);
         socket.to(String(header.roomNumber)).emit("data", broadcastDataAction);
         break;
-      
-      case 0x07:
+      }
+
+      case 0x07: {
         const infoType = payload.readUInt16BE(0);
         const subType = payload.readUInt8(1);  
         logDebug(`[Data] flag1=0x07: infoType=${infoType} subType=${subType} room=${header.roomNumber}`);
@@ -1140,10 +1073,11 @@ export function onConnect(io: any, socket: any) {
         }
 
         break;
-      case 0x09:
-        
+      }
+      case 0x09: {
+
         logDebug(`[Data] flag1=0x09: Chat from playerId=${header.playerId}, room=${header.roomNumber}`);
-        
+
         const currentRoom = rooms.get(header.roomNumber);
         const chatPlayerId = currentRoom?.memberPlayerIds.get(socket.id) ?? header.playerId;
         
@@ -1179,19 +1113,20 @@ export function onConnect(io: any, socket: any) {
         }
         
         switch (command) {
-          case "/chat":
+          case "/chat": {
             const chatMessage = message.split(" ")[1] || "";
             const chatPacket = createChatPacket(header.roomNumber, chatMessage, chatPlayerId);
-            
+
             socket.to(String(header.roomNumber)).emit("data", chatPacket);
             break;
+          }
           case "/maintenance":
             socket.emit(
               "data",
               createMaintenancePacket({ durationSecondsTill: 4000 })
             );
             break;
-          case "/roominfo":
+          case "/roominfo": {
             const room = rooms.get(header.roomNumber);
             if (room) {
               const roomInfo = {
@@ -1211,7 +1146,8 @@ export function onConnect(io: any, socket: any) {
               socket.emit("data", createChatPacket(header.roomNumber, `Room Info: ${JSON.stringify(roomInfo, null, 2)}`, chatPlayerId));
             }
             break;
-          case "/listrooms":
+          }
+          case "/listrooms": {
             const roomList = Array.from(rooms.values()).map(room => ({
               roomNumber: room.roomNumber,
               memberCount: room.members.size,
@@ -1221,17 +1157,20 @@ export function onConnect(io: any, socket: any) {
             }));
             socket.emit("data", createChatPacket(header.roomNumber, `Active Rooms: ${JSON.stringify(roomList, null, 2)}`, chatPlayerId));
             break;
-          case "/userinfo":
+          }
+          case "/userinfo": {
             const userId = getUserId(socket);
             socket.emit("data", createChatPacket(header.roomNumber, `Your User ID: ${userId || 'Not authenticated'}`, chatPlayerId));
             break;
+          }
           default:
             break;
         }
         break;
-      
-      case 0x08:
-        
+      }
+
+      case 0x08: {
+
         const activityType = payload.length > 1 ? payload.readUInt8(1) : 0;
         logDebug(`[Data] flag1=0x08: Activity type=${activityType} playerId=${header.playerId} room=${header.roomNumber}`);
         
@@ -1255,9 +1194,10 @@ export function onConnect(io: any, socket: any) {
           socket.to(String(header.roomNumber)).emit("data", broadcastDataActivity);
         }
         break;
-      
-      case 0x0A:
-        
+      }
+
+      case 0x0A: {
+
         logDebug(`[Data] flag1=0x0A: Notice from playerId=${header.playerId}, room=${header.roomNumber}`);
         
         const roomForNotice = rooms.get(header.roomNumber);
@@ -1280,7 +1220,8 @@ export function onConnect(io: any, socket: any) {
           socket.to(String(header.roomNumber)).emit("data", broadcastDataNotice);
         }
         break;
-      
+      }
+
       default:
         
         logDebug(`[Data] flag1=0x${header.flag1.toString(16).padStart(2, '0')}: Unknown type, attempting to forward`);
@@ -1310,7 +1251,7 @@ export function onConnect(io: any, socket: any) {
     } // end while (multi-packet loop)
   });
   // Handle "disconnect" event
-  socket.on("disconnect", async (reason: any) => {
+  socket.on("disconnect", async (reason: string) => {
     // clearInterval(heartbeatInterval);
     const userId = socketToUser.get(socket.id);
     console.log(`[Disconnect] Client disconnected: ${socket.id} (user: ${userId}), Reason: ${reason}`);
@@ -1329,10 +1270,8 @@ export function onConnect(io: any, socket: any) {
         
         console.log(`[Disconnect] user=${roomUserId} playerId=${leavingPlayerId} ${wasHost ? 'HOST' : 'MEMBER'} left room=${roomNumber} remaining=${remainingMembersBeforeRemoval}`);
         
-        let roomDeleted = false;
         if (roomUserId) {
           try {
-            const Room = require("./model/room").default;
             const dbRoom = await Room.findOne({ room_id: roomNumber });
             
             if (dbRoom) {
@@ -1342,7 +1281,6 @@ export function onConnect(io: any, socket: any) {
                 if (dbRoom.phase === -1) {
                   await Room.deleteOne({ room_id: roomNumber });
                   logDebug(`[Disconnect] Deleted room ${roomNumber} from DB (${wasHost ? 'host' : 'empty'})`);
-                  roomDeleted = true;
                 } else {
                   await dbRoom.save();
                   logDebug(`[Disconnect] Updated DB room ${roomNumber}, member_count=${dbRoom.member_count}`);
@@ -1388,7 +1326,6 @@ export function onConnect(io: any, socket: any) {
     
     if (userId) {
       try {
-        const Room = require("./model/room").default;
         
         const emptyRooms = await Room.find({
           host_id: userId,
@@ -1414,7 +1351,7 @@ export function onConnect(io: any, socket: any) {
   });
 
   // Handle "error" event (optional, handled by default)
-  socket.on("error", (error: any) => {
+  socket.on("error", (error: Error) => {
     console.error(`Error for client ${socket.id}:`, error.message);
   });
 }

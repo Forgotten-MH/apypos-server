@@ -40,7 +40,7 @@ describe('notice.controller', () => {
 
     it('returns notice data with present count', async () => {
       vi.mocked(User.findOne).mockResolvedValue({ uu_id: 'uid1' } as never);
-      vi.mocked(Present.countDocuments).mockResolvedValue(3 as never);
+      vi.mocked(Present.countDocuments).mockResolvedValue(3);
 
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await get(req, res);
@@ -70,7 +70,7 @@ describe('notice.controller', () => {
 
     it('returns new_present=0 when no unreceived presents', async () => {
       vi.mocked(User.findOne).mockResolvedValue({ uu_id: 'uid1' } as never);
-      vi.mocked(Present.countDocuments).mockResolvedValue(0 as never);
+      vi.mocked(Present.countDocuments).mockResolvedValue(0);
 
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await get(req, res);

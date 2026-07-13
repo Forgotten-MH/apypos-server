@@ -135,7 +135,7 @@ describe('userOtomoTeam.controller', () => {
       } as never);
       vi.mocked(User.findOneAndUpdate).mockResolvedValue({
         otomoteam: { selected_index: 2 },
-      } as never);
+      });
 
       const { req, res } = mockReqRes({
         session_id: 'sess-1',

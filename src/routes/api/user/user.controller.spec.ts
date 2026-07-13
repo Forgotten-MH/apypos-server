@@ -41,7 +41,7 @@ describe('user.controller', () => {
     it('updates character name and returns it', async () => {
       vi.mocked(User.findOneAndUpdate).mockResolvedValue({
         character_name: 'NewName',
-      } as never);
+      });
 
       const { req, res } = mockReqRes({
         name: 'NewName',
@@ -139,7 +139,7 @@ describe('user.controller', () => {
     it('updates comment and returns it', async () => {
       vi.mocked(User.findOneAndUpdate).mockResolvedValue({
         comment: 'New comment',
-      } as never);
+      });
 
       const { req, res } = mockReqRes({
         comment: 'New comment',

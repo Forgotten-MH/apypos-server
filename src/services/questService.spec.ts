@@ -73,7 +73,7 @@ describe('questService', () => {
       vi.mocked(fs.readFile).mockImplementation((...args: unknown[]) => {
         const cb = args[2];
         (cb as (err: NodeJS.ErrnoException | null, data: string) => void)(
-          new Error('ENOENT') as NodeJS.ErrnoException,
+          new Error('ENOENT'),
           '',
         );
       });

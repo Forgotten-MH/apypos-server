@@ -101,7 +101,7 @@ describe('guild.controller', () => {
 
     it('returns empty user_guild when no guild info', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await userGet(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -113,7 +113,7 @@ describe('guild.controller', () => {
 
     it('returns user guild data when found', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await userGet(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -168,7 +168,7 @@ describe('guild.controller', () => {
 
     it('returns user guild data on success', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await searchResult(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -218,7 +218,7 @@ describe('guild.controller', () => {
 
     it('creates guild and returns data on success', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null);
       vi.mocked(guildService.createGuild).mockResolvedValue(mockGuild as never);
       const { req, res } = mockReqRes({ session_id: 'sess-1', name: 'TestGuild' });
       await create(req, res);
@@ -240,7 +240,7 @@ describe('guild.controller', () => {
 
     it('returns error when user not in guild', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await getUserGuild(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -255,7 +255,7 @@ describe('guild.controller', () => {
 
     it('returns guild data on success', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild);
       vi.mocked(guildService.getGuildById).mockResolvedValue(mockGuild as never);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await getUserGuild(req, res);
@@ -277,7 +277,7 @@ describe('guild.controller', () => {
 
     it('returns bingo data with is_guild=1 when in guild', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await bingoGet(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -292,7 +292,7 @@ describe('guild.controller', () => {
 
     it('returns bingo data with is_guild=0 when not in guild', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await bingoGet(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -315,7 +315,7 @@ describe('guild.controller', () => {
 
     it('returns NOT_FOUND when guild not found', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getGuildBySearchId).mockResolvedValue(null as never);
+      vi.mocked(guildService.getGuildBySearchId).mockResolvedValue(null);
       const { req, res } = mockReqRes({ session_id: 'sess-1', id: 'NOTFOUND' });
       await searchId(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -367,7 +367,7 @@ describe('guild.controller', () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
       vi.mocked(guildService.applyToGuild).mockResolvedValue({ success: true } as never);
       vi.mocked(guildService.getGuildById).mockResolvedValue(mockGuild as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild);
       const { req, res } = mockReqRes({ session_id: 'sess-1', gid: 'g123' });
       await apply(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -447,7 +447,7 @@ describe('guild.controller', () => {
         uid: 'uid1',
         character_name: 'Hunter',
         timestamp: 12345,
-      } as never);
+      });
       const { req, res } = mockReqRes({ session_id: 'sess-1', gid: 'g1', message: 'hello' });
       await chatSend(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -468,7 +468,7 @@ describe('guild.controller', () => {
 
     it('returns empty chat when not in guild', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await chatGet(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -483,7 +483,7 @@ describe('guild.controller', () => {
 
     it('returns chat logs when in guild', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild);
       vi.mocked(guildService.getChatMessages).mockResolvedValue([
         { message: 'hi', timestamp: 1000, uid: 'uid1' },
       ] as never);
@@ -518,7 +518,7 @@ describe('guild.controller', () => {
 
     it('returns error when not in guild', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(null);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await mailList(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -533,7 +533,7 @@ describe('guild.controller', () => {
 
     it('returns empty mails when in guild', async () => {
       vi.mocked(User.findOne).mockResolvedValue(mockUser as never);
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild);
       const { req, res } = mockReqRes({ session_id: 'sess-1' });
       await mailList(req, res);
       expect(encryptAndSend).toHaveBeenCalledWith(
@@ -560,7 +560,7 @@ describe('guild.controller', () => {
       vi.mocked(User.findOne)
         .mockResolvedValueOnce(mockUser as never) // getUserFromSession
         .mockResolvedValueOnce(memberUser as never); // buildMemberDetails for leader
-      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild as never);
+      vi.mocked(guildService.getUserGuildInfo).mockResolvedValue(mockUserGuild);
       vi.mocked(guildService.getGuildById).mockResolvedValue(mockGuild as never);
       vi.mocked(guildService.getMemberList).mockResolvedValue({
         leader: { uid: 'uid1' },

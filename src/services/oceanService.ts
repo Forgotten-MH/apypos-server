@@ -54,7 +54,7 @@ export function parseCSV(csvContent: string) {
     const values = line.split(',');
     const row = Object.fromEntries(
       headers.map((h: string, i: number) => [h, values[i] ?? '']),
-    ) as Record<string, string>;
+    );
 
     const oceanHash = row['mOceanHash'] ?? '';
     const partHash = row['mPartHash'] ?? '';
@@ -104,7 +104,7 @@ export function parsePartCSV(csvContent: string, oceanData: OceanData[]) {
     const values = line.split(',');
     const row = Object.fromEntries(
       headers.map((h: string, i: number) => [h, values[i] ?? '']),
-    ) as Record<string, string>;
+    );
 
     const partHash = Number(row['mPartHash']);
     const nodeHash = Number(row['mNodeHash']);
@@ -156,7 +156,7 @@ export function parseDramaCSV(
     const values = line.split(',');
     const row = Object.fromEntries(
       dramaHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
-    ) as Record<string, string>;
+    );
 
     const partHash = Number(row.mPartHash);
     const dramaHash = Number(row.mDramaHash);
@@ -172,7 +172,7 @@ export function parseDramaCSV(
               const values = line.split(',');
               const row = Object.fromEntries(
                 storyHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
-              ) as Record<string, string>;
+              );
               const storyDramaHash = Number(row.mDramaHash);
               const storyHash = Number(row.mStoryHash);
               if (dramaHash == storyDramaHash) {
@@ -191,7 +191,7 @@ export function parseDramaCSV(
     const values = line.split(',');
     const row = Object.fromEntries(
       noteHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
-    ) as Record<string, string>;
+    );
     const note_id = Number(row.mNoteID);
     const note_part_id = Number(row.mPartID);
     for (const ocean of oceanData) {
@@ -219,7 +219,7 @@ export function parseDramaCSV(
     const values = line.split(',');
     const row = Object.fromEntries(
       noteQuestHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
-    ) as Record<string, string>;
+    );
 
     const nodeHash = Number(row.mNodeHash);
     const questHash = Number(row.mQuestHash);
@@ -242,7 +242,7 @@ export function parseDramaCSV(
     const values = line.split(',');
     const row = Object.fromEntries(
       questHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
-    ) as Record<string, string>;
+    );
 
     const questID = Number(row.mQuestID);
     const questTimeType = Number(row.mDayNight);
@@ -256,7 +256,7 @@ export function parseDramaCSV(
     const values = line.split(',');
     const row = Object.fromEntries(
       questSubtargetSetHeaders.map((h: string, i: number) => [h, values[i] ?? '']),
-    ) as Record<string, string>;
+    );
 
     const questID = Number(row.mQuestID);
     const mSubTargetID = Number(row.mSubTargetID);
