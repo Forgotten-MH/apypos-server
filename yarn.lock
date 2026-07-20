@@ -1512,10 +1512,10 @@ ee-first@1.1.1:
   resolved "https://registry.yarnpkg.com/ee-first/-/ee-first-1.1.1.tgz#590c61156b0ae2f4f0255732a158b266bc56b21d"
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
-egoroof-blowfish@^4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/egoroof-blowfish/-/egoroof-blowfish-4.0.2.tgz#67603b431dde20e4f9a5a1ee4d665a211b38c8b6"
-  integrity sha512-cpx71NSHTItYMJljgOh9DQdufFPfI3dIjIav/WSkvwqELZQrO9rxcVLPjubApjnj3ROqBYMPUP22rPjNkqrwqA==
+egoroof-blowfish@^4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/egoroof-blowfish/-/egoroof-blowfish-4.0.3.tgz#109a1e7adb1b6ee927295e298d2beadabd8562cb"
+  integrity sha512-aoiyyD89KSkS/WnIKp83AtYyKWWa6yF13nbTLCTZdL/DZiP2QF70pBNJxynobzh3JnYhTIAAiMgfDW+4XM4JGw==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
