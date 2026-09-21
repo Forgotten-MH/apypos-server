@@ -29,7 +29,7 @@
   "dependencies": {
     "bufferutil": "^4.0.8",
     "crc": "^4.3.2",
-    "dotenv": "^17",
+    "dotenv": "^18",
     "egoroof-blowfish": "^4.0.2",
     "express": "^5",
     "express-winston": "^4.2.0",
